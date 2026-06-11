@@ -1,0 +1,180 @@
+/* ==========================================================================
+   📊 取引・出品管理画面（Deals）完全版スタイル
+   ========================================================================== */
+
+/* 💡 管理画面全体のコンテナ：アプリの背景（漆黒）へ美しく同化 */
+.deals-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: var(--background);
+  padding-bottom: 60px;
+}
+
+/* タイトルヘッダー */
+.deals-page-title {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 16px;
+  margin: 0;
+  background-color: var(--surface);
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+
+/* 📊 ダッシュボードサマリーのグリッドレイアウト */
+.dashboard-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 8px;
+  padding: 12px;
+  background-color: var(--background);
+}
+
+/* 💡 累計販売金額カード：大人の真鍮ゴールドスタイル */
+.summary-card.gold-card {
+  grid-column: 1 / -1; 
+  background: linear-gradient(135deg, #161c28 0%, #0f141d 100%); /* surfaceベースの深層グラデ */
+  border: 1px solid rgba(234, 179, 8, 0.3); /* ほんのりゴールドの境界線 */
+  color: var(--text);
+  padding: 18px 16px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.summary-card.gold-card .summary-label {
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.summary-card.gold-card .summary-value {
+  font-size: 26px;
+  color: #eab308; /* ギラつかない、深く落ち着いたマットゴールド */
+  text-shadow: 0 0 12px rgba(234, 179, 8, 0.2);
+}
+
+/* 通常のミニサマリーカード */
+.summary-card {
+  background-color: var(--surface);
+  padding: 12px 6px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+/* 🛑 アラートが必要な未配達（未発送）カードを目立たせる */
+.summary-card.highlight-card {
+  background-color: rgba(239, 68, 68, 0.1); /* 警告の赤をうっすら溶け込ませる */
+  border: 1px solid rgba(239, 68, 68, 0.4);   /* マットな赤の細枠 */
+}
+
+.summary-card.highlight-card .summary-value {
+  color: #f87171; /* 眩しすぎないコーラルレッド */
+}
+
+/* ミニサマリー内のラベル */
+.summary-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+/* 通常カードの数値：純白 */
+.summary-value {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.summary-value small {
+  font-size: 10px;
+  font-weight: normal;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+/* 🔍 中段：4ステータス 絞り込みタブバー */
+.filter-tab-bar {
+  display: flex;
+  background-color: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-top: 12px;
+  position: sticky;
+  top: 0; 
+  z-index: 30;
+}
+
+.tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 14px 2px; /* 4カラム化に伴い、文字溢れを防ぐサイズに最適化 */
+  font-size: 11px;    /* すっきり横一列に綺麗に並ぶサイズ */
+  color: var(--text-muted);
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;          /* 文字と件数バッジの隙間 */
+}
+
+/* アクティブなタブ：マット水色のアンダーライン */
+.tab-btn.active {
+  color: var(--primary);
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%; 
+  width: 80%;
+  height: 2px;
+  background-color: var(--primary); /* 氷河のアイスブルー */
+  border-radius: 2px;
+  box-shadow: 0 0 6px var(--primary);
+}
+
+/* 💡 タブ内の件数表示バッジ */
+.tab-count-badge {
+  font-size: 10px;
+  font-weight: normal;
+  opacity: 0.8;
+}
+
+/* アクティブなタブの件数は少し明瞭に強調 */
+.tab-btn.active .tab-count-badge {
+  color: var(--primary);
+  font-weight: bold;
+  opacity: 1;
+}
+
+/* 📦 下半分：商品一覧セクション */
+.deals-products-section {
+  padding: 12px;
+}
+
+/* 必要に応じて商品カードを美しく3並びにするグリッド（環境に合わせて利用してください） */
+.product-grid-three {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+/* ガラ空きの時のテキストメッセージ枠 */
+.empty-deals-message {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+  font-size: 13px;
+  background-color: var(--background);
+}

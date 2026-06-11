@@ -1,0 +1,253 @@
+/* 🌌 チェックアウト全体コンテナ */
+.checkout-container {
+  max-width: 600px; /* 縦スクロールに最適なモバイルサイズ */
+  margin: 0 auto;
+  background-color: var(--background);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+
+/* ヘッダー */
+.checkout-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.checkout-back-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 24px;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.checkout-page-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0;
+}
+
+/* 縦並びのスクロールフロー */
+.checkout-scroll-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+/* 各セクションカード */
+.checkout-section-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--text-muted);
+}
+
+.section-edit-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* フォームその場書き換え（インライン編集）スタイル */
+.inline-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.inline-input, .inline-select {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+}
+
+.inline-select option {
+  background-color: var(--surface);
+  color: var(--text);
+}
+
+.inline-input:focus, .inline-select:focus {
+  border-color: var(--primary);
+}
+
+.inline-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.inline-cancel-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.inline-save-btn {
+  background-color: var(--primary);
+  color: var(--background);
+  border: none;
+  padding: 6px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* 表示テキスト */
+.address-text, .payment-method-text {
+  font-size: 14px;
+  color: var(--text);
+  margin: 0 0 6px 0;
+}
+
+.delivery-estimate {
+  font-size: 13px;
+  color: #34d399; /* 配送日は安心のグリーン */
+  margin: 0;
+}
+
+/* 商品プレビュー */
+.checkout-item-preview {
+  display: flex;
+  gap: 16px;
+}
+
+.item-thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.item-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.item-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0 0 4px 0;
+}
+
+.item-qty, .item-price {
+  font-size: 13px;
+  margin: 0;
+}
+
+.item-price {
+  color: var(--primary);
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+/* 📜 一番下に鎮座する明細＆確定ブロック */
+.checkout-summary-block {
+  margin-top: 12px;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+}
+
+.summary-details {
+  margin-bottom: 24px;
+}
+
+.summary-title {
+  font-size: 16px;
+  margin: 0 0 16px 0;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: var(--text-muted);
+}
+
+.summary-divider {
+  height: 1px;
+  background-color: var(--border);
+  margin: 16px 0;
+}
+
+.total-row {
+  color: var(--text);
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.final-price {
+  color: var(--primary);
+  font-size: 20px;
+  font-weight: 900;
+}
+
+/* 確定ネオンボタン */
+.checkout-submit-btn {
+  width: 100%;
+  padding: 16px;
+  background-color: var(--primary);
+  color: var(--background);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 0 15px rgba(14, 165, 233, 0.3);
+}
+
+.checkout-submit-btn:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 25px rgba(14, 165, 233, 0.5);
+}
+
+.terms-text {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 12px 0 0 0;
+  line-height: 1.4;
+}

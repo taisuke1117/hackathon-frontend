@@ -1,0 +1,185 @@
+/* 💡 チャット一覧全体のコンテナ：アプリの背景（漆黒）にスッと溶け込ませる */
+.chat-list-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: var(--background);
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* タイトル：上部をスッキリ仕切る純白文字 */
+.chat-page-title {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 16px;
+  margin: 0;
+  text-align: center;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+
+/* 🏷️ タブバー：1歩手前のグレーにして立体感を出す */
+.chat-tab-bar {
+  display: flex;
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.chat-tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 14px 0;
+  font-size: 14px;
+  color: var(--text-muted); /* 非アクティブはブルーグレー */
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+/* アクティブなタブ：アイスブルー */
+.chat-tab-btn.active {
+  color: var(--primary);
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+.chat-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary); /* 鮮やかな水色のアンダーライン */
+  box-shadow: 0 0 8px var(--primary);
+}
+
+/* 📨 チャット項目行 */
+.chat-row-item {
+  display: flex;
+  padding: 16px 16px; 
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  background-color: var(--background);
+  transition: background-color 0.2s ease;
+  align-items: center;
+}
+
+/* ホバー・タップ時 */
+.chat-row-item:hover, .chat-row-item:active {
+  background-color: var(--surface);
+}
+
+/* ユーザーアイコン */
+.chat-avatar-box {
+  margin-right: 14px; 
+}
+
+.user-avatar-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
+/* メイン情報（中央） */
+.chat-main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-top-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+/* ユーザー名：クッキリ純白 */
+.chat-user-name {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--text);
+}
+
+/* タイムスタンプ */
+.chat-timestamp {
+  font-size: 11px;
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
+/* 商品名ラベル */
+.chat-product-name-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 最後のメッセージ本文 */
+.chat-last-message {
+  font-size: 13px;
+  color: var(--text-muted);
+  opacity: 0.9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 右側（通知バッジ ＋ 商品画像） */
+.chat-right-aside {
+  margin-left: 14px;
+  display: flex;
+  flex-direction: row; 
+  align-items: center; 
+  gap: 12px; 
+  min-width: 90px; 
+  justify-content: flex-end; 
+}
+
+/* 📦 商品サムネイル枠 */
+.chat-product-img-box {
+  width: 50px;  
+  height: 50px; 
+  border-radius: var(--radius-md); 
+  overflow: hidden;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.product-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 💡 【修正】未読バッジ：光彩やグラデを廃止し、ソリッドでマットな漆黒×アイスブルーに */
+.chat-unread-badge {
+  background-color: #0ea5e9; /* 💡 艶消しのソリッドな高発色アイスブルーに変更 */
+  color: #0b0f17;            /* 💡 文字色は背景（漆黒）と同じ色にして、マットにくり抜かれた質感を演出 */
+  font-size: 11px; 
+  font-weight: 900;          /* 数字をパキッと見せる極太 */
+  min-width: 22px; 
+  height: 22px;    
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  box-shadow: none;          /* 💡 キラキラした発光オーラを完全削除 */
+  border: none;              /* 💡 枠線も消してフラットな塊に */
+}
+
+/* チャットが空の時のメッセージ */
+.chat-empty-message {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+  font-size: 14px;
+}

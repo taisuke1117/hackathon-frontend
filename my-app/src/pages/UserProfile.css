@@ -1,0 +1,137 @@
+/* 🌌 プロフィール画面全体のコンテナ：深淵なる漆黒 */
+.profile-page-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: var(--background);
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+/* ヘッダー：シームレスに闇へ固定 */
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--background);
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.profile-back-btn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.profile-back-btn:hover {
+  color: var(--text);
+}
+
+.profile-page-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--text);
+  margin: 0;
+}
+
+/* 👤 ユーザー情報カード（1歩手前のチャコール） */
+.profile-top-card {
+  background-color: var(--surface);
+  padding: 24px 16px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.profile-main-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-avatar-img {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
+.profile-meta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile-user-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text);
+  margin: 0;
+}
+
+/* 評価エリア：アイスブルーを散りばめる */
+.profile-rating-stars {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.star-icon {
+  margin-right: 3px;
+  color: var(--primary); /* 星もテーマカラーにシンクロ */
+}
+
+.rating-score {
+  font-weight: bold;
+  color: var(--primary);
+  margin-right: 4px;
+}
+
+.review-count {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+
+/* 自己紹介ボックス（区切り線を馴染ませる） */
+.profile-intro-box {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+
+.profile-intro-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* 📦 下半分の出品商品セクション */
+.profile-products-section {
+  background-color: var(--background); /* 商品リストの背景は深く落とす */
+  padding: 16px;
+}
+
+.profile-section-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--text-muted);
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 商品をきれいに横2列で並べるグリッド構造 */
+.profile-products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}

@@ -1,0 +1,348 @@
+/* 🌌 商品詳細全体のコンテナ：深淵なる闇 */
+.detail-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: var(--background);
+  padding-bottom: 120px; /* 💡 60px ➔ 100px に拡張 */
+  min-height: 100vh;
+  position: relative;
+}
+
+/* 📷 カルーセル構造：写真を最高に引き立てる完全な黒 */
+.carousel-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1; 
+  background-color: #0b0f17; /* 💡 画像が一番浮き出る超・漆黒空間 */
+  padding: 0 5%; /* 💡 左右の余白を10%➔5%に調整し、ダイナミックな写真サイズを両立 */
+  box-sizing: border-box; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-swipe-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  width: 100%;
+  height: 100%;
+  align-items: center; 
+}
+
+/* スクロールバーを隠す */
+.image-swipe-track::-webkit-scrollbar { display: none; }
+.image-swipe-track { -ms-overflow-style: none; scrollbar-width: none; }
+
+.carousel-img {
+  width: 100%; 
+  height: auto; 
+  max-height: 95%; 
+  object-fit: contain; 
+  flex-shrink: 0;
+  scroll-snap-align: center; 
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6); /* 画像に映画館のような立体感を */
+}
+
+/* カルーセルのインジケーター（ドット） */
+.carousel-dots {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.25);
+  transition: all 0.2s ease;
+}
+
+/* アクティブドット：アイスブルーに輝く */
+.dot.active {
+  background-color: #0ea5e9;
+  transform: scale(1.2);
+  box-shadow: 0 0 8px #0ea5e9;
+}
+
+/* ⚡ アクションバー（いいね・チャット・出品者）：1歩手前のチャコール */
+.action-row-bar {
+  display: flex;
+  align-items: center;
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+  height: 64px;
+}
+
+.action-item-wrapper {
+  height: 100%;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 繊細な氷河の亀裂ライン */
+.border-right {
+  border-right: 1px solid var(--border);
+}
+
+/* チャットボタンのカスタム */
+.chat-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.chat-action-btn:hover {
+  opacity: 0.8;
+}
+
+/* 💡 チャットアイコン：白へ透過 */
+.chat-icon-svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ボタンの下の小さい文字ラベル */
+.action-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* 出品者ブロック（右側を広く使う） */
+.seller-action-block {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.seller-action-block:hover {
+  background-color: var(--surface-hover);
+}
+
+.seller-mini-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
+.seller-mini-meta {
+  display: flex;
+  flex-direction: column;
+  margin-left: 12px;
+  flex: 1;
+}
+
+.seller-mini-name {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--text);
+}
+
+/* 💡 星マークをアイスブルーにして統一感を加速 */
+.seller-mini-rating {
+  font-size: 11px;
+  color: var(--primary); 
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+.arrow-right-hint {
+  color: var(--text-muted);
+  opacity: 0.5;
+  font-size: 14px;
+}
+
+/* 📝 テキスト情報エリア */
+.detail-info-content {
+  padding: 24px 16px;
+}
+
+/* 商品タイトル */
+.detail-product-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+/* 💡 価格：ピンクを廃止して、マットな高発色アイスブルーへ大改造 */
+.detail-price-tag {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--primary);
+  letter-spacing: -0.5px;
+  margin-bottom: 24px;
+}
+
+/* 各セクションブロック（区切り線も闇に馴染ませる） */
+.detail-section-block {
+  margin-top: 24px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+
+.detail-sub-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 12px 0;
+}
+
+.detail-description-text {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.7;
+  white-space: pre-wrap; 
+  margin: 0;
+}
+
+/* カテゴリパスリンク：パキッとしたマット水色でサイバーに */
+.detail-category-path {
+  font-size: 13px;
+  color: #0ea5e9;
+  font-weight: bold;
+  line-height: 1.5;
+}
+
+.path-node {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.path-node:hover {
+  color: var(--primary);
+}
+
+/* 💡 左上の「×」ボタン：完全にSFチックなダークフロート型へリファイン */
+.detail-back-close-btn {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 50; 
+  
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(15, 20, 29, 0.6); /* surfaceに近い闇を透過 */
+  backdrop-filter: blur(8px); /* 💡 後ろの画像がすりガラス風にボケる神エフェクト */
+  color: var(--text); 
+  border: 1px solid var(--border); /* 繊細な白透過枠 */
+  font-size: 14px;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.detail-back-close-btn:hover {
+  background-color: var(--surface);
+  border-color: var(--primary); /* ホバーすると水色に光る */
+  color: var(--primary);
+}
+
+.detail-back-close-btn:active {
+  transform: scale(0.92); 
+}
+
+.detail-fixed-purchase-footer {
+  position: fixed;
+  bottom: 64px; /* アクションバーの上に配置 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 600px; /* コンテナの最大幅と同期 */
+  height: 80px;
+  background-color: rgba(22, 27, 37, 0.8); /* var(--surface) を透過 */
+  backdrop-filter: blur(12px); /* 背後を美しくぼかすSFエフェクト */
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.purchase-footer-inner {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* 左側：価格の控えめな再表示 */
+.purchase-price-display {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.purchase-price-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.purchase-price-amount {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--text); /* ここは純白にしてボタンを目立たせる */
+  margin-top: 2px;
+}
+
+/* 右側：主役の覚醒アイスブルーボタン */
+.detail-primary-buy-btn {
+  flex: 1;
+  height: 48px;
+  background-color: var(--primary); /* 鮮烈なアイスブルー */
+  color: #05080e; /* 漆黒文字でくり抜く */
+  border: none;
+  font-size: 15px;
+  font-weight: 900;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 16px rgba(14, 165, 233, 0.3); /* ビカビカに発光 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.5px;
+}
+
+.detail-primary-buy-btn:hover {
+  background-color: #38bdf8; /* さらに明るい水色へ */
+  box-shadow: 0 0 24px rgba(14, 165, 233, 0.5);
+  transform: translateY(-1px);
+}
+
+.detail-primary-buy-btn:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.2);
+}

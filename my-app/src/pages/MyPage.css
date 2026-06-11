@@ -1,0 +1,135 @@
+/* 🌌 マイページ専用スタイル（氷河と漆黒テーマ） */
+.mypage-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: var(--background);
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+
+/* 👤 1. プロフィールサマリー */
+.mypage-profile-section {
+  background-color: var(--surface);
+  padding: 24px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.mypage-profile-section:hover {
+  background-color: var(--surface-hover);
+}
+
+.mypage-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
+.mypage-profile-info {
+  flex: 1;
+}
+
+.mypage-user-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.mypage-user-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 6px 0;
+  color: var(--text);
+}
+
+.mypage-settings-arrow {
+  font-size: 16px;
+  color: var(--text-muted);
+  opacity: 0.6;
+  transition: transform 0.3s ease;
+}
+
+.mypage-profile-section:hover .mypage-settings-arrow {
+  transform: rotate(45deg);
+  opacity: 1;
+}
+
+.mypage-rating {
+  font-size: 13px;
+  color: var(--primary);
+  font-weight: bold;
+}
+
+.mypage-reviews {
+  color: var(--text-muted);
+  font-weight: normal;
+  margin-left: 4px;
+  opacity: 0.7;
+}
+
+/* 📦 2. コレクションセクション（共通） */
+.mypage-collection-section {
+  margin-top: 24px;
+  padding: 0 16px;
+}
+
+.collection-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.collection-section-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+/* 🧱 マイページ専用 3列グリッド */
+.mypage-products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+/* 💡 ProductCardの微調整（マイページ用） */
+.mypage-products-grid .product-card-title {
+  font-size: 11px !important;
+}
+.mypage-products-grid .product-card-price {
+  font-size: 12px !important;
+}
+
+/* 🔗 「すべて見る」ボタン */
+.collection-see-all-btn {
+  width: 100%;
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 10px 0;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: var(--radius-md);
+  margin-top: 14px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.collection-see-all-btn:hover {
+  border-color: var(--text-muted);
+  color: var(--text);
+  background-color: rgba(255, 255, 255, 0.02);
+}

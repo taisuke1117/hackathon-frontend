@@ -1,0 +1,20 @@
+/* 🌌 ホーム画面全体のコンテナ：深淵なる漆黒の宇宙 */
+.home-container {
+  max-width: 600px; /* フッターやヘッダーと横幅を合わせる */
+  margin: 0 auto;
+  background-color: var(--background); /* 💡 完全な闇色を敷き詰める */
+  min-height: 100vh;
+}
+
+/* 📦 商品一覧エリア */
+.home-products-section {
+  padding: 12px 0; /* 💡 検索バーとのスキマをわずかに広げて、より窮屈感をなくす */
+}
+
+/* ❄️ 画面3分割グリッドレイアウト */
+.product-grid-three {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 幅をきっちり3等分 */
+  gap: 4px; /* 💡 2px ➔ 4px に微調整し、ダークモードの境界線をシャープに際立たせる */
+  padding: 0 4px; /* 画面左右の余白調整 */
+}

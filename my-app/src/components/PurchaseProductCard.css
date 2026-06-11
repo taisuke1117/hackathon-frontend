@@ -1,0 +1,86 @@
+.purchase-card {
+  display: flex;
+  align-items: center;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  gap: 16px;
+}
+
+.purchase-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 12px rgba(14, 165, 233, 0.1);
+}
+
+.purchase-card-img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.purchase-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.purchase-card-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--text);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.purchase-card-price {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* 🏷️ ステータスバッジのスタイル */
+.purchase-status-badge {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 2px;
+}
+
+/* 未発送：サイバーな警告オレンジ */
+.status-unshipped {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* 配達中：氷河ネオン水色 */
+.status-shipping {
+  background-color: rgba(14, 165, 233, 0.15);
+  color: var(--primary);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
+/* 受取済み：安心のネオングリーン */
+.status-received {
+  background-color: rgba(52, 211, 153, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+
+.purchase-card-arrow {
+  color: var(--text-muted);
+  font-size: 14px;
+  padding-right: 4px;
+}

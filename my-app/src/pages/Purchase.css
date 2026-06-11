@@ -1,0 +1,112 @@
+.purchases-page-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: var(--background);
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+.purchases-page-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.purchases-page-back-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 20px;
+  cursor: pointer;
+  margin-right: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.purchases-page-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+}
+
+/* 🎛️ 追加：フィルターバーのスタイル */
+.purchases-filter-bar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 16px;
+  background-color: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+
+.filter-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.filter-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary); /* チェック時に氷河ネオン水色になる */
+  cursor: pointer;
+}
+
+.filter-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+/* チェックが入っている時は文字を少し強調 */
+.filter-checkbox:checked + .filter-text {
+  color: var(--primary);
+}
+
+.purchases-page-content {
+  padding: 16px;
+}
+
+.purchases-list-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 空白状態 */
+.purchases-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 24px;
+}
+
+.empty-text {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.empty-reset-btn {
+  background-color: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 8px 20px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.empty-reset-btn:hover {
+  border-color: var(--text);
+}

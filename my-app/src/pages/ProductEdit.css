@@ -1,0 +1,206 @@
+/* 🌌 編集画面全体のコンテナ：深淵なる漆黒 */
+.edit-page-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: var(--background);
+  min-height: 100vh;
+  padding-bottom: 140px; /* 下の固定ボタンと絶対に被らないように広めに確保 */
+}
+
+/* 👤 ヘッダー：固定配置も闇色にシンクロ */
+.edit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background-color: var(--background);
+  z-index: 100;
+}
+
+/* キャンセルボタン：氷河の透過感を持たせる */
+.edit-cancel-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.edit-cancel-btn:hover {
+  color: var(--text);
+}
+
+.edit-page-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--text);
+  margin: 0;
+}
+
+/* フォーム全体 */
+.edit-form {
+  padding: 0;
+}
+
+/* フォームの各セクション：繊細な境界線 */
+.edit-section {
+  padding: 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.edit-section.no-border {
+  border-bottom: none;
+}
+
+.edit-label {
+  display: block;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+/* ✏️ 入力パーツ：背景透過で完全に闇に馴染ませる */
+.edit-input, .edit-textarea {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  color: var(--text);
+  outline: none;
+  font-family: inherit;
+}
+
+.edit-textarea {
+  resize: none;
+  line-height: 1.6;
+}
+
+/* 📷 画像プレビュー枠 */
+.edit-image-preview {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+}
+
+.edit-image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 画像に被る半透明帯 */
+.image-change-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(11, 15, 23, 0.75); /* より深い闇透過 */
+  color: var(--text-muted);
+  font-size: 10px;
+  text-align: center;
+  padding: 5px 0;
+  font-weight: bold;
+}
+
+/* カテゴリ選択リンク（マットな水色で発光） */
+.edit-category-selector {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #0ea5e9;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.arrow-right {
+  color: var(--border);
+}
+
+/* 💰 価格入力エリア */
+.price-input-wrapper {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+.price-currency {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--text-muted);
+  margin-right: 8px;
+}
+
+/* 金額入力文字：アイスブルーで太く発光させる */
+.edit-price-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--primary);
+  outline: none;
+}
+
+/* 🚀 フッター固定ボタン：1歩手前のチャコールで引き締める */
+.edit-actions-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 600px;
+  background-color: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 16px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+/* 保存ボタン：マットアイスブルーに黒文字 */
+.edit-save-btn {
+  background-color: #0ea5e9;
+  color: var(--background);
+  border: none;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.edit-save-btn:hover {
+  opacity: 0.9;
+}
+
+/* 削除ボタン：闇に静かに溶け込むアンダーライン型の退色レッド */
+.edit-delete-btn {
+  background: none;
+  border: none;
+  color: #ef4444; /* 退色ソリッドレッド */
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 4px 0;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.edit-delete-btn:hover {
+  opacity: 1;
+  text-decoration: underline;
+}

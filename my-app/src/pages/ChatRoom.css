@@ -1,0 +1,419 @@
+/* 💡 トークルーム全体の箱：完全な闇 */
+.room-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: var(--background); 
+  height: calc(100vh - 135px); /* ヘッダー(60px)+フッター(75px)の余白を引いた全画面 */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden; /* 全体がはみ出してスクロールするのを防ぐ */
+}
+
+/* 👤 2.5階建ての新設計ヘッダー：上部に完全固定 */
+.room-header {
+  display: flex;
+  align-items: center;
+  background-color: var(--surface);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0; /* スクロールしても絶対に潰さない */
+  gap: 12px;
+}
+
+/* 戻るボタン */
+.room-back-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--text);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.room-back-btn:hover {
+  color: var(--primary);
+}
+
+/* 💡 戻るボタンの横の文字情報を縦並びにする */
+.room-header-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* 文字あふれ防止 */
+  gap: 2px;
+}
+
+/* 相手のユーザー名 */
+.room-user-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+}
+
+/* 💡 ヘッダー内に引っ越してきた商品名 */
+.room-header-product-title {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 📦 商品の価格・リンクバー：ヘッダーの下に完全固定 */
+.room-product-bar {
+  display: flex;
+  align-items: center;
+  background-color: rgba(22, 28, 40, 0.85); /* surfaceを少し透過させて高級感を */
+  backdrop-filter: blur(8px); /* 背景のメッセージを綺麗にぼかす */
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  flex-shrink: 0; /* スクロールしても絶対に潰さない */
+  transition: background-color 0.2s ease;
+}
+
+.room-product-bar:hover {
+  background-color: var(--surface-hover);
+}
+
+.room-product-thumb {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin-right: 12px;
+  border: 1px solid var(--border);
+}
+
+.room-product-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.room-product-price {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--primary); /* 価格をアイスブルーで主張 */
+}
+
+.room-product-arrow {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* 📜 トークタイムライン：ここだけがスクロールする */
+.room-timeline {
+  flex: 1;
+  overflow-y: auto; 
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* メッセージの共通行 */
+.msg-row {
+  display: flex;
+  align-items: flex-end;
+  max-width: 85%;
+}
+
+/* 相手のメッセージ（左寄せ） */
+.row-other {
+  align-self: flex-start;
+}
+
+/* 自分のメッセージ（右寄せ） */
+.row-me {
+  align-self: flex-end;
+  flex-direction: row-reverse; 
+}
+
+/* 相手のアバター */
+.msg-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+  border: 1px solid var(--border);
+}
+
+/* 吹き出しラッパー */
+.msg-bubble-wrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+/* 吹き出し本体共通 */
+.msg-bubble {
+  padding: 10px 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  word-break: break-all;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 💡 相手の吹き出し：1歩手前のチャコール（文字は純白） */
+.bubble-other {
+  background-color: var(--surface);
+  color: var(--text);
+  border-radius: 16px 16px 16px 4px; 
+}
+
+/* 💡 自分の吹き出し：マットなアイスブルー（文字は漆黒にくり抜く） */
+.bubble-me {
+  background-color: #0ea5e9; /* 先ほどの未読バッジと同じマット水色 */
+  color: var(--background); /* 漆黒文字 */
+  font-weight: 500;
+  border-radius: 16px 16px 4px 16px; 
+}
+
+/* 送信時間テキスト */
+.msg-time {
+  font-size: 10px;
+  color: var(--text-muted);
+  opacity: 0.7;
+  white-space: nowrap;
+  margin-bottom: 2px;
+}
+
+/* ⌨️ メッセージ入力エリア：下部に完全固定 */
+.room-input-area {
+  display: flex;
+  background-color: var(--surface);
+  padding: 12px;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0; /* スクロールしても絶対に潰さない */
+}
+
+/* 入力フィールド */
+.room-input-field {
+  flex: 1;
+  border: 1px solid var(--border);
+  background-color: var(--background);
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.room-input-field:focus {
+  border-color: var(--primary);
+}
+
+.room-input-field::placeholder {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+/* 💡 送信ボタン：お預かりしたsend.svgを仕込むためのリデザイン */
+.room-send-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  cursor: pointer;
+}
+
+/* 💡 送信アイコン：通常時は静かなグレー */
+.room-send-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: invert(70%) sepia(10%) saturate(200%) hue-rotate(180deg) brightness(80%);
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+/* 💡 文字が入った時（active）：マットな水色へパキッと変化！ */
+.room-send-btn.active .room-send-icon {
+  filter: invert(53%) sepia(93%) saturate(1530%) hue-rotate(167deg) brightness(97%) contrast(96%);
+}
+
+.room-send-btn.active:hover .room-send-icon {
+  transform: scale(1.1);
+}
+
+/* ==========================================================================
+   🔥 新設計：アクションダッシュボード & Gemini 生成エリア
+   ========================================================================== */
+.room-action-dashboard {
+  background-color: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 10px 12px 2px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* 購入者アクションボタン行 */
+.buyer-direct-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.action-btn-purchase {
+  background-color: var(--primary); /* アイスブルー */
+  color: var(--background);
+  border: none;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(14, 165, 233, 0.2);
+}
+
+.action-btn-offer {
+  background-color: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 10px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* 出品者アクションボタン行 */
+.seller-direct-actions {
+  display: flex;
+}
+
+.action-btn-block {
+  width: 100%;
+  background-color: rgba(239, 68, 68, 0.1); /* 警告赤（薄め） */
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 10px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ✨ Geminiアシスタントエリア */
+.gemini-assistant-box {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(90deg, rgba(14, 165, 233, 0.15), rgba(99, 102, 241, 0.15));
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  border-radius: var(--radius-md);
+  padding: 4px 4px 4px 12px;
+  gap: 8px;
+}
+
+.gemini-prompt-input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 12px;
+  outline: none;
+}
+
+.gemini-prompt-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.gemini-gen-btn {
+  background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+  color: #ffffff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
+}
+
+.gemini-gen-btn:hover {
+  filter: brightness(1.1);
+}
+
+/* ==========================================================================
+   💰 値引き承認・ステータス表示の最新スタイル
+   ========================================================================== */
+
+/* 1. 購入者側：値引き中バッジ */
+.discount-info-notification {
+  background: rgba(52, 211, 153, 0.15); /* 綺麗なエメラルドグリーンの透過 */
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  animation: pulse-border 2s infinite; /* じんわり光らせる */
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0px rgba(52, 211, 153, 0); }
+  50% { box-shadow: 0 0 10px rgba(52, 211, 153, 0.3); }
+  100% { box-shadow: 0 0 0px rgba(52, 211, 153, 0); }
+}
+
+.discount-text {
+  font-size: 13px;
+  color: #34d399; /* ネオングリーン */
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+/* 2. 出品者側：ボタンのレイアウト調整（2つ並べる） */
+.seller-direct-actions {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr; /* 承認ボタンの方を少し広く */
+  gap: 8px;
+}
+
+/* 値引き承認ボタン（ポジティブな緑） */
+.action-btn-approve {
+  background-color: #10b981; /* 鮮やかなグリーン */
+  color: #05080e; /* 漆黒文字 */
+  border: none;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+  transition: all 0.2s;
+}
+
+.action-btn-approve:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.5);
+}
+
+.action-btn-approve:active {
+  transform: scale(0.97);
+}
+
+/* ブロックボタンの微調整 */
+.action-btn-block {
+  background-color: transparent;
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  /* 他のプロパティはそのまま */
+}
