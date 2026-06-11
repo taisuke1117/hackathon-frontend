@@ -34,9 +34,9 @@ function Purchases() {
     }
   ]);
 
-  const displayedHistory = hideReceived
-    ? purchasedHistory.filter(item => item.status !== 'received')
-    : purchasedHistory;
+  //const displayedHistory = hideReceived
+   // ? purchasedHistory.filter(item => item.status !== 'received')
+   // : purchasedHistory;
 
   return (
     <div className="purchases-page-container">

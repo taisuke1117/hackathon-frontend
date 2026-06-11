@@ -4,7 +4,7 @@ import sendIcon from '../assets/send.svg';
 import './ChatRoom.css';
 
 function SellerChatRoom() {
-  const { productId, roomId } = useParams(); 
+  const { productId} = useParams(); 
   const navigate = useNavigate();
   const chatEndRef = useRef(null); 
 

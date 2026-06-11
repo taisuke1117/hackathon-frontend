@@ -7,7 +7,7 @@ function Account() {
   const { loginUser } = useAuth();
 
   const [name, setName] = useState(loginUser?.displayName || '');
-  const [email, setEmail] = useState(loginUser?.email || '');
+  const [email] = useState(loginUser?.email || '');
   const [bio, setBio] = useState('');
   const [region, setRegion] = useState('');
   const [profileImage, setProfileImage] = useState(loginUser?.photoURL || 'https://via.placeholder.com/150');

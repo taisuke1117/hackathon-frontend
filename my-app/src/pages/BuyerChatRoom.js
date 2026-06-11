@@ -4,7 +4,7 @@ import sendIcon from '../assets/send.svg';
 import './ChatRoom.css'; // スタイルは共通のCSSを使用します
 
 function BuyerChatRoom() {
-  const { productId, roomId } = useParams(); 
+  const { productId} = useParams(); 
   const navigate = useNavigate();
   const chatEndRef = useRef(null); 
 
