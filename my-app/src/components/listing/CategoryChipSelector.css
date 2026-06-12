@@ -1,0 +1,24 @@
+/* CategoryChipSelector — カテゴリチップ共通スタイル */
+.category-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.category-chip {
+  padding: 6px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--border, #2a2f37);
+  background: transparent;
+  color: var(--text, #fff);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.category-chip.active {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: var(--primary, #0ea5e9);
+  color: var(--primary, #0ea5e9);
+}

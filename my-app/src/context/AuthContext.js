@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import { onAuthStateChanged } from "firebase/auth";
-import { fireAuth } from "../firebase";
+import { fireAuth } from "../lib/firebase";
 import { apiFetch } from "../api/client";
 
 // 1. 認証情報を格納する箱（Context）を作る

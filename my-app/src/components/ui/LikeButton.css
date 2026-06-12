@@ -1,0 +1,66 @@
+.like-component {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* いいねボタンの土台 */
+.like-trigger-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 💡 押した時にぷにっと動くアニメーション */
+}
+
+.like-trigger-btn:hover {
+  transform: scale(1.1);
+}
+
+.like-trigger-btn:active {
+  transform: scale(0.9);
+}
+
+/* ハートSVGの基本共通スタイル */
+.heart-svg {
+  width: 20px;
+  height: 20px;
+  transition: all 0.25s ease;
+}
+
+/* 🤍 1. 通常時（未選択）のハート：ブルーグレーの細い線 */
+.like-trigger-btn .heart-svg {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 2px;
+}
+
+.like-trigger-btn:hover .heart-svg {
+  stroke: var(--text); /* ホバーで少し白く光る */
+}
+
+/* ❄️ 2. 選択時（いいね済）のハート：優しい水色で満たす */
+.like-trigger-btn.liked .heart-svg {
+  fill: var(--primary); /* 💡 派手な赤から「アイスブルー」へ */
+  stroke: var(--primary);
+  stroke-width: 2px;
+  /* 💡 ハートの周りに優しい水色の残光（グロウエフェクト）をまとわせる */
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.5));
+}
+
+/* カウンターの数字テキスト */
+.like-counter-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted); /* 通常時はブルーグレー */
+  transition: color 0.2s ease;
+}
+
+/* 選択時は数字も優しい水色へ */
+.like-counter-text.liked {
+  color: var(--primary);
+}

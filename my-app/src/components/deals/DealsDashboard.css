@@ -1,0 +1,47 @@
+/* DealsDashboard — サマリーカード */
+.dashboard-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  background: var(--surface, #15181d);
+  border: 1px solid var(--border, #2a2f37);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.summary-card.gold-card {
+  grid-column: 1 / -1;
+  border-color: rgba(251, 191, 36, 0.4);
+  background: rgba(251, 191, 36, 0.06);
+}
+
+.summary-card.highlight-card {
+  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.summary-label {
+  font-size: 11px;
+  color: var(--text-muted, #9aa3ad);
+  font-weight: 500;
+}
+
+.summary-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text, #fff);
+}
+
+.summary-value small {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted, #9aa3ad);
+  margin-left: 2px;
+}

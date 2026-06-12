@@ -1,0 +1,78 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ProductCard } from '../../components/product/ProductCard';
+import { apiFetch } from '../../api/client';
+import './LikedProducts.css';
+
+function LikedProducts() {
+  const navigate = useNavigate();
+  const [likedProducts, setLikedProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    apiFetch('/api/me/likes')
+      .then(list => setLikedProducts(list || []))
+      .catch(err => console.error('いいね一覧の取得に失敗:', err))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  // いいねを外したら一覧からも消す
+  const handleLikeToggle = async (productId, isLiked) => {
+    try {
+      await apiFetch(`/api/products/${productId}/like`, { method: isLiked ? 'POST' : 'DELETE' });
+      if (!isLiked) {
+        setLikedProducts(prev => prev.filter(p => p.product_id !== productId));
+      }
+    } catch (err) {
+      console.error('いいねの更新に失敗:', err);
+    }
+  };
+
+  return (
+    <div className="liked-page-container">
+      {/* 🌌 ヘッダー */}
+      <div className="liked-page-header">
+        <button
+          className="liked-page-back-btn"
+          onClick={() => navigate(-1)}
+          aria-label="戻る"
+        >
+          ✕
+        </button>
+        <h1 className="liked-page-title">いいね！一覧</h1>
+      </div>
+
+      {/* 🧱 メインコンテンツ */}
+      <div className="liked-page-content">
+        {isLoading ? (
+          <div className="liked-empty-state"><p className="empty-text">読み込み中…</p></div>
+        ) : likedProducts.length === 0 ? (
+          <div className="liked-empty-state">
+            <p className="empty-text">いいねした商品はまだありません。</p>
+            <button className="empty-discover-btn" onClick={() => navigate('/')}>
+              商品を探す
+            </button>
+          </div>
+        ) : (
+          <div className="liked-products-grid">
+            {likedProducts.map((product) => (
+              <ProductCard
+                key={product.product_id}
+                id={product.product_id}
+                title={product.name}
+                price={product.price}
+                image={product.image_url}
+                category={product.category}
+                likeCountInitial={product.likes_count}
+                isLikedInitial={true}
+                onLikeToggle={handleLikeToggle}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default LikedProducts;

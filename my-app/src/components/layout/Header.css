@@ -1,0 +1,126 @@
+/* ==========================================================================
+   🌌 浮きをゼロにするシームレス・ヘッダースタイル（完全版）
+   ========================================================================== */
+
+.header.dark-theme {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px; /* 💡 ロゴ拡大に伴い、ヘッダーの高さを50pxから60pxへ広げて余裕を確保 */
+  
+  /* アプリの背景（漆黒）と完全に同化させる */
+  background-color: rgba(5, 8, 14, 0.85); 
+  backdrop-filter: blur(12px); /* スクロール時に後ろの商品が美しく溶けるすりガラス効果 */
+  -webkit-backdrop-filter: blur(12px);
+  
+  /* パキッとした線を廃止し、境界線が絶対にわからない超極薄のラインに */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03); 
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  height: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.header-logo-link {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* ==========================================================================
+   🔥 【重要】ロゴ画像：サイズ拡大 ＆ 境界線強制消去ロジック
+   ========================================================================== */
+.header-loopa-logo {
+  height: 42px; /* 💡 26pxから42pxへ大幅にサイズアップ！ */
+  width: auto;
+  object-fit: contain;
+  
+  /* 💡 魔法の一手：これを入れることで、ロゴの「黒背景」がアプリの「黒背景」に100%同化し、
+     四角い写真の切れ目が完全に消失します。文字部分だけが綺麗に抽出されます。 */
+  mix-blend-mode: screen; 
+  
+  /* 眩しすぎない、少しだけスモークがかった高級感ある白（少しグレー寄り）に調整 */
+  filter: invert(0.85); 
+  opacity: 0.8; /* 普段の馴染み度を高めるために少しだけ透過 */
+  
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ホバー時にアプリのテーマカラー（水色）のオーラを纏って滑らかに発光 */
+.header-loopa-logo:hover {
+  filter: invert(1) drop-shadow(0 0 8px rgba(56, 189, 248, 0.7));
+  opacity: 1;
+  transform: scale(1.02); /* ほんの少しだけ手前に膨らむエフェクト */
+}
+
+/* ==========================================================================
+   📸 右側アイコン：ロゴの大きさに合わせてバランスを最適化
+   ========================================================================== */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px; 
+}
+
+.header-icon-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+/* アイコンにカーソルを乗せた時の丸い座布団を薄く上品に */
+.header-icon-link:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.header-icon {
+  width: 22px; 
+  height: 22px;
+  object-fit: contain;
+}
+
+/* アイコンもロゴの明度・不透明度と完全にシンクロさせて浮きを防止 */
+.header-icon.inverted {
+  filter: invert(0.85);
+  opacity: 0.6; /* 普段は一歩引いた存在感に */
+  transition: all 0.2s ease;
+}
+
+.header-icon-link:hover .header-icon.inverted {
+  filter: invert(1) drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+  opacity: 1;
+}
+/* 🔵 未読バッジ（水色ドット） */
+.header-icon-link {
+  position: relative;
+}
+
+.unread-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--primary, #0ea5e9);
+  box-shadow: 0 0 6px rgba(14, 165, 233, 0.8);
+}
