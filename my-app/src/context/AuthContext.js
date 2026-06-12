@@ -16,6 +16,18 @@ export const AuthProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);
   const [likedIds, setLikedIds] = useState([]);
 
+  // 未読バッジ（ヘッダーのベル・フッターのチャットに表示）
+  const [badges, setBadges] = useState({ unread_notifications: 0, unread_chats: 0 });
+
+  const refreshBadges = useCallback(async () => {
+    try {
+      const b = await apiFetch('/api/me/badges');
+      setBadges(b);
+    } catch {
+      // バッジは取得失敗してもアプリ動作に影響させない
+    }
+  }, []);
+
   // /api/init を呼んで共有データを更新する（いいね後の再同期などにも使う）
   const refreshInit = useCallback(async () => {
     const init = await apiFetch('/api/init');
@@ -41,6 +53,7 @@ export const AuthProvider = ({ children }) => {
             },
           });
           await refreshInit();
+          await refreshBadges();
         } catch (err) {
           // バックエンドが落ちていてもアプリ自体は起動させる
           console.error('バックエンドとの初期同期に失敗:', err);
@@ -49,15 +62,23 @@ export const AuthProvider = ({ children }) => {
         setProfile(null);
         setCategories([]);
         setLikedIds([]);
+        setBadges({ unread_notifications: 0, unread_chats: 0 });
       }
       setLoading(false);
     });
     return () => unsubscribe();
-  }, [refreshInit]);
+  }, [refreshInit, refreshBadges]);
+
+  // ログイン中は25秒ごとに未読バッジを更新
+  useEffect(() => {
+    if (!loginUser) return;
+    const timer = setInterval(refreshBadges, 25000);
+    return () => clearInterval(timer);
+  }, [loginUser, refreshBadges]);
 
   return (
     // 箱の中にユーザー情報を入れて、子コンポーネント（アプリ全体）に共有する
-    <AuthContext.Provider value={{ loginUser, loading, profile, setProfile, categories, likedIds, refreshInit }}>
+    <AuthContext.Provider value={{ loginUser, loading, profile, setProfile, categories, likedIds, refreshInit, badges, refreshBadges }}>
       {!loading && children}
     </AuthContext.Provider>
   );

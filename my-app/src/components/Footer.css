@@ -114,3 +114,19 @@
   background: #2b313d; 
   transform: translateY(-1px) scale(1.03);
 }
+/* 🔵 チャットタブの未読ドット */
+.nav-icon-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.nav-icon-wrapper .unread-dot {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--primary, #0ea5e9);
+  box-shadow: 0 0 6px rgba(14, 165, 233, 0.8);
+}

@@ -84,3 +84,21 @@
   font-size: 14px;
   padding-right: 4px;
 }
+/* ⭐ 受取評価ボタン（評価待ちの商品にだけ表示） */
+.purchase-review-btn {
+  align-self: flex-start;
+  margin-top: 6px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #0b0d10;
+  background: var(--primary, #0ea5e9);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.purchase-review-btn:hover {
+  opacity: 0.85;
+}

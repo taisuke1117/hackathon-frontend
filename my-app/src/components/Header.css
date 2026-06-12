@@ -109,3 +109,18 @@
   filter: invert(1) drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
   opacity: 1;
 }
+/* 🔵 未読バッジ（水色ドット） */
+.header-icon-link {
+  position: relative;
+}
+
+.unread-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--primary, #0ea5e9);
+  box-shadow: 0 0 6px rgba(14, 165, 233, 0.8);
+}

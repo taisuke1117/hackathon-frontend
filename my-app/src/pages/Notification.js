@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../api/client';
 import { formatTime } from '../utils/format';
+import { useAuth } from '../context/AuthContext';
 import './Notification.css';
 
 function Notification() {
   const navigate = useNavigate();
+  const { refreshBadges } = useAuth();
   const [activeTab, setActiveTab] = useState('transaction');
   const [notifications, setNotifications] = useState([]);
 
@@ -23,7 +25,9 @@ function Notification() {
   const handleClick = async (item) => {
     // 既読化（失敗しても遷移は続行）
     if (!item.is_read) {
-      apiFetch(`/api/notifications/${item.notification_id}/read`, { method: 'PUT' }).catch(() => {});
+      apiFetch(`/api/notifications/${item.notification_id}/read`, { method: 'PUT' })
+        .then(refreshBadges)
+        .catch(() => {});
       setNotifications(prev => prev.map(n =>
         n.notification_id === item.notification_id ? { ...n, is_read: true } : n
       ));

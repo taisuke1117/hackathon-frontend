@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../api/client';
+import { ReviewModal } from '../components/ReviewModal';
+import '../components/PurchaseProductCard.css';
 import './Purchase.css';
 
 function Purchases() {
@@ -9,6 +11,7 @@ function Purchases() {
   const [hideReceived, setHideReceived] = useState(false);
   const [purchases, setPurchases] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [reviewTarget, setReviewTarget] = useState(null); // 評価モーダルの対象商品
 
   const load = useCallback(() => {
     apiFetch('/api/me/purchases')
@@ -18,28 +21,6 @@ function Purchases() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
-
-  // ⭐ 受取評価（発送済み商品に対して購入者→出品者）
-  const handleReview = async (item) => {
-    const ratingStr = prompt(`「${item.name}」の取引はいかがでしたか？\n出品者の評価を1〜5の数字で入力してください（5が最高）`, '5');
-    if (!ratingStr) return;
-    const rating = Number(ratingStr);
-    if (isNaN(rating) || rating < 1 || rating > 5) {
-      alert('1〜5の数字で入力してください');
-      return;
-    }
-    const comment = prompt('コメントがあれば入力してください（省略可）', '') || '';
-    try {
-      await apiFetch(`/api/products/${item.product_id}/reviews`, {
-        method: 'POST',
-        body: { rating, comment },
-      });
-      alert('評価を送信しました。ありがとうございました！');
-      load();
-    } catch (err) {
-      alert(`評価の送信に失敗しました: ${err.message}`);
-    }
-  };
 
   const statusConfig = (item) => {
     if (item.status === 'unshipped') return { text: '未発送', className: 'status-unshipped' };
@@ -101,9 +82,8 @@ function Purchases() {
                     {item.status === 'shipped' && !item.reviewed && (
                       <button
                         type="button"
-                        className="empty-shop-btn"
-                        style={{ marginTop: '6px', padding: '6px 14px', fontSize: '13px' }}
-                        onClick={(e) => { e.stopPropagation(); handleReview(item); }}
+                        className="purchase-review-btn"
+                        onClick={(e) => { e.stopPropagation(); setReviewTarget(item); }}
                       >
                         ⭐ 受取評価をする
                       </button>
@@ -117,6 +97,18 @@ function Purchases() {
           </div>
         )}
       </div>
+
+      {/* ⭐ 受取評価モーダル */}
+      {reviewTarget && (
+        <ReviewModal
+          product={reviewTarget}
+          onClose={() => setReviewTarget(null)}
+          onSubmitted={() => {
+            setReviewTarget(null);
+            load();
+          }}
+        />
+      )}
     </div>
   );
 }

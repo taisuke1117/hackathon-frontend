@@ -3,19 +3,22 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../api/client';
 import { formatClock } from '../utils/format';
+import { ReviewModal } from '../components/ReviewModal';
 import sendIcon from '../assets/send.svg';
 import './ChatRoom.css';
 
 function BuyerChatRoom() {
   const { productId, roomId } = useParams();
   const navigate = useNavigate();
-  const { loginUser } = useAuth();
+  const { loginUser, refreshBadges } = useAuth();
   const chatEndRef = useRef(null);
 
   const [room, setRoom] = useState(null);
   const [inputText, setInputText] = useState('');
   const [aiPrompt, setAiPrompt] = useState('');
   const [isAiLoading, setIsAiLoading] = useState(false);
+  const [myPurchase, setMyPurchase] = useState(null); // 自分が購入した商品なら購入情報（評価導線用）
+  const [showReview, setShowReview] = useState(false);
 
   // ルーム読み込み（roomIdが'new'なら作成してURLを差し替える）
   useEffect(() => {
@@ -31,8 +34,8 @@ function BuyerChatRoom() {
         }
         const detail = await apiFetch(`/api/chatrooms/${actualRoomId}`);
         if (!cancelled) setRoom(detail);
-        // 相手のメッセージを既読化
-        apiFetch(`/api/chatrooms/${actualRoomId}/read`, { method: 'PUT' }).catch(() => {});
+        // 相手のメッセージを既読化（フッターの未読ドットも更新）
+        apiFetch(`/api/chatrooms/${actualRoomId}/read`, { method: 'PUT' }).then(refreshBadges).catch(() => {});
       } catch (err) {
         alert(`チャットの読み込みに失敗しました: ${err.message}`);
         navigate(-1);
@@ -40,7 +43,7 @@ function BuyerChatRoom() {
     };
     setup();
     return () => { cancelled = true; };
-  }, [productId, roomId, navigate]);
+  }, [productId, roomId, navigate, refreshBadges]);
 
   // 8秒ごとに新着メッセージをポーリング
   const refresh = useCallback(async () => {
@@ -57,6 +60,17 @@ function BuyerChatRoom() {
   }, [refresh]);
 
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [room?.messages?.length]);
+
+  // 発送済みなら自分の購入情報を取得（受取評価ボタンの表示判定）
+  useEffect(() => {
+    if (room?.product_status !== 'shipped') return;
+    apiFetch('/api/me/purchases')
+      .then(list => {
+        const mine = (list || []).find(p => p.product_id === room.product_id);
+        setMyPurchase(mine || null);
+      })
+      .catch(() => {});
+  }, [room?.product_status, room?.product_id]);
 
   if (!room) return <div className="app-center-text">読み込み中…</div>;
 
@@ -161,18 +175,27 @@ function BuyerChatRoom() {
           </div>
         )}
 
-        <div className="buyer-direct-actions">
-          <button
-            className="action-btn-purchase"
-            disabled={room.product_status !== 'available'}
-            onClick={() => navigate(`/checkout/${room.product_id}`)}
-          >
-            {room.product_status === 'available' ? '購入手続きへ' : '取引済み'}
-          </button>
-          <button className="action-btn-offer" onClick={handleOfferPrice}>
-            値引き交渉
-          </button>
-        </div>
+        {/* ⭐ 商品が届いたら（発送済み＆未評価）評価導線を最優先で表示 */}
+        {myPurchase && !myPurchase.reviewed ? (
+          <div className="buyer-direct-actions">
+            <button className="action-btn-purchase" onClick={() => setShowReview(true)}>
+              ⭐ 受取評価をする
+            </button>
+          </div>
+        ) : (
+          <div className="buyer-direct-actions">
+            <button
+              className="action-btn-purchase"
+              disabled={room.product_status !== 'available'}
+              onClick={() => navigate(`/checkout/${room.product_id}`)}
+            >
+              {room.product_status === 'available' ? '購入手続きへ' : '取引済み'}
+            </button>
+            <button className="action-btn-offer" onClick={handleOfferPrice}>
+              値引き交渉
+            </button>
+          </div>
+        )}
 
         {/* Gemini自動生成エリア */}
         <div className="gemini-assistant-box">
@@ -196,6 +219,18 @@ function BuyerChatRoom() {
           <img src={sendIcon} alt="送信" className="room-send-icon" />
         </button>
       </form>
+
+      {/* ⭐ 受取評価モーダル */}
+      {showReview && myPurchase && (
+        <ReviewModal
+          product={{ product_id: room.product_id, name: room.product_name }}
+          onClose={() => setShowReview(false)}
+          onSubmitted={() => {
+            setShowReview(false);
+            setMyPurchase({ ...myPurchase, reviewed: true });
+          }}
+        />
+      )}
     </div>
   );
 }

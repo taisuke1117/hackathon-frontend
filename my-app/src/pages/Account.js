@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { LogoutButton } from '../components/LogoutButton';
 import { apiFetch } from '../api/client';
 import { uploadProductImage } from '../api/storage';
+import { AvatarCropModal } from '../components/AvatarCropModal';
 import './Account.css';
 
 function Account() {
@@ -15,12 +16,23 @@ function Account() {
   const [region, setRegion] = useState(profile?.place || '');
   const [profileImage, setProfileImage] = useState(profile?.icon_url || loginUser?.photoURL || '');
   const [isSaving, setIsSaving] = useState(false);
+  const [cropSrc, setCropSrc] = useState(null); // 切り抜きモーダルに渡す選択画像
 
-  // 画像はFirebase Storageへアップロードし、URLを保持
-  const handleImageChange = async (e) => {
+  // 画像を選んだらまず切り抜きモーダルを開く
+  const handleImageChange = (e) => {
     const file = e.target.files[0];
+    e.target.value = '';
     if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => setCropSrc(reader.result);
+    reader.readAsDataURL(file);
+  };
+
+  // 切り抜き確定 → アップロードしてURLを保持
+  const handleCropped = async (blob) => {
+    setCropSrc(null);
     try {
+      const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
       const url = await uploadProductImage(file);
       setProfileImage(url);
     } catch (err) {
@@ -133,6 +145,15 @@ function Account() {
       <div className="logout-section">
         <LogoutButton />
       </div>
+
+      {/* ✂️ 写真の切り抜きモーダル */}
+      {cropSrc && (
+        <AvatarCropModal
+          imageSrc={cropSrc}
+          onClose={() => setCropSrc(null)}
+          onCropped={handleCropped}
+        />
+      )}
     </div>
   );
 }

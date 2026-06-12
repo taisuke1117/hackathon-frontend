@@ -9,7 +9,7 @@ import './ChatRoom.css';
 function SellerChatRoom() {
   const { roomId } = useParams();
   const navigate = useNavigate();
-  const { loginUser } = useAuth();
+  const { loginUser, refreshBadges } = useAuth();
   const chatEndRef = useRef(null);
 
   const [room, setRoom] = useState(null);
@@ -28,13 +28,13 @@ function SellerChatRoom() {
     apiFetch(`/api/chatrooms/${roomId}`)
       .then(detail => {
         setRoom(detail);
-        apiFetch(`/api/chatrooms/${roomId}/read`, { method: 'PUT' }).catch(() => {});
+        apiFetch(`/api/chatrooms/${roomId}/read`, { method: 'PUT' }).then(refreshBadges).catch(() => {});
       })
       .catch(err => {
         alert(`チャットの読み込みに失敗しました: ${err.message}`);
         navigate(-1);
       });
-  }, [roomId, navigate]);
+  }, [roomId, navigate, refreshBadges]);
 
   // 8秒ごとに新着メッセージをポーリング
   useEffect(() => {
