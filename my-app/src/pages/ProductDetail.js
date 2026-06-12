@@ -123,9 +123,16 @@ function ProductDetail() {
         <h1 className="detail-product-title">{product.name}</h1>
         <div className="detail-price-tag">¥{product.price.toLocaleString()}</div>
 
+        {product.condition && (
+          <div className="detail-section-block">
+            <h3 className="detail-sub-title">商品の状態</h3>
+            <p className="detail-condition-badge">{product.condition}</p>
+          </div>
+        )}
+
         <div className="detail-section-block">
           <h3 className="detail-sub-title">商品の説明</h3>
-          <p className="detail-description-text">{product.detail}</p>
+          <p className="detail-description-text" style={{ whiteSpace: 'pre-wrap' }}>{product.detail}</p>
         </div>
 
         <div className="detail-section-block">

@@ -215,7 +215,19 @@
   font-size: 14px;
   color: var(--text);
   line-height: 1.7;
-  white-space: pre-wrap; 
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.detail-condition-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(14, 165, 233, 0.12);
+  color: var(--primary);
+  border: 1px solid rgba(14, 165, 233, 0.3);
   margin: 0;
 }
 

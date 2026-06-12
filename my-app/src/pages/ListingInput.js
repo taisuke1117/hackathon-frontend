@@ -17,6 +17,7 @@ function ListingInput() {
   const [images, setImages] = useState(savedData.images || []);
   const [title, setTitle] = useState(savedData.title || '');
   const [description, setDescription] = useState(savedData.description || '');
+  const [condition, setCondition] = useState(savedData.condition || '');
   const [price, setPrice] = useState(savedData.price || '');
   const [selectedCategories, setSelectedCategories] = useState(savedData.selectedCategories || []);
   const [tags, setTags] = useState(savedData.tags || []);
@@ -58,8 +59,8 @@ function ListingInput() {
       });
       setTitle(result.title || '');
       setDescription(result.description || '');
+      if (result.condition) setCondition(result.condition);
       if (result.price_suggestion > 0) setPrice(String(result.price_suggestion));
-      // 返ってきたカテゴリ名のうちマスターに存在するものだけ選択状態にする
       const validNames = categories.map(c => c.name);
       setSelectedCategories((result.categories || []).filter(name => validNames.includes(name)));
       setTags(result.tags || []);
@@ -82,7 +83,7 @@ function ListingInput() {
   // 確認画面への遷移
   const handleGoToConfirm = () => {
     navigate('/listing/confirm', {
-      state: { images, title, description, price, selectedCategories, tags }
+      state: { images, title, description, condition, price, selectedCategories, tags }
     });
   };
 
@@ -166,6 +167,24 @@ function ListingInput() {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="商品の状態、サイズ、購入時期など（AI自動入力も可能）"
           />
+        </div>
+
+        {/* 🏷️ 商品の状態 */}
+        <div className="form-group">
+          <label className="form-label">商品の状態</label>
+          <select
+            className="form-select"
+            value={condition}
+            onChange={(e) => setCondition(e.target.value)}
+          >
+            <option value="">選択してください</option>
+            <option value="新品、未使用">新品、未使用</option>
+            <option value="未使用に近い">未使用に近い</option>
+            <option value="目立った傷や汚れなし">目立った傷や汚れなし</option>
+            <option value="やや傷や汚れあり">やや傷や汚れあり</option>
+            <option value="傷や汚れあり">傷や汚れあり</option>
+            <option value="全体的に状態が悪い">全体的に状態が悪い</option>
+          </select>
         </div>
 
         {/* 🏷️ カテゴリ選択チップ */}

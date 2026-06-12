@@ -11,8 +11,8 @@ function ListingConfirm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 前のページ（ListingInput）から送られてきたデータを受け取る（防衛策付き）
-  const { images, title, description, price, selectedCategories, tags } = location.state || {
-    images: [], title: '', description: '', price: '', selectedCategories: [], tags: []
+  const { images, title, description, condition, price, selectedCategories, tags } = location.state || {
+    images: [], title: '', description: '', condition: '', price: '', selectedCategories: [], tags: []
   };
 
   // 💾 バックエンド（Go）にデータを送信して出品を確定する
@@ -30,6 +30,7 @@ function ListingConfirm() {
           name: title,
           price: Number(price),
           detail: description,
+          condition: condition || '',
           category_ids: categoryIds,
           tags: tags || [],
           image_urls: images,
@@ -75,6 +76,12 @@ function ListingConfirm() {
           <p className="confirm-value whitespace-pre">{description || <span className="no-cat">未入力</span>}</p>
         </div>
 
+        {/* 🏷️ 商品の状態 */}
+        <div className="confirm-item">
+          <span className="confirm-label">商品の状態</span>
+          <p className="confirm-value">{condition || <span className="no-cat">未選択</span>}</p>
+        </div>
+
         {/* 💰 価格 */}
         <div className="confirm-item">
           <span className="confirm-label">価格</span>
@@ -113,7 +120,7 @@ function ListingConfirm() {
           type="button"
           className="back-button"
           onClick={() => navigate('/listing', {
-            state: { images, title, description, price, selectedCategories, tags }
+            state: { images, title, description, condition, price, selectedCategories, tags }
           })}
         >
           修正する
