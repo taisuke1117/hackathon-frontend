@@ -1,18 +1,39 @@
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { firebaseApp, fireAuth } from '../firebase';
-
-const storage = getStorage(firebaseApp);
+import { fireAuth } from '../firebase';
+import { API_URL } from './client';
 
 /**
- * 商品画像をFirebase Storage(GCS)へアップロードして公開URLを返す
+ * 商品画像をバックエンド経由でGCSへアップロードして配信URLを返す
+ * （Firebase Storageはバケット未開設のため、Cloud Run経由でGCSに保存する構成）
  * @param {File} file - <input type="file"> で選択されたファイル
- * @returns {Promise<string>} ダウンロードURL
+ * @returns {Promise<string>} 画像URL
  */
 export async function uploadProductImage(file) {
-  const uid = fireAuth.currentUser?.uid || 'anonymous';
-  const safeName = file.name.replace(/[^\w.-]/g, '_');
-  const path = `products/${uid}/${Date.now()}_${safeName}`;
-  const storageRef = ref(storage, path);
-  await uploadBytes(storageRef, file);
-  return getDownloadURL(storageRef);
+  const user = fireAuth.currentUser;
+  const headers = {};
+  if (user) {
+    headers['Authorization'] = `Bearer ${await user.getIdToken()}`;
+  }
+
+  const form = new FormData();
+  form.append('file', file);
+
+  const res = await fetch(`${API_URL}/api/images`, {
+    method: 'POST',
+    headers,
+    body: form,
+  });
+
+  if (!res.ok) {
+    let message = `アップロード失敗 (${res.status})`;
+    try {
+      const data = await res.json();
+      if (data.error) message = data.error;
+    } catch {
+      // JSONでないエラーはそのまま
+    }
+    throw new Error(message);
+  }
+
+  const data = await res.json();
+  return data.url;
 }

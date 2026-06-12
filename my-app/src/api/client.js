@@ -1,7 +1,7 @@
 import { fireAuth } from '../firebase';
 
 // バックエンド(Cloud Run)のベースURL。ローカル開発時は .env.local で上書きできる
-const API_URL = process.env.REACT_APP_API_URL || 'https://hackathon-backend-688788582449.us-central1.run.app';
+export const API_URL = process.env.REACT_APP_API_URL || 'https://hackathon-backend-688788582449.us-central1.run.app';
 
 /**
  * 認証トークン付きでバックエンドAPIを呼ぶ共通関数
