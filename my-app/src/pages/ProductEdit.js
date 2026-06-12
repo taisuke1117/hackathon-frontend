@@ -1,45 +1,87 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { apiFetch } from '../api/client';
+import { useAuth } from '../context/AuthContext';
 import './ProductEdit.css';
 
 function ProductEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { categories } = useAuth();
 
-  // 📦 編集前の初期データ（State管理）
-  const [formData, setFormData] = useState({
-    title: "ビンテージレザージャケット（1990年代物）",
-    price: 28000,
-    category: "メンズ ＞ ジャケット/アウター ＞ レザージャケット",
-    description: "1990年代の希少なレザージャケットです。\n革の状態も良く、これからの季節にぴったりです。\n\nサイズ：L\nカラー：ダークブラウン",
-    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500"
-  });
+  const [product, setProduct] = useState(null); // APIから取得した元データ
+  const [formData, setFormData] = useState({ title: '', price: '', description: '' });
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState([]);
+  const [isSaving, setIsSaving] = useState(false);
 
-  // 入力内容が変わった時の汎用ハンドラー
+  useEffect(() => {
+    apiFetch(`/api/products/${id}`)
+      .then(detail => {
+        setProduct(detail);
+        setFormData({
+          title: detail.name,
+          price: detail.price,
+          description: detail.detail,
+        });
+        setSelectedCategoryIds(detail.categories.map(c => c.category_id));
+      })
+      .catch(err => {
+        alert(`読み込みに失敗しました: ${err.message}`);
+        navigate(-1);
+      });
+  }, [id, navigate]);
+
+  if (!product) return <div className="app-center-text">読み込み中…</div>;
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // 保存ボタン（更新処理）
-  const handleSave = (e) => {
-    e.preventDefault();
-    console.log("保存するデータ:", formData);
-    alert("商品情報を更新しました！");
-    navigate(`/deals/manage/${id}`); // 管理画面に戻る
+  const handleCategoryToggle = (categoryId) => {
+    setSelectedCategoryIds(prev =>
+      prev.includes(categoryId) ? prev.filter(c => c !== categoryId) : [...prev, categoryId]
+    );
   };
 
-  // 削除ボタン
-  const handleDelete = () => {
-    if (window.confirm("この出品を完全に削除してもよろしいですか？")) {
+  // 保存（更新処理）
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setIsSaving(true);
+    try {
+      await apiFetch(`/api/products/${id}`, {
+        method: 'PUT',
+        body: {
+          name: formData.title,
+          price: Number(formData.price),
+          detail: formData.description,
+          category_ids: selectedCategoryIds,
+          tags: product.tags || [],
+          image_urls: product.images,
+        },
+      });
+      alert("商品情報を更新しました！");
+      navigate(`/deals/manage/${id}`);
+    } catch (err) {
+      alert(`更新に失敗しました: ${err.message}`);
+      setIsSaving(false);
+    }
+  };
+
+  // 削除
+  const handleDelete = async () => {
+    if (!window.confirm("この出品を完全に削除してもよろしいですか？")) return;
+    try {
+      await apiFetch(`/api/products/${id}`, { method: 'DELETE' });
       alert("商品を削除しました。");
-      navigate('/deals'); // 取引一覧に戻る
+      navigate('/deals');
+    } catch (err) {
+      alert(`削除に失敗しました: ${err.message}`);
     }
   };
 
   return (
     <div className="edit-page-container">
-      {/* 🌌 サイバーなシームレスヘッダー */}
       <div className="edit-header">
         <button type="button" className="edit-cancel-btn" onClick={() => navigate(-1)}>
           キャンセル
@@ -49,24 +91,23 @@ function ProductEdit() {
       </div>
 
       <form className="edit-form" onSubmit={handleSave}>
-        
+
         {/* 📷 画像プレビュー */}
         <div className="edit-section">
           <label className="edit-label">出品画像</label>
           <div className="edit-image-preview">
-            <img src={formData.image} alt="プレビュー" />
-            <div className="image-change-overlay">変更する</div>
+            {product.images[0] && <img src={product.images[0]} alt="プレビュー" />}
           </div>
         </div>
 
         {/* 📝 商品名入力 */}
         <div className="edit-section">
           <label className="edit-label">商品名</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="title"
-            className="edit-input" 
-            value={formData.title} 
+            className="edit-input"
+            value={formData.title}
             onChange={handleChange}
             placeholder="商品名を入力してください"
             required
@@ -75,19 +116,36 @@ function ProductEdit() {
 
         {/* 📂 カテゴリ選択 */}
         <div className="edit-section">
-          <label className="edit-label">カテゴリー</label>
-          <div className="edit-category-selector" onClick={() => alert("カテゴリー選択画面へ（開発中）")}>
-            {formData.category}
-            <span className="arrow-right">＞</span>
+          <label className="edit-label">カテゴリー（複数選択可）</label>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '8px' }}>
+            {categories.map(cat => {
+              const isActive = selectedCategoryIds.includes(cat.category_id);
+              return (
+                <button
+                  key={cat.category_id}
+                  type="button"
+                  className={`category-chip ${isActive ? 'active' : ''}`}
+                  style={{
+                    padding: '6px 14px', borderRadius: '16px', cursor: 'pointer',
+                    border: isActive ? '1.5px solid var(--primary, #4fc3f7)' : '1px solid #555',
+                    background: isActive ? 'rgba(79,195,247,0.15)' : 'transparent',
+                    color: 'inherit',
+                  }}
+                  onClick={() => handleCategoryToggle(cat.category_id)}
+                >
+                  {cat.name}
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* 💬 商品の説明 */}
         <div className="edit-section">
           <label className="edit-label">商品の説明</label>
-          <textarea 
+          <textarea
             name="description"
-            className="edit-textarea" 
+            className="edit-textarea"
             rows="8"
             value={formData.description}
             onChange={handleChange}
@@ -100,10 +158,10 @@ function ProductEdit() {
           <label className="edit-label">販売価格 (¥300〜9,999,999)</label>
           <div className="price-input-wrapper">
             <span className="price-currency">¥</span>
-            <input 
-              type="number" 
+            <input
+              type="number"
               name="price"
-              className="edit-price-input" 
+              className="edit-price-input"
               value={formData.price}
               onChange={handleChange}
               placeholder="0"
@@ -114,8 +172,8 @@ function ProductEdit() {
 
         {/* 🚀 アクションボタン固定フッター */}
         <div className="edit-actions-footer">
-          <button type="submit" className="edit-save-btn">
-            変更を保存する
+          <button type="submit" className="edit-save-btn" disabled={isSaving}>
+            {isSaving ? '保存中…' : '変更を保存する'}
           </button>
           <button type="button" className="edit-delete-btn" onClick={handleDelete}>
             この出品を削除する

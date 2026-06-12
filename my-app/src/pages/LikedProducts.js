@@ -1,45 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {ProductCard} from '../components/ProductCard'; // 💡 既存のProductCardのパスに合わせて調整してください
+import { ProductCard } from '../components/ProductCard';
+import { apiFetch } from '../api/client';
 import './LikedProducts.css';
 
 function LikedProducts() {
   const navigate = useNavigate();
+  const [likedProducts, setLikedProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // 📦 ユーザーが「いいね」した商品のダミーデータ
-  const [likedProducts] = useState([
-    {
-      id: "1",
-      title: "オリンパス OMD デジタルカメラ",
-      price: 42000,
-      image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=300",
-    },
-    {
-      id: "2",
-      title: "高解像度 フルサイズ単焦点レンズ",
-      price: 68000,
-      image: "https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?w=300",
-    },
-    {
-      id: "3",
-      title: "ヴィンテージ レザーカメラストラップ",
-      price: 5800,
-      image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=300",
-    },
-    {
-      id: "4",
-      title: "アルミ製 軽量カメラ三脚",
-      price: 12000,
-      image: "https://images.unsplash.com/photo-1495707902641-75cac588d2e9?w=300",
+  useEffect(() => {
+    apiFetch('/api/me/likes')
+      .then(list => setLikedProducts(list || []))
+      .catch(err => console.error('いいね一覧の取得に失敗:', err))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  // いいねを外したら一覧からも消す
+  const handleLikeToggle = async (productId, isLiked) => {
+    try {
+      await apiFetch(`/api/products/${productId}/like`, { method: isLiked ? 'POST' : 'DELETE' });
+      if (!isLiked) {
+        setLikedProducts(prev => prev.filter(p => p.product_id !== productId));
+      }
+    } catch (err) {
+      console.error('いいねの更新に失敗:', err);
     }
-  ]);
+  };
 
   return (
     <div className="liked-page-container">
       {/* 🌌 ヘッダー */}
       <div className="liked-page-header">
-        <button 
-          className="liked-page-back-btn" 
+        <button
+          className="liked-page-back-btn"
           onClick={() => navigate(-1)}
           aria-label="戻る"
         >
@@ -50,7 +44,9 @@ function LikedProducts() {
 
       {/* 🧱 メインコンテンツ */}
       <div className="liked-page-content">
-        {likedProducts.length === 0 ? (
+        {isLoading ? (
+          <div className="liked-empty-state"><p className="empty-text">読み込み中…</p></div>
+        ) : likedProducts.length === 0 ? (
           <div className="liked-empty-state">
             <p className="empty-text">いいねした商品はまだありません。</p>
             <button className="empty-discover-btn" onClick={() => navigate('/')}>
@@ -60,13 +56,16 @@ function LikedProducts() {
         ) : (
           <div className="liked-products-grid">
             {likedProducts.map((product) => (
-              /* 💡 ご指定のProps形式に修正完了 */
-              <ProductCard 
-                key={product.id}
-                id={product.id}
-                title={product.title}
+              <ProductCard
+                key={product.product_id}
+                id={product.product_id}
+                title={product.name}
                 price={product.price}
-                image={product.image}
+                image={product.image_url}
+                category={product.category}
+                likeCountInitial={product.likes_count}
+                isLikedInitial={true}
+                onLikeToggle={handleLikeToggle}
               />
             ))}
           </div>

@@ -1,42 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PurchaseProductCard } from '../components/PurchaseProductCard'; // 💡 パスは環境に合わせてね
+import { apiFetch } from '../api/client';
 import './Purchase.css';
 
 function Purchases() {
   const navigate = useNavigate();
 
   const [hideReceived, setHideReceived] = useState(false);
+  const [purchases, setPurchases] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // 📦 購入履歴のダミーデータ
-  // ステータスは 'unshipped' (未発送), 'shipping' (配達中), 'received' (受取済み)
-  const [purchasedHistory] = useState([
-    {
-      id: "p_101",
-      title: "オリンパス OMD デジタルカメラ",
-      price: 42000,
-      image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=300",
-      status: "unshipped"
-    },
-    {
-      id: "p_102",
-      title: "高解像度 フルサイズ単焦点レンズ",
-      price: 68000,
-      image: "https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?w=300",
-      status: "shipping"
-    },
-    {
-      id: "p_103",
-      title: "ヴィンテージ レザーカメラストラップ",
-      price: 5800,
-      image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=300",
-      status: "received"
+  const load = useCallback(() => {
+    apiFetch('/api/me/purchases')
+      .then(list => setPurchases(list || []))
+      .catch(err => console.error('購入履歴の取得に失敗:', err))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  // ⭐ 受取評価（発送済み商品に対して購入者→出品者）
+  const handleReview = async (item) => {
+    const ratingStr = prompt(`「${item.name}」の取引はいかがでしたか？\n出品者の評価を1〜5の数字で入力してください（5が最高）`, '5');
+    if (!ratingStr) return;
+    const rating = Number(ratingStr);
+    if (isNaN(rating) || rating < 1 || rating > 5) {
+      alert('1〜5の数字で入力してください');
+      return;
     }
-  ]);
+    const comment = prompt('コメントがあれば入力してください（省略可）', '') || '';
+    try {
+      await apiFetch(`/api/products/${item.product_id}/reviews`, {
+        method: 'POST',
+        body: { rating, comment },
+      });
+      alert('評価を送信しました。ありがとうございました！');
+      load();
+    } catch (err) {
+      alert(`評価の送信に失敗しました: ${err.message}`);
+    }
+  };
 
-  //const displayedHistory = hideReceived
-   // ? purchasedHistory.filter(item => item.status !== 'received')
-   // : purchasedHistory;
+  const statusConfig = (item) => {
+    if (item.status === 'unshipped') return { text: '未発送', className: 'status-unshipped' };
+    if (item.status === 'shipped' && !item.reviewed) return { text: '評価待ち', className: 'status-shipping' };
+    return { text: '受取済み', className: 'status-received' };
+  };
+
+  const displayed = hideReceived
+    ? purchases.filter(item => !(item.status === 'shipped' && item.reviewed))
+    : purchases;
 
   return (
     <div className="purchases-page-container">
@@ -48,8 +61,8 @@ function Purchases() {
 
       <div className="purchases-filter-bar">
         <label className="filter-toggle-label">
-          <input 
-            type="checkbox" 
+          <input
+            type="checkbox"
             checked={hideReceived}
             onChange={(e) => setHideReceived(e.target.checked)}
             className="filter-checkbox"
@@ -60,7 +73,9 @@ function Purchases() {
 
       {/* リストエリア */}
       <div className="purchases-page-content">
-        {purchasedHistory.length === 0 ? (
+        {isLoading ? (
+          <div className="purchases-empty-state"><p className="empty-text">読み込み中…</p></div>
+        ) : displayed.length === 0 ? (
           <div className="purchases-empty-state">
             <p className="empty-text">購入履歴はまだありません。</p>
             <button className="empty-shop-btn" onClick={() => navigate('/')}>
@@ -69,16 +84,36 @@ function Purchases() {
           </div>
         ) : (
           <div className="purchases-list-layout">
-            {purchasedHistory.map((item) => (
-              <PurchaseProductCard 
-                key={item.id}
-                id={item.id}
-                title={item.title}
-                price={item.price}
-                image={item.image}
-                status={item.status}
-              />
-            ))}
+            {displayed.map((item) => {
+              const config = statusConfig(item);
+              return (
+                <div key={item.product_id} className="purchase-card" onClick={() => navigate(`/product/${item.product_id}`)}>
+                  {item.image_url && <img src={item.image_url} alt={item.name} className="purchase-card-img" />}
+
+                  <div className="purchase-card-info">
+                    <span className={`purchase-status-badge ${config.className}`}>
+                      {config.text}
+                    </span>
+                    <h3 className="purchase-card-title">{item.name}</h3>
+                    <p className="purchase-card-price">¥{item.price.toLocaleString()}</p>
+
+                    {/* ⭐ 発送済み＆未評価なら受取評価ボタンを表示 */}
+                    {item.status === 'shipped' && !item.reviewed && (
+                      <button
+                        type="button"
+                        className="empty-shop-btn"
+                        style={{ marginTop: '6px', padding: '6px 14px', fontSize: '13px' }}
+                        onClick={(e) => { e.stopPropagation(); handleReview(item); }}
+                      >
+                        ⭐ 受取評価をする
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="purchase-card-arrow">＞</div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

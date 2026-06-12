@@ -1,50 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ProductCard } from '../components/ProductCard'; // 共通コンポーネント
+import { ProductCard } from '../components/ProductCard';
+import { apiFetch } from '../api/client';
+import { useAuth } from '../context/AuthContext';
 import './MyPage.css';
 
 function MyPage() {
   const navigate = useNavigate();
+  const { profile } = useAuth();
 
-  // 👤 ユーザー情報
-  const currentUser = {
-    name: "ガジェット古着マニア",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
-    rating: 4.9,
-    reviewCount: 230
-  };
+  const [recentPurchases, setRecentPurchases] = useState([]);
+  const [likedProducts, setLikedProducts] = useState([]);
 
-  // 🛍️ 最近購入した商品（最大3件表示）
-  const recentPurchases = [
-    { id: "p801", title: "ソニー メカニカルキーボード", price: 14500, image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=200" },
-    { id: "p802", title: "防水ミリタリーバックパック", price: 8900, image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200" },
-    { id: "p803", title: "アンカー 急速充電スタンド", price: 4200, image: "https://images.unsplash.com/photo-1622445262465-2481c4574875?w=200" }
-  ];
-
-  // ❤️ いいね!した商品（最大3件表示）
-  const likedProducts = [
-    { id: "p101", title: "ビンテージレザージャケット", price: 28000, image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=200" },
-    { id: "p501", title: "オリンパス デジタルカメラ", price: 45000, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=200" },
-    { id: "p202", title: "ハイカットスニーカー 赤", price: 12000, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200" }
-  ];
+  useEffect(() => {
+    apiFetch('/api/me/purchases')
+      .then(list => setRecentPurchases((list || []).slice(0, 3)))
+      .catch(err => console.error('購入履歴の取得に失敗:', err));
+    apiFetch('/api/me/likes')
+      .then(list => setLikedProducts((list || []).slice(0, 3)))
+      .catch(err => console.error('いいね一覧の取得に失敗:', err));
+  }, []);
 
   return (
     <div className="mypage-container">
-      
-      {/* 👤 1. プロフィールヘッダー（タップするとアカウント設定に遷移） */}
-      <div 
-        className="mypage-profile-section clickable" 
-        onClick={() => navigate('/mypage/account')} /* 💡 先行URL設計 */
+
+      {/* 👤 1. プロフィールヘッダー */}
+      <div
+        className="mypage-profile-section clickable"
+        onClick={() => navigate('/mypage/account')}
       >
-        <img src={currentUser.avatar} alt="マイアイコン" className="mypage-avatar" />
+        {profile?.icon_url
+          ? <img src={profile.icon_url} alt="マイアイコン" className="mypage-avatar" />
+          : <div className="mypage-avatar" style={{ background: '#444' }} />}
         <div className="mypage-profile-info">
           <div className="mypage-user-name-row">
-            <h3 className="mypage-user-name">{currentUser.name}</h3>
-            <span className="mypage-settings-arrow">⚙️</span> {/* 💡 設定変更を匂わせるギアアイコン */}
+            <h3 className="mypage-user-name">{profile?.name || 'ユーザー'}</h3>
+            <span className="mypage-settings-arrow">⚙️</span>
           </div>
           <div className="mypage-rating">
-            <span>⭐ {currentUser.rating}</span>
-            <span className="mypage-reviews">({currentUser.reviewCount}件の評価)</span>
+            {profile?.review_count > 0 ? (
+              <>
+                <span>⭐ {profile.rating.toFixed(1)}</span>
+                <span className="mypage-reviews">({profile.review_count}件の評価)</span>
+              </>
+            ) : (
+              <span className="mypage-reviews">評価はまだありません</span>
+            )}
           </div>
         </div>
       </div>
@@ -54,20 +55,24 @@ function MyPage() {
         <div className="collection-header-row">
           <h4 className="collection-section-title">最近購入した商品</h4>
         </div>
-        
+
         <div className="mypage-products-grid">
           {recentPurchases.map((product) => (
-            <ProductCard 
-              key={product.id}
-              id={product.id}
-              title={product.title}
+            <ProductCard
+              key={product.product_id}
+              id={product.product_id}
+              title={product.name}
               price={product.price}
-              image={product.image}
+              image={product.image_url}
+              category={product.category}
+              likeCountInitial={product.likes_count}
+              isLikedInitial={product.liked_by_me}
             />
           ))}
+          {recentPurchases.length === 0 && <span className="mypage-reviews">まだ購入した商品はありません</span>}
         </div>
-        
-        <button 
+
+        <button
           className="collection-see-all-btn"
           onClick={() => navigate('/mypage/purchases')}
         >
@@ -80,20 +85,24 @@ function MyPage() {
         <div className="collection-header-row">
           <h4 className="collection-section-title">いいね！した商品</h4>
         </div>
-        
+
         <div className="mypage-products-grid">
           {likedProducts.map((product) => (
-            <ProductCard 
-              key={product.id}
-              id={product.id}
-              title={product.title}
+            <ProductCard
+              key={product.product_id}
+              id={product.product_id}
+              title={product.name}
               price={product.price}
-              image={product.image}
+              image={product.image_url}
+              category={product.category}
+              likeCountInitial={product.likes_count}
+              isLikedInitial={true}
             />
           ))}
+          {likedProducts.length === 0 && <span className="mypage-reviews">いいねした商品はまだありません</span>}
         </div>
-        
-        <button 
+
+        <button
           className="collection-see-all-btn"
           onClick={() => navigate('/mypage/likes')}
         >

@@ -1,32 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { apiFetch } from '../api/client';
+import { useAuth } from '../context/AuthContext';
 import './Listing.css';
 
 function ListingConfirm() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { categories } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 💡 前のページ（ListingInput）から送られてきたデータを受け取る（防衛策付き）
-  const { images, title, description, price, selectedCategories } = location.state || {
-    images: [], title: '', description: '', price: '', selectedCategories: []
+  // 前のページ（ListingInput）から送られてきたデータを受け取る（防衛策付き）
+  const { images, title, description, price, selectedCategories, tags } = location.state || {
+    images: [], title: '', description: '', price: '', selectedCategories: [], tags: []
   };
 
-  // 💾 バックエンド（Go）にデータを送信して出品を確定する処理
-  const handleFinalSubmit = () => {
-    // 🛠️ ハッカソン後半の成果として、ここに Go の API を叩く fetch 処理を繋げます！
-    alert('バックエンド（Go）にデータを送信しました。出品完了です！');
-    
-    // 出品が終わったら、ホーム画面（/）へ飛ばす
-    navigate('/');
+  // 💾 バックエンド（Go）にデータを送信して出品を確定する
+  const handleFinalSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      // カテゴリ名 → カテゴリIDに変換
+      const categoryIds = selectedCategories
+        .map(name => categories.find(c => c.name === name)?.category_id)
+        .filter(Boolean);
+
+      await apiFetch('/api/products', {
+        method: 'POST',
+        body: {
+          name: title,
+          price: Number(price),
+          detail: description,
+          category_ids: categoryIds,
+          tags: tags || [],
+          image_urls: images,
+        },
+      });
+      alert('出品が完了しました！');
+      navigate('/');
+    } catch (err) {
+      alert(`出品に失敗しました: ${err.message}`);
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="listing-container">
       <h2 className="listing-title">出品内容の確認</h2>
-      
-      {/* 📝 1步深い闇の確認ボックス */}
+
       <div className="confirm-box">
-        
+
         {/* 📷 画像プレビュー一覧 */}
         <div className="form-group">
           <span className="confirm-label">商品画像</span>
@@ -34,7 +56,6 @@ function ListingConfirm() {
             {images.map((img, i) => (
               <div key={i} className="preview-item">
                 <img src={img} alt={`確認用-${i}`} />
-                {/* 1枚目の画像にはマットアイスブルーの「メイン」バッジを付与 */}
                 {i === 0 && <span className="main-badge">メイン</span>}
               </div>
             ))}
@@ -48,13 +69,13 @@ function ListingConfirm() {
           <p className="confirm-value">{title || <span className="no-cat">未入力</span>}</p>
         </div>
 
-        {/* 📝 詳細説明（改行コードを保持するクラスを適用） */}
+        {/* 📝 詳細説明 */}
         <div className="confirm-item">
           <span className="confirm-label">詳細説明</span>
           <p className="confirm-value whitespace-pre">{description || <span className="no-cat">未入力</span>}</p>
         </div>
 
-        {/* 💰 価格（３桁カンマ区切りに整形） */}
+        {/* 💰 価格 */}
         <div className="confirm-item">
           <span className="confirm-label">価格</span>
           <p className="confirm-value price-text">
@@ -72,24 +93,34 @@ function ListingConfirm() {
             {selectedCategories.length === 0 && <span className="no-cat">未選択</span>}
           </div>
         </div>
+
+        {/* 🔖 検索用タグ */}
+        {tags && tags.length > 0 && (
+          <div className="confirm-item">
+            <span className="confirm-label">検索用タグ</span>
+            <div className="category-tags" style={{ marginTop: '4px' }}>
+              {tags.map((tag, i) => (
+                <span key={i} className="cat-tag-badge">#{tag}</span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 🛠️ アクションボタンエリア */}
       <div className="action-buttons-row">
-        {/* 修正ボタン：透かし背景。navigate(-1) で入力フォームの値を維持したまま戻れます */}
-        <button 
-          type="button" 
-          className="back-button" 
-          onClick={() => navigate('/listing', { // 💡 入力画面のURLパスに書き換えてください
-            state: { images, title, description, price, selectedCategories } // データをそのまま送り返す
+        <button
+          type="button"
+          className="back-button"
+          onClick={() => navigate('/listing', {
+            state: { images, title, description, price, selectedCategories, tags }
           })}
         >
           修正する
         </button>
-        
-        {/* 確定ボタン：マットアイスブルーに漆黒文字の主役ボタン */}
-        <button type="button" className="submit-button" onClick={handleFinalSubmit}>
-          この内容で出品する
+
+        <button type="button" className="submit-button" disabled={isSubmitting} onClick={handleFinalSubmit}>
+          {isSubmitting ? '出品中…' : 'この内容で出品する'}
         </button>
       </div>
     </div>

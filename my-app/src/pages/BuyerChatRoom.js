@@ -1,55 +1,116 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { apiFetch } from '../api/client';
+import { formatClock } from '../utils/format';
 import sendIcon from '../assets/send.svg';
-import './ChatRoom.css'; // スタイルは共通のCSSを使用します
+import './ChatRoom.css';
 
 function BuyerChatRoom() {
-  const { productId} = useParams(); 
+  const { productId, roomId } = useParams();
   const navigate = useNavigate();
-  const chatEndRef = useRef(null); 
+  const { loginUser } = useAuth();
+  const chatEndRef = useRef(null);
 
-  const productInfo = {
-    id: productId || "1",
-    title: "ビンテージレザージャケット（1990年代物）",
-    price: 28000,
-    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=100"
-  };
-
-  const sellerUser = { id: "u999", name: "山田 クリス（出品者）", avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" };
-
-  const [messages, setMessages] = useState([
-    { id: 1, sender: 'other', text: 'コメントありがとうございます！状態はかなり良いものですよ。', time: '10:15' },
-  ]);
+  const [room, setRoom] = useState(null);
   const [inputText, setInputText] = useState('');
-  
-  // 💡 Gemini提案用の状態管理
   const [aiPrompt, setAiPrompt] = useState('');
+  const [isAiLoading, setIsAiLoading] = useState(false);
 
-  useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
+  // ルーム読み込み（roomIdが'new'なら作成してURLを差し替える）
+  useEffect(() => {
+    let cancelled = false;
+    const setup = async () => {
+      try {
+        let actualRoomId = roomId;
+        if (roomId === 'new') {
+          const res = await apiFetch('/api/chatrooms', { method: 'POST', body: { product_id: Number(productId) } });
+          actualRoomId = res.chatroom_id;
+          navigate(`/chat/${productId}/${actualRoomId}`, { replace: true });
+          return; // URL差し替え後に再マウントされる
+        }
+        const detail = await apiFetch(`/api/chatrooms/${actualRoomId}`);
+        if (!cancelled) setRoom(detail);
+        // 相手のメッセージを既読化
+        apiFetch(`/api/chatrooms/${actualRoomId}/read`, { method: 'PUT' }).catch(() => {});
+      } catch (err) {
+        alert(`チャットの読み込みに失敗しました: ${err.message}`);
+        navigate(-1);
+      }
+    };
+    setup();
+    return () => { cancelled = true; };
+  }, [productId, roomId, navigate]);
 
-  const handleSend = (e) => {
+  // 8秒ごとに新着メッセージをポーリング
+  const refresh = useCallback(async () => {
+    if (roomId === 'new') return;
+    try {
+      const detail = await apiFetch(`/api/chatrooms/${roomId}`);
+      setRoom(detail);
+    } catch { /* 一時的な失敗は無視 */ }
+  }, [roomId]);
+
+  useEffect(() => {
+    const timer = setInterval(refresh, 8000);
+    return () => clearInterval(timer);
+  }, [refresh]);
+
+  useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [room?.messages?.length]);
+
+  if (!room) return <div className="app-center-text">読み込み中…</div>;
+
+  const myId = loginUser?.uid;
+
+  const handleSend = async (e) => {
     e.preventDefault();
     if (!inputText.trim()) return;
-    const now = new Date();
-    const timeString = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
-    setMessages([...messages, { id: messages.length + 1, sender: 'me', text: inputText, time: timeString }]);
+    const text = inputText;
     setInputText('');
-  };
-
-  // 💡 Geminiに返答を生成してもらうダミー機能
-  const handleGeminiGenerate = () => {
-    if (!aiPrompt.trim()) return;
-    // 本来はここでAIのAPIを叩く
-    setInputText(`【AI生成】${aiPrompt}についてですが、もう少し詳しく教えていただけますか？`);
-    setAiPrompt('');
-  };
-
-  const handleOfferPrice = () => {
-    const offer = prompt("希望購入価格を入力してください（円）:", "25000");
-    if (offer) {
-      setInputText(`不躾なお願いですが、¥${Number(offer).toLocaleString()}での即決は可能でしょうか？`);
+    try {
+      await apiFetch(`/api/chatrooms/${room.chatroom_id}/messages`, { method: 'POST', body: { content: text } });
+      await refresh();
+    } catch (err) {
+      alert(`送信に失敗しました: ${err.message}`);
+      setInputText(text);
     }
   };
+
+  // Geminiにチャット文を作ってもらう
+  const handleGeminiGenerate = async () => {
+    if (!aiPrompt.trim()) return;
+    setIsAiLoading(true);
+    try {
+      const res = await apiFetch('/api/gemini/reply', {
+        method: 'POST',
+        body: { role: 'buyer', product_name: room.product_name, instruction: aiPrompt },
+      });
+      setInputText(res.text);
+      setAiPrompt('');
+    } catch (err) {
+      alert(`AI生成に失敗しました: ${err.message}`);
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
+  // 値引き交渉（chatrooms.discount_proposed に記録され、出品者へ通知が飛ぶ）
+  const handleOfferPrice = async () => {
+    const offer = prompt("希望購入価格を入力してください（円）:", String(Math.floor(room.product_price * 0.9)));
+    if (!offer || isNaN(Number(offer)) || Number(offer) <= 0) return;
+    try {
+      await apiFetch(`/api/chatrooms/${room.chatroom_id}/discount`, { method: 'POST', body: { price: Number(offer) } });
+      await apiFetch(`/api/chatrooms/${room.chatroom_id}/messages`, {
+        method: 'POST',
+        body: { content: `【値引き交渉】¥${Number(offer).toLocaleString()} での購入を希望します。ご検討いただけますか？` },
+      });
+      await refresh();
+    } catch (err) {
+      alert(`値引き交渉に失敗しました: ${err.message}`);
+    }
+  };
+
+  const isDiscountApproved = room.discount_approved > 0;
 
   return (
     <div className="room-container">
@@ -57,31 +118,33 @@ function BuyerChatRoom() {
       <div className="room-header">
         <button className="room-back-btn" onClick={() => navigate(-1)}>←</button>
         <div className="room-header-meta">
-          <h3 className="room-user-name">{sellerUser.name}</h3>
-          <span className="room-header-product-title">{productInfo.title}</span>
+          <h3 className="room-user-name">{room.other_user_name}（出品者）</h3>
+          <span className="room-header-product-title">{room.product_name}</span>
         </div>
       </div>
 
       {/* サブヘッダー */}
-      <div className="room-product-bar" onClick={() => navigate(`/product/${productInfo.id}`)}>
-        <img src={productInfo.image} alt="商品" className="room-product-thumb" />
+      <div className="room-product-bar" onClick={() => navigate(`/product/${room.product_id}`)}>
+        {room.product_image && <img src={room.product_image} alt="商品" className="room-product-thumb" />}
         <div className="room-product-meta">
-          <span className="room-product-price">¥{productInfo.price.toLocaleString()}</span>
+          <span className="room-product-price">¥{room.product_price.toLocaleString()}</span>
         </div>
         <span className="room-product-arrow">商品詳細へ ＞</span>
       </div>
 
       {/* タイムライン */}
       <div className="room-timeline">
-        {messages.map((msg) => {
-          const isMe = msg.sender === 'me';
+        {room.messages.map((msg) => {
+          const isMe = msg.sender_id === myId;
           return (
-            <div key={msg.id} className={`msg-row ${isMe ? 'row-me' : 'row-other'}`}>
-              {!isMe && <img src={sellerUser.avatar} alt="アバター" className="msg-avatar" />}
+            <div key={msg.chat_id} className={`msg-row ${isMe ? 'row-me' : 'row-other'}`}>
+              {!isMe && (room.other_user_icon
+                ? <img src={room.other_user_icon} alt="アバター" className="msg-avatar" />
+                : <div className="msg-avatar" style={{ background: '#444' }} />)}
               <div className="msg-bubble-wrapper">
-                {isMe && <span className="msg-time">{msg.time}</span>}
-                <div className={`msg-bubble ${isMe ? 'bubble-me' : 'bubble-other'}`}>{msg.text}</div>
-                {!isMe && <span className="msg-time">{msg.time}</span>}
+                {isMe && <span className="msg-time">{formatClock(msg.created_at)}</span>}
+                <div className={`msg-bubble ${isMe ? 'bubble-me' : 'bubble-other'}`}>{msg.content}</div>
+                {!isMe && <span className="msg-time">{formatClock(msg.created_at)}</span>}
               </div>
             </div>
           );
@@ -91,30 +154,38 @@ function BuyerChatRoom() {
 
       {/* 🔥 購入者専用：アクション＆AI入力補助エリア */}
       <div className="room-action-dashboard">
-        <div className="discount-info-notification">
-          <span className="discount-sparkle">✨</span>
-          <span className="discount-text">¥26,000 に値引きされています</span>
-        </div>
-        
+        {isDiscountApproved && (
+          <div className="discount-info-notification">
+            <span className="discount-sparkle">✨</span>
+            <span className="discount-text">¥{room.discount_approved.toLocaleString()} への値引きが承認されています</span>
+          </div>
+        )}
+
         <div className="buyer-direct-actions">
-          <button className="action-btn-purchase" onClick={() => navigate(`/checkout/${productInfo.id}`)}>
-            購入手続きへ
+          <button
+            className="action-btn-purchase"
+            disabled={room.product_status !== 'available'}
+            onClick={() => navigate(`/checkout/${room.product_id}`)}
+          >
+            {room.product_status === 'available' ? '購入手続きへ' : '取引済み'}
           </button>
           <button className="action-btn-offer" onClick={handleOfferPrice}>
             値引き交渉
           </button>
         </div>
-        
+
         {/* Gemini自動生成エリア */}
         <div className="gemini-assistant-box">
-          <input 
-            type="text" 
-            placeholder="Geminiにチャット文を作ってもらう（例: 状態の確認）" 
+          <input
+            type="text"
+            placeholder="Geminiにチャット文を作ってもらう（例: 状態の確認）"
             value={aiPrompt}
             onChange={(e) => setAiPrompt(e.target.value)}
             className="gemini-prompt-input"
           />
-          <button type="button" className="gemini-gen-btn" onClick={handleGeminiGenerate}>✨ 生成</button>
+          <button type="button" className="gemini-gen-btn" disabled={isAiLoading} onClick={handleGeminiGenerate}>
+            {isAiLoading ? '生成中…' : '✨ 生成'}
+          </button>
         </div>
       </div>
 

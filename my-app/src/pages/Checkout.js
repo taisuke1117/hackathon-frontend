@@ -1,26 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { apiFetch } from '../api/client';
+import { useAuth } from '../context/AuthContext';
 import './Checkout.css';
 
 function Checkout() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { profile, setProfile } = useAuth();
 
-  // 📦 商品データ
-  const [product] = useState({
-    id: id,
-    title: "オリンパス OMD デジタルカメラ",
-    price: 42000,
-    image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=300",
-    shippingFee: 0,
-  });
+  const [product, setProduct] = useState(null);
+  const [discountPrice, setDiscountPrice] = useState(0); // 自分に承認された値引き価格（0なら無し）
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 📋 お届け先の状態管理（編集モードのフラグと入力値）
-  const [address, setAddress] = useState("東京都大田区 1-2-3 氷河ビル 404号室");
+  // 📋 お届け先
+  const [address, setAddress] = useState('');
   const [isEditingAddress, setIsEditingAddress] = useState(false);
-  const [tempAddress, setTempAddress] = useState(address);
+  const [tempAddress, setTempAddress] = useState('');
 
-  // 💳 支払い方法の状態管理（編集モードのフラグと選択値）
+  // 💳 支払い方法（決済API連携は課題対象外なので表示のみ）
   const [payment, setPayment] = useState("クレジットカード (**** 8888)");
   const [isEditingPayment, setIsEditingPayment] = useState(false);
   const [tempPayment, setTempPayment] = useState(payment);
@@ -32,24 +30,71 @@ function Checkout() {
     "キャリア決済（au / docomo / SoftBank）"
   ];
 
-  // 💰 計算ロジック（シンプルに商品代＋送料）
-  const total = product.price + product.shippingFee;
+  useEffect(() => {
+    // 商品情報
+    apiFetch(`/api/products/${id}`).then(setProduct).catch(err => alert(err.message));
+    // 自分宛てに承認された値引きがあるか（このルームの自分だけに適用される）
+    apiFetch('/api/chatrooms?role=buying').then(rooms => {
+      const room = (rooms || []).find(r => String(r.product_id) === String(id) && r.discount_approved > 0);
+      if (room) setDiscountPrice(room.discount_approved);
+    }).catch(() => {});
+  }, [id]);
 
-  // 💾 お届け先の保存
-  const handleSaveAddress = () => {
-    setAddress(tempAddress);
-    setIsEditingAddress(false);
+  // プロフィールの配送先住所を初期値に
+  useEffect(() => {
+    if (profile) {
+      setAddress(profile.shipping_address || '');
+      setTempAddress(profile.shipping_address || '');
+    }
+  }, [profile]);
+
+  if (!product) return <div className="app-center-text">読み込み中…</div>;
+
+  const finalPrice = discountPrice > 0 && discountPrice < product.price ? discountPrice : product.price;
+  const shippingFee = 0;
+  const total = finalPrice + shippingFee;
+
+  // 💾 お届け先の保存（users.shipping_address に永続化）
+  const handleSaveAddress = async () => {
+    try {
+      const updated = await apiFetch('/api/users/me', {
+        method: 'PUT',
+        body: {
+          name: profile?.name || 'ユーザー',
+          place: profile?.place || '',
+          icon_url: profile?.icon_url || '',
+          bio: profile?.bio || '',
+          shipping_address: tempAddress,
+        },
+      });
+      setProfile(updated);
+      setAddress(tempAddress);
+      setIsEditingAddress(false);
+    } catch (err) {
+      alert(`住所の保存に失敗しました: ${err.message}`);
+    }
   };
 
-  // 💾 支払い方法の保存
   const handleSavePayment = () => {
     setPayment(tempPayment);
     setIsEditingPayment(false);
   };
 
-  const handlePurchase = () => {
-    alert("注文が確定しました！氷河の彼方から発送されます。");
-    navigate('/mypage/purchases');
+  // 🛒 購入確定
+  const handlePurchase = async () => {
+    if (!address) {
+      alert('お届け先を入力してください');
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const res = await apiFetch(`/api/products/${id}/purchase`, { method: 'POST' });
+      alert(`注文が確定しました！（お支払い金額: ¥${res.price.toLocaleString()}）`);
+      navigate('/mypage/purchases');
+    } catch (err) {
+      alert(`購入に失敗しました: ${err.message}`);
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -61,7 +106,7 @@ function Checkout() {
       </div>
 
       <div className="checkout-scroll-flow">
-        
+
         {/* 1. お届け先セクション */}
         <section className="checkout-section-card">
           <div className="section-header">
@@ -73,11 +118,12 @@ function Checkout() {
           <div className="section-body">
             {isEditingAddress ? (
               <div className="inline-edit-form">
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   className="inline-input"
-                  value={tempAddress} 
-                  onChange={(e) => setTempAddress(e.target.value)} 
+                  value={tempAddress}
+                  placeholder="お届け先住所を入力"
+                  onChange={(e) => setTempAddress(e.target.value)}
                 />
                 <div className="inline-actions">
                   <button className="inline-cancel-btn" onClick={() => setIsEditingAddress(false)}>キャンセル</button>
@@ -86,8 +132,8 @@ function Checkout() {
               </div>
             ) : (
               <>
-                <p className="address-text">{address}</p>
-                <p className="delivery-estimate">お届け予定日: <strong>6月15日 - 6月17日</strong></p>
+                <p className="address-text">{address || '未設定（「変更」から入力してください）'}</p>
+                <p className="delivery-estimate">お届け予定日: <strong>3〜5日後</strong></p>
               </>
             )}
           </div>
@@ -104,7 +150,7 @@ function Checkout() {
           <div className="section-body">
             {isEditingPayment ? (
               <div className="inline-edit-form">
-                <select 
+                <select
                   className="inline-select"
                   value={tempPayment}
                   onChange={(e) => setTempPayment(e.target.value)}
@@ -128,16 +174,16 @@ function Checkout() {
         <section className="checkout-section-card">
           <h2 className="section-title">3. 発送商品</h2>
           <div className="checkout-item-preview">
-            <img src={product.image} alt="商品画像" className="item-thumb" />
+            <img src={product.images[0] || ''} alt="商品画像" className="item-thumb" />
             <div className="item-meta">
-              <h3 className="item-title">{product.title}</h3>
+              <h3 className="item-title">{product.name}</h3>
               <p className="item-qty">数量: 1</p>
-              <p className="item-price">¥{product.price.toLocaleString()}</p>
+              <p className="item-price">¥{finalPrice.toLocaleString()}</p>
             </div>
           </div>
         </section>
 
-        {/* 4. 注文明細 ＆ 確定ボタン（スクロールの最下部へ集約） */}
+        {/* 4. 注文明細 ＆ 確定ボタン */}
         <div className="checkout-summary-block">
           <div className="summary-details">
             <h3 className="summary-title">注文合計</h3>
@@ -145,9 +191,15 @@ function Checkout() {
               <span>商品の小計:</span>
               <span>¥{product.price.toLocaleString()}</span>
             </div>
+            {discountPrice > 0 && discountPrice < product.price && (
+              <div className="summary-row">
+                <span>✨ 交渉成立による値引き:</span>
+                <span>-¥{(product.price - discountPrice).toLocaleString()}</span>
+              </div>
+            )}
             <div className="summary-row">
               <span>配送料・手数料:</span>
-              <span>{product.shippingFee === 0 ? "無料" : `¥${product.shippingFee}`}</span>
+              <span>{shippingFee === 0 ? "無料" : `¥${shippingFee}`}</span>
             </div>
             <div className="summary-divider"></div>
             <div className="summary-row total-row">
@@ -156,8 +208,8 @@ function Checkout() {
             </div>
           </div>
 
-          <button className="checkout-submit-btn" onClick={handlePurchase}>
-            注文を確定する
+          <button className="checkout-submit-btn" disabled={isSubmitting} onClick={handlePurchase}>
+            {isSubmitting ? '処理中…' : '注文を確定する'}
           </button>
           <p className="terms-text">
             注文を確定すると、利用規約およびプライバシーポリシーに同意したことになります。
