@@ -95,9 +95,22 @@ function BuyerChatRoom() {
     if (!aiPrompt.trim()) return;
     setIsAiLoading(true);
     try {
+      const msgs = (room.messages || []).slice(-10).map(m => ({
+        is_me: m.sender_id === myId,
+        content: m.content,
+      }));
       const res = await apiFetch('/api/gemini/reply', {
         method: 'POST',
-        body: { role: 'buyer', product_name: room.product_name, instruction: aiPrompt },
+        body: {
+          role: 'buyer',
+          product_name: room.product_name,
+          product_description: room.product_description || '',
+          product_price: room.product_price || 0,
+          discount_proposed: room.discount_proposed || 0,
+          discount_approved: room.discount_approved || 0,
+          messages: msgs,
+          instruction: aiPrompt,
+        },
       });
       setInputText(res.text);
       setAiPrompt('');
