@@ -20,7 +20,7 @@ function LiveList() {
       <div className="live-list-header">
         <h2 className="live-list-title">ライブ配信</h2>
         <button className="live-create-btn" onClick={() => navigate('/live/create')}>
-          ＋ 配信する
+          配信する
         </button>
       </div>
 
@@ -41,7 +41,10 @@ function LiveList() {
               className="live-room-card"
               onClick={() => navigate(`/live/${room.room_id}`)}
             >
-              <div className="live-badge">LIVE</div>
+              <div className="live-card-top">
+                <span className="live-badge">LIVE</span>
+                <span className="live-viewer-count">{room.viewer_count} 視聴中</span>
+              </div>
               <div className="live-card-seller">
                 {room.seller_icon && (
                   <img src={room.seller_icon} alt="" className="live-seller-icon" />
@@ -49,7 +52,6 @@ function LiveList() {
                 <span className="live-seller-name">{room.seller_name}</span>
               </div>
               <p className="live-card-title">{room.title}</p>
-              <span className="live-viewer-count">👁 {room.viewer_count}</span>
             </div>
           ))}
         </div>

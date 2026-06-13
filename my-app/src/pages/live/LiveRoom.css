@@ -21,7 +21,6 @@
   min-height: 0;
 }
 
-/* LiveKitRoom の直下 div に高さを引き継がせる */
 .live-video-area > div {
   height: 100%;
 }
@@ -79,16 +78,37 @@
   color: #fff;
   font-size: 12px;
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.45);
+  padding: 2px 8px;
+  border-radius: 20px;
 }
 
 /* ── 商品パネル ── */
 .live-product-panel {
   background-color: var(--surface);
-  border-top: 1px solid var(--border);
-  padding: 12px 16px;
+  border-top: 3px solid var(--primary);
+  padding: 0 16px 14px;
   flex-shrink: 0;
 }
 
+/* ── タイマーバー ── */
+.live-timer-bar-wrap {
+  height: 3px;
+  background: var(--border);
+  margin: 0 -16px 12px;
+  overflow: hidden;
+}
+
+.live-timer-bar {
+  height: 100%;
+  background: var(--primary);
+  transition: width 1s linear, background 0.5s;
+}
+
+.live-timer-bar.warning { background: #fbbf24; }
+.live-timer-bar.urgent  { background: #ef4444; }
+
+/* ── 商品行 ── */
 .live-product-row {
   display: flex;
   gap: 12px;
@@ -117,21 +137,22 @@
 }
 
 .live-current-price {
-  font-size: 22px;
+  font-size: 24px;
   color: var(--primary);
   font-weight: 800;
   margin: 0 0 3px;
   letter-spacing: -0.5px;
+  text-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
 }
 
-.live-timer {
+.live-timer-text {
   font-size: 13px;
   color: #4ade80;
   font-weight: 700;
   margin: 0 0 2px;
 }
 
-.live-timer.urgent {
+.live-timer-text.urgent {
   color: #ef4444;
   animation: blink 0.5s infinite alternate;
 }
@@ -147,7 +168,7 @@
   margin: 0;
 }
 
-/* ステータスメッセージ */
+/* ── ステータスメッセージ ── */
 .live-status-msg {
   font-size: 13px;
   color: #fbbf24;
@@ -155,7 +176,25 @@
   padding: 6px 10px;
   background-color: rgba(251, 191, 36, 0.08);
   border-radius: var(--radius-md);
-  border-left: 2px solid #fbbf24;
+  border-left: 3px solid #fbbf24;
+}
+
+.live-status-msg.bid {
+  color: var(--primary);
+  background-color: var(--primary-bg);
+  border-left-color: var(--primary);
+}
+
+.live-status-msg.sold {
+  color: #4ade80;
+  background-color: rgba(74, 222, 128, 0.08);
+  border-left-color: #4ade80;
+}
+
+.live-status-msg.skipped {
+  color: var(--text-muted);
+  background-color: var(--surface-hover);
+  border-left-color: var(--border);
 }
 
 /* ── アクションエリア ── */
@@ -175,15 +214,19 @@
   padding: 11px 12px;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.live-bid-input:focus { border-color: var(--primary); }
+.live-bid-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+}
+
 .live-bid-input::placeholder { color: var(--text-muted); }
 
 .live-bid-btn {
-  background: #ef4444;
-  color: #fff;
+  background: var(--primary);
+  color: #0b0f17;
   border: none;
   border-radius: var(--radius-md);
   padding: 11px 20px;
@@ -232,6 +275,7 @@
   text-align: center;
   color: var(--text-muted);
   font-size: 14px;
+  border-top: 1px solid var(--border);
 }
 
 .live-ended {
@@ -245,7 +289,9 @@
   font-size: 15px;
 }
 
-.live-ended button {
+.live-ended-text { margin: 0; }
+
+.live-ended-btn {
   background-color: var(--primary-bg);
   color: var(--primary);
   border: 1px solid rgba(56, 189, 248, 0.3);
@@ -257,4 +303,4 @@
   transition: opacity 0.15s;
 }
 
-.live-ended button:active { opacity: 0.75; }
+.live-ended-btn:active { opacity: 0.75; }

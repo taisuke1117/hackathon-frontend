@@ -88,9 +88,18 @@
   cursor: pointer;
   position: relative;
   transition: background-color 0.15s;
+  border-left: 3px solid var(--primary);
 }
 
 .live-room-card:active { background-color: var(--surface-hover); }
+
+/* ── カード上部（LIVEバッジ + 視聴者数） ── */
+.live-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
 
 /* ── LIVEバッジ ── */
 .live-badge {
@@ -101,7 +110,6 @@
   font-weight: 700;
   border-radius: 4px;
   padding: 2px 6px;
-  margin-bottom: 8px;
   letter-spacing: 0.8px;
 }
 
@@ -134,9 +142,7 @@
 }
 
 .live-viewer-count {
-  position: absolute;
-  top: 14px;
-  right: 16px;
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--primary);
+  font-weight: 600;
 }

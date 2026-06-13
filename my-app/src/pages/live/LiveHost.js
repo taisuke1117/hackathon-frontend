@@ -18,6 +18,7 @@ function LiveHost() {
   const [livekitUrl, setLivekitUrl] = useState('');
   const [isStarted, setIsStarted] = useState(false);
   const [statusMsg, setStatusMsg] = useState('');
+  const [statusType, setStatusType] = useState('');
   const [streamEnded, setStreamEnded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -36,7 +37,6 @@ function LiveHost() {
       .catch(err => console.error('ルーム取得失敗:', err));
   }, [roomId]);
 
-  // 配信開始
   const handleStart = async () => {
     setIsLoading(true);
     try {
@@ -45,7 +45,6 @@ function LiveHost() {
       setLivekitUrl(data.livekit_url);
       setIsStarted(true);
       connectSSE();
-      // ルーム詳細を再取得して商品を表示
       const roomData = await apiFetch(`/api/live/rooms/${roomId}`);
       setProduct(roomData.current_product || null);
       setQueue(roomData.queue || []);
@@ -56,7 +55,6 @@ function LiveHost() {
     }
   };
 
-  // 次の商品へ
   const handleNext = async () => {
     try {
       await apiFetch(`/api/live/rooms/${roomId}/next`, { method: 'POST' });
@@ -65,7 +63,6 @@ function LiveHost() {
     }
   };
 
-  // 配信終了
   const handleEnd = async () => {
     if (!window.confirm('配信を終了しますか？')) return;
     try {
@@ -112,12 +109,18 @@ function LiveHost() {
             setProduct(event.product);
             setSecondsLeft(event.seconds_left || 30);
             resetTimer(event.seconds_left || 30);
-            setStatusMsg(`💰 ${event.product?.bidder_name} が ¥${event.product?.current_price?.toLocaleString()} で入札`);
+            setStatusMsg(`${event.product?.bidder_name} が ¥${event.product?.current_price?.toLocaleString()} で入札`);
+            setStatusType('bid');
             break;
           case 'sold':
             setProduct(prev => prev ? { ...prev, status: 'sold' } : prev);
-            setStatusMsg(`🎉 ¥${event.final_price?.toLocaleString()} で ${event.buyer_name} が落札！`);
+            setStatusMsg(`¥${event.final_price?.toLocaleString()} — ${event.buyer_name} が落札`);
+            setStatusType('sold');
             clearInterval(timerRef.current);
+            break;
+          case 'skipped':
+            setStatusMsg('入札なし — 次の商品へ移動します');
+            setStatusType('skipped');
             break;
           case 'next':
             setProduct(event.product);
@@ -125,6 +128,7 @@ function LiveHost() {
             setSecondsLeft(event.product?.seconds_left || 30);
             if (event.product?.mode === 'auction') resetTimer(event.product?.seconds_left || 30);
             setStatusMsg('次の商品に移りました');
+            setStatusType('');
             break;
           case 'end':
             setStreamEnded(true);
@@ -159,6 +163,8 @@ function LiveHost() {
     sseRef.current?.cancel();
   }, []);
 
+  const timerPct = Math.max(0, Math.min(100, (secondsLeft / 30) * 100));
+
   if (streamEnded) {
     return (
       <div className="livehost-ended">
@@ -183,8 +189,8 @@ function LiveHost() {
         )}
         {isStarted && (
           <div className="livehost-badge-overlay">
-            <span className="livehost-live-badge">● LIVE</span>
-            <span className="livehost-viewer">👁 {room?.viewer_count || 0}</span>
+            <span className="livehost-live-badge">LIVE</span>
+            <span className="livehost-viewer">{room?.viewer_count || 0} 視聴中</span>
           </div>
         )}
       </div>
@@ -197,7 +203,7 @@ function LiveHost() {
             onClick={handleStart}
             disabled={isLoading}
           >
-            {isLoading ? '準備中...' : '📹 配信を開始する'}
+            {isLoading ? '準備中...' : '配信を開始する'}
           </button>
         ) : (
           <>
@@ -205,6 +211,17 @@ function LiveHost() {
             {product ? (
               <div className="livehost-current-product">
                 <p className="livehost-current-label">販売中</p>
+
+                {/* タイマーバー */}
+                {product.mode === 'auction' && product.status === 'active' && (
+                  <div className="livehost-timer-bar-wrap">
+                    <div
+                      className={`livehost-timer-bar ${secondsLeft <= 10 ? 'urgent' : secondsLeft <= 20 ? 'warning' : ''}`}
+                      style={{ width: `${timerPct}%` }}
+                    />
+                  </div>
+                )}
+
                 <div className="livehost-product-row">
                   {product.product_image && (
                     <img src={product.product_image} alt="" className="livehost-product-thumb" />
@@ -212,7 +229,7 @@ function LiveHost() {
                   <div className="livehost-product-info">
                     <p className="livehost-product-name">{product.product_name}</p>
                     <p className="livehost-product-price">¥{(product.current_price || 0).toLocaleString()}</p>
-                    {product.mode === 'auction' && secondsLeft > 0 && (
+                    {product.mode === 'auction' && secondsLeft > 0 && product.status === 'active' && (
                       <p className={`livehost-timer ${secondsLeft <= 10 ? 'urgent' : ''}`}>
                         残り {secondsLeft}秒
                       </p>
@@ -227,7 +244,9 @@ function LiveHost() {
               <p className="livehost-no-product">商品がありません</p>
             )}
 
-            {statusMsg && <p className="livehost-status">{statusMsg}</p>}
+            {statusMsg && (
+              <p className={`livehost-status ${statusType}`}>{statusMsg}</p>
+            )}
 
             {/* キュー */}
             {queue.length > 0 && (
@@ -236,7 +255,7 @@ function LiveHost() {
                 {queue.slice(0, 2).map(q => (
                   <div key={q.id} className="livehost-queue-item">
                     <span>{q.product_name}</span>
-                    <span>¥{(q.start_price || 0).toLocaleString()}〜</span>
+                    <span>¥{(q.start_price || 0).toLocaleString()} ~</span>
                   </div>
                 ))}
               </div>
@@ -245,7 +264,7 @@ function LiveHost() {
             {/* 操作ボタン */}
             <div className="livehost-controls">
               <button className="livehost-next-btn" onClick={handleNext}>
-                次の商品へ →
+                次の商品へ
               </button>
               <button className="livehost-end-btn" onClick={handleEnd}>
                 配信終了
