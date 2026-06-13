@@ -183,7 +183,7 @@ function LiveHost() {
 
   return (
     <div className="livehost-container">
-      {/* カメラ映像 */}
+      {/* フルスクリーンカメラ */}
       <div className="livehost-video-area">
         {isStarted && livekitToken && livekitUrl ? (
           <LiveKitRoom serverUrl={livekitUrl} token={livekitToken} connect video audio>
@@ -191,44 +191,41 @@ function LiveHost() {
           </LiveKitRoom>
         ) : (
           <div className="livehost-video-placeholder">
-            <p>配信開始ボタンを押すとカメラが起動します</p>
-          </div>
-        )}
-        {isStarted && (
-          <div className="livehost-badge-overlay">
-            <span className="livehost-live-badge">LIVE</span>
-            <span className="livehost-viewer">{room?.viewer_count || 0} 視聴中</span>
+            <button
+              className="livehost-start-btn"
+              onClick={handleStart}
+              disabled={isLoading}
+            >
+              {isLoading ? '準備中...' : '配信を開始する'}
+            </button>
           </div>
         )}
       </div>
 
-      {/* コントロールパネル */}
-      <div className="livehost-panel">
-        {!isStarted ? (
-          <button
-            className="livehost-start-btn"
-            onClick={handleStart}
-            disabled={isLoading}
-          >
-            {isLoading ? '準備中...' : '配信を開始する'}
-          </button>
-        ) : (
-          <>
-            {/* 現在の商品 */}
-            {product ? (
-              <div className="livehost-current-product">
+      {/* 上部オーバーレイ（配信開始後） */}
+      {isStarted && (
+        <div className="livehost-top-bar">
+          <span className="livehost-live-badge">LIVE</span>
+          <span className="livehost-viewer">{room?.viewer_count || 0} 視聴中</span>
+        </div>
+      )}
+
+      {/* 下部オーバーレイ（配信開始後） */}
+      {isStarted && (
+        <div className="livehost-bottom-panel">
+          {product ? (
+            <>
+              {product.mode === 'auction' && product.status === 'active' && (
+                <div className="livehost-timer-bar-wrap">
+                  <div
+                    className={`livehost-timer-bar ${secondsLeft <= 10 ? 'urgent' : secondsLeft <= 20 ? 'warning' : ''}`}
+                    style={{ width: `${timerPct}%` }}
+                  />
+                </div>
+              )}
+
+              <div className="livehost-bottom-content">
                 <p className="livehost-current-label">販売中</p>
-
-                {/* タイマーバー */}
-                {product.mode === 'auction' && product.status === 'active' && (
-                  <div className="livehost-timer-bar-wrap">
-                    <div
-                      className={`livehost-timer-bar ${secondsLeft <= 10 ? 'urgent' : secondsLeft <= 20 ? 'warning' : ''}`}
-                      style={{ width: `${timerPct}%` }}
-                    />
-                  </div>
-                )}
-
                 <div className="livehost-product-row">
                   {product.product_image && (
                     <img src={product.product_image} alt="" className="livehost-product-thumb" />
@@ -237,49 +234,42 @@ function LiveHost() {
                     <p className="livehost-product-name">{product.product_name}</p>
                     <p className="livehost-product-price">¥{(product.current_price || 0).toLocaleString()}</p>
                     {product.mode === 'auction' && secondsLeft > 0 && product.status === 'active' && (
-                      <p className={`livehost-timer ${secondsLeft <= 10 ? 'urgent' : ''}`}>
-                        残り {secondsLeft}秒
-                      </p>
+                      <p className={`livehost-timer ${secondsLeft <= 10 ? 'urgent' : ''}`}>残り {secondsLeft}秒</p>
                     )}
                     {product.bidder_name && (
                       <p className="livehost-bidder">最高入札: {product.bidder_name}</p>
                     )}
                   </div>
                 </div>
+
+                {statusMsg && (
+                  <p className={`livehost-status ${statusType}`}>{statusMsg}</p>
+                )}
+
+                {queue.length > 0 && (
+                  <p className="livehost-queue-hint">次: {queue[0].product_name}</p>
+                )}
+
+                <div className="livehost-controls">
+                  <button className="livehost-next-btn" onClick={handleNext}>次の商品へ</button>
+                  <button className="livehost-end-btn" onClick={handleEnd}>終了</button>
+                </div>
               </div>
-            ) : (
-              <p className="livehost-no-product">商品がありません</p>
-            )}
-
-            {statusMsg && (
-              <p className={`livehost-status ${statusType}`}>{statusMsg}</p>
-            )}
-
-            {/* キュー */}
-            {queue.length > 0 && (
-              <div className="livehost-queue">
-                <p className="livehost-queue-label">次の商品 ({queue.length}件)</p>
-                {queue.slice(0, 2).map(q => (
-                  <div key={q.id} className="livehost-queue-item">
-                    <span>{q.product_name}</span>
-                    <span>¥{(q.start_price || 0).toLocaleString()} ~</span>
-                  </div>
-                ))}
+            </>
+          ) : (
+            <div className="livehost-bottom-content">
+              {statusMsg && (
+                <p className={`livehost-status ${statusType}`}>{statusMsg}</p>
+              )}
+              <div className="livehost-controls">
+                <button className="livehost-end-btn" style={{ flex: 1 }} onClick={handleEnd}>
+                  配信を終了する
+                </button>
               </div>
-            )}
-
-            {/* 操作ボタン */}
-            <div className="livehost-controls">
-              <button className="livehost-next-btn" onClick={handleNext}>
-                次の商品へ
-              </button>
-              <button className="livehost-end-btn" onClick={handleEnd}>
-                配信終了
-              </button>
             </div>
-          </>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

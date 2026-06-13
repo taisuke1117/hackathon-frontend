@@ -1,24 +1,21 @@
 /* ==========================================================================
-   LiveRoom.css: 視聴者ページ（フルスクリーン）
+   LiveRoom.css — TikTok スタイル視聴者ページ
    ========================================================================== */
 
 .live-room-container {
-  display: flex;
-  flex-direction: column;
+  position: relative;
   height: calc(100svh - 135px);
-  background-color: var(--background);
+  background: #000;
   overflow: hidden;
   max-width: 600px;
   margin: 0 auto;
 }
 
-/* ── Livekit映像エリア ── */
+/* ── フルスクリーン映像 ── */
 .live-video-area {
-  flex: 1;
-  position: relative;
-  background: #000;
-  overflow: hidden;
-  min-height: 0;
+  position: absolute;
+  inset: 0;
+  background: #111;
 }
 
 .live-video-area > div {
@@ -30,21 +27,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.35);
   font-size: 14px;
 }
 
-/* ── 映像上のオーバーレイ ── */
-.live-room-info-overlay {
+/* ── 上部オーバーレイ ── */
+.live-top-bar {
   position: absolute;
-  top: 12px;
+  top: 0;
   left: 0;
   right: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 12px;
+  padding: 12px 12px 40px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.65) 0%, transparent 100%);
   pointer-events: none;
+  z-index: 20;
 }
 
 .live-overlay-left {
@@ -54,20 +53,20 @@
 }
 
 .live-back-btn {
-  background: rgba(0, 0, 0, 0.45);
+  pointer-events: all;
+  background: rgba(0, 0, 0, 0.4);
   color: #fff;
   border: none;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  font-size: 22px;
+  width: 32px;
+  height: 32px;
+  font-size: 24px;
   line-height: 1;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: all;
-  transition: background 0.15s;
+  flex-shrink: 0;
 }
 
 .live-back-btn:active { background: rgba(0, 0, 0, 0.7); }
@@ -86,8 +85,8 @@
   color: #fff;
   font-size: 13px;
   font-weight: 600;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
-  max-width: 180px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  max-width: 150px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -96,26 +95,31 @@
 .live-viewer-overlay {
   color: #fff;
   font-size: 12px;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
-  background: rgba(0, 0, 0, 0.45);
-  padding: 2px 8px;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 3px 10px;
   border-radius: 20px;
 }
 
-/* ── 商品パネル ── */
-.live-product-panel {
-  background-color: var(--surface);
-  border-top: 3px solid var(--primary);
-  padding: 0 16px 14px;
-  flex-shrink: 0;
+/* ── 下部オーバーレイ ── */
+.live-bottom-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: linear-gradient(
+    to top,
+    rgba(11, 15, 23, 0.97) 0%,
+    rgba(11, 15, 23, 0.82) 55%,
+    transparent 100%
+  );
 }
 
 /* ── タイマーバー ── */
 .live-timer-bar-wrap {
   height: 3px;
-  background: var(--border);
-  margin: 0 -16px 12px;
-  overflow: hidden;
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .live-timer-bar {
@@ -127,48 +131,53 @@
 .live-timer-bar.warning { background: #fbbf24; }
 .live-timer-bar.urgent  { background: #ef4444; }
 
+/* ── コンテンツ領域 ── */
+.live-bottom-content {
+  padding: 16px 16px 14px;
+}
+
 /* ── 商品行 ── */
 .live-product-row {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: flex-start;
   margin-bottom: 8px;
 }
 
 .live-product-img {
-  width: 58px;
-  height: 58px;
-  border-radius: var(--radius-md);
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
   object-fit: cover;
   flex-shrink: 0;
-  background-color: var(--surface-hover);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .live-product-detail { flex: 1; }
 
 .live-product-name {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--text);
-  margin: 0 0 4px;
+  color: #fff;
+  margin: 0 0 2px;
   line-height: 1.3;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 .live-current-price {
-  font-size: 24px;
+  font-size: 22px;
   color: var(--primary);
   font-weight: 800;
-  margin: 0 0 3px;
+  margin: 0 0 2px;
   letter-spacing: -0.5px;
-  text-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+  text-shadow: 0 0 16px rgba(56, 189, 248, 0.45);
 }
 
 .live-timer-text {
-  font-size: 13px;
+  font-size: 12px;
   color: #4ade80;
   font-weight: 700;
-  margin: 0 0 2px;
+  margin: 0 0 1px;
 }
 
 .live-timer-text.urgent {
@@ -182,42 +191,42 @@
 }
 
 .live-current-bidder {
-  font-size: 12px;
-  color: var(--text-muted);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
   margin: 0;
 }
 
 /* ── ステータスメッセージ ── */
 .live-status-msg {
-  font-size: 13px;
+  font-size: 12px;
   color: #fbbf24;
-  margin: 4px 0 8px;
-  padding: 6px 10px;
-  background-color: rgba(251, 191, 36, 0.08);
-  border-radius: var(--radius-md);
-  border-left: 3px solid #fbbf24;
+  margin: 0 0 8px;
+  padding: 5px 10px;
+  background: rgba(251, 191, 36, 0.14);
+  border-radius: 6px;
+  border-left: 2px solid #fbbf24;
 }
 
 .live-status-msg.bid {
   color: var(--primary);
-  background-color: var(--primary-bg);
+  background: rgba(56, 189, 248, 0.14);
   border-left-color: var(--primary);
 }
 
 .live-status-msg.sold {
   color: #4ade80;
-  background-color: rgba(74, 222, 128, 0.08);
+  background: rgba(74, 222, 128, 0.14);
   border-left-color: #4ade80;
 }
 
 .live-status-msg.skipped {
-  color: var(--text-muted);
-  background-color: var(--surface-hover);
-  border-left-color: var(--border);
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+  border-left-color: rgba(255, 255, 255, 0.2);
 }
 
 /* ── アクションエリア ── */
-.live-action-area { margin-top: 8px; }
+.live-action-area { margin-top: 4px; }
 
 .live-bid-area {
   display: flex;
@@ -232,20 +241,18 @@
 
 .live-bid-preset-btn {
   flex: 1;
-  background-color: var(--surface-hover);
+  background: rgba(56, 189, 248, 0.13);
   color: var(--primary);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  border-radius: var(--radius-md);
-  padding: 7px 0;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 8px;
+  padding: 8px 0;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.15s;
+  transition: background 0.15s;
 }
 
-.live-bid-preset-btn:active {
-  background-color: var(--primary-bg);
-}
+.live-bid-preset-btn:active { background: rgba(56, 189, 248, 0.28); }
 
 .live-bid-row {
   display: flex;
@@ -254,37 +261,36 @@
 
 .live-bid-input {
   flex: 1;
-  background-color: var(--surface-hover);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  color: var(--text);
-  padding: 11px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  padding: 10px 12px;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s;
 }
 
 .live-bid-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+  background: rgba(56, 189, 248, 0.08);
 }
 
-.live-bid-input::placeholder { color: var(--text-muted); }
+.live-bid-input::placeholder { color: rgba(255, 255, 255, 0.35); }
 
 .live-bid-btn {
   background: var(--primary);
   color: #0b0f17;
   border: none;
-  border-radius: var(--radius-md);
-  padding: 11px 20px;
+  border-radius: 8px;
+  padding: 10px 18px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
   white-space: nowrap;
-  transition: opacity 0.15s;
 }
 
-.live-bid-btn:active { opacity: 0.75; }
+.live-bid-btn:active { opacity: 0.8; }
 
 .live-buy-row {
   display: flex;
@@ -294,37 +300,35 @@
 }
 
 .live-instant-label {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
-  color: var(--text);
+  color: #fff;
   margin: 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 .live-buy-btn {
   background: #ef4444;
   color: #fff;
   border: none;
-  border-radius: var(--radius-md);
-  padding: 11px 24px;
+  border-radius: 8px;
+  padding: 10px 22px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
-  transition: opacity 0.15s;
 }
 
-.live-buy-btn:active { opacity: 0.75; }
+.live-buy-btn:active { opacity: 0.8; }
 
-/* ── 商品なし / 配信終了 ── */
 .live-no-product {
-  background-color: var(--surface);
-  padding: 20px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
   text-align: center;
-  color: var(--text-muted);
-  font-size: 14px;
-  border-top: 1px solid var(--border);
+  padding: 4px 0;
 }
 
+/* ── 配信終了画面 ── */
 .live-ended {
   display: flex;
   flex-direction: column;
@@ -332,22 +336,22 @@
   justify-content: center;
   height: calc(100svh - 135px);
   gap: 20px;
-  color: var(--text-muted);
+  background: #000;
+  color: rgba(255, 255, 255, 0.5);
   font-size: 15px;
 }
 
 .live-ended-text { margin: 0; }
 
 .live-ended-btn {
-  background-color: var(--primary-bg);
+  background: var(--primary-bg);
   color: var(--primary);
   border: 1px solid rgba(56, 189, 248, 0.3);
-  border-radius: var(--radius-lg);
+  border-radius: 12px;
   padding: 12px 28px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.15s;
 }
 
 .live-ended-btn:active { opacity: 0.75; }

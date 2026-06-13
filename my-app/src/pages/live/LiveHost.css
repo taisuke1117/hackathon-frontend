@@ -1,51 +1,75 @@
 /* ==========================================================================
-   LiveHost.css: 配信者ページ（フルスクリーン）
+   LiveHost.css — TikTok スタイル配信者ページ
    ========================================================================== */
 
 .livehost-container {
-  display: flex;
-  flex-direction: column;
+  position: relative;
   height: calc(100svh - 135px);
-  background-color: var(--background);
+  background: #000;
   overflow: hidden;
   max-width: 600px;
   margin: 0 auto;
 }
 
-/* ── カメラ映像エリア ── */
+/* ── フルスクリーンカメラ ── */
 .livehost-video-area {
-  flex: 1;
-  position: relative;
-  background: #000;
-  overflow: hidden;
-  min-height: 0;
+  position: absolute;
+  inset: 0;
+  background: #111;
 }
 
 .livehost-video-area > div {
   height: 100%;
 }
 
+/* 配信開始前の黒画面 */
 .livehost-video-placeholder {
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
-  font-size: 14px;
-  text-align: center;
-  padding: 20px;
-  line-height: 1.6;
+  background: #0b0f17;
 }
 
-/* ── 配信中バッジオーバーレイ ── */
-.livehost-badge-overlay {
+.livehost-start-btn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 40px;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 24px rgba(239, 68, 68, 0.4);
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.livehost-start-btn:active {
+  opacity: 0.85;
+  transform: scale(0.97);
+}
+
+.livehost-start-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── 上部オーバーレイ ── */
+.livehost-top-bar {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  padding: 12px 14px 40px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.65) 0%, transparent 100%);
   pointer-events: none;
+  z-index: 20;
 }
 
 .livehost-live-badge {
@@ -54,54 +78,38 @@
   font-size: 11px;
   font-weight: 700;
   border-radius: 4px;
-  padding: 3px 8px;
+  padding: 3px 9px;
   letter-spacing: 0.8px;
 }
 
 .livehost-viewer {
   color: #fff;
   font-size: 12px;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
-  background: rgba(0, 0, 0, 0.45);
-  padding: 2px 8px;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 3px 10px;
   border-radius: 20px;
 }
 
-/* ── コントロールパネル ── */
-.livehost-panel {
-  background-color: var(--surface);
-  border-top: 3px solid var(--primary);
-  padding: 0 16px 14px;
-  flex-shrink: 0;
-}
-
-/* 配信開始ボタン */
-.livehost-start-btn {
-  width: 100%;
-  background: #ef4444;
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-lg);
-  padding: 14px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: opacity 0.2s;
-  letter-spacing: 0.3px;
-  margin-top: 14px;
-}
-
-.livehost-start-btn:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
+/* ── 下部オーバーレイ ── */
+.livehost-bottom-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: linear-gradient(
+    to top,
+    rgba(11, 15, 23, 0.97) 0%,
+    rgba(11, 15, 23, 0.82) 55%,
+    transparent 100%
+  );
 }
 
 /* ── タイマーバー ── */
 .livehost-timer-bar-wrap {
   height: 3px;
-  background: var(--border);
-  margin: 0 -16px 10px;
-  overflow: hidden;
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .livehost-timer-bar {
@@ -113,30 +121,35 @@
 .livehost-timer-bar.warning { background: #fbbf24; }
 .livehost-timer-bar.urgent  { background: #ef4444; }
 
-/* ── 販売中の商品 ── */
+/* ── コンテンツ領域 ── */
+.livehost-bottom-content {
+  padding: 14px 16px 14px;
+}
+
 .livehost-current-label {
   font-size: 10px;
   font-weight: 700;
   color: var(--primary);
   letter-spacing: 0.8px;
-  margin: 10px 0 6px;
+  margin: 0 0 6px;
+  text-transform: uppercase;
 }
 
+/* ── 商品行 ── */
 .livehost-product-row {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: flex-start;
   margin-bottom: 8px;
 }
 
 .livehost-product-thumb {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-md);
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
   object-fit: cover;
   flex-shrink: 0;
-  background-color: var(--surface-hover);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .livehost-product-info { flex: 1; }
@@ -144,25 +157,26 @@
 .livehost-product-name {
   font-size: 13px;
   font-weight: 600;
-  color: var(--text);
-  margin: 0 0 3px;
+  color: #fff;
+  margin: 0 0 2px;
   line-height: 1.3;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 .livehost-product-price {
   font-size: 22px;
   color: var(--primary);
   font-weight: 800;
-  margin: 0 0 3px;
+  margin: 0 0 2px;
   letter-spacing: -0.5px;
-  text-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+  text-shadow: 0 0 16px rgba(56, 189, 248, 0.45);
 }
 
 .livehost-timer {
-  font-size: 13px;
+  font-size: 12px;
   color: #4ade80;
   font-weight: 700;
-  margin: 0 0 2px;
+  margin: 0 0 1px;
 }
 
 .livehost-timer.urgent {
@@ -176,87 +190,63 @@
 }
 
 .livehost-bidder {
-  font-size: 12px;
-  color: var(--text-muted);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
   margin: 0;
-}
-
-.livehost-no-product {
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 14px;
-  padding: 10px 0 6px;
 }
 
 /* ── ステータスメッセージ ── */
 .livehost-status {
-  font-size: 13px;
+  font-size: 12px;
   color: #fbbf24;
-  margin: 4px 0 8px;
-  padding: 6px 10px;
-  background-color: rgba(251, 191, 36, 0.08);
-  border-radius: var(--radius-md);
-  border-left: 3px solid #fbbf24;
+  margin: 0 0 8px;
+  padding: 5px 10px;
+  background: rgba(251, 191, 36, 0.14);
+  border-radius: 6px;
+  border-left: 2px solid #fbbf24;
 }
 
 .livehost-status.bid {
   color: var(--primary);
-  background-color: var(--primary-bg);
+  background: rgba(56, 189, 248, 0.14);
   border-left-color: var(--primary);
 }
 
 .livehost-status.sold {
   color: #4ade80;
-  background-color: rgba(74, 222, 128, 0.08);
+  background: rgba(74, 222, 128, 0.14);
   border-left-color: #4ade80;
 }
 
 .livehost-status.skipped {
-  color: var(--text-muted);
-  background-color: var(--surface-hover);
-  border-left-color: var(--border);
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+  border-left-color: rgba(255, 255, 255, 0.2);
 }
 
-/* ── 次の商品キュー ── */
-.livehost-queue {
-  border-top: 1px solid var(--border);
-  padding-top: 8px;
-  margin: 6px 0;
-}
-
-.livehost-queue-label {
+/* 次の商品ヒント */
+.livehost-queue-hint {
   font-size: 11px;
-  color: var(--text-muted);
-  font-weight: 600;
-  margin: 0 0 6px;
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
-.livehost-queue-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
-  color: var(--text-muted);
-  padding: 4px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.livehost-queue-item:last-child { border-bottom: none; }
 
 /* ── 操作ボタン ── */
 .livehost-controls {
   display: flex;
   gap: 8px;
-  margin-top: 10px;
 }
 
 .livehost-next-btn {
   flex: 1;
-  background-color: var(--primary-bg);
+  background: var(--primary-bg);
   color: var(--primary);
   border: 1px solid rgba(56, 189, 248, 0.3);
-  border-radius: var(--radius-md);
-  padding: 11px;
+  border-radius: 10px;
+  padding: 12px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
@@ -266,20 +256,22 @@
 .livehost-next-btn:active { opacity: 0.75; }
 
 .livehost-end-btn {
-  background-color: var(--surface-hover);
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 11px 18px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 12px 18px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s;
+  white-space: nowrap;
 }
 
 .livehost-end-btn:active {
   color: #ef4444;
   border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.08);
 }
 
 /* ── 配信終了画面 ── */
@@ -290,20 +282,20 @@
   justify-content: center;
   height: calc(100svh - 135px);
   gap: 20px;
-  color: var(--text-muted);
+  background: #000;
+  color: rgba(255, 255, 255, 0.5);
   font-size: 15px;
 }
 
 .livehost-ended button {
-  background-color: var(--primary-bg);
+  background: var(--primary-bg);
   color: var(--primary);
   border: 1px solid rgba(56, 189, 248, 0.3);
-  border-radius: var(--radius-lg);
+  border-radius: 12px;
   padding: 12px 28px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.15s;
 }
 
 .livehost-ended button:active { opacity: 0.75; }

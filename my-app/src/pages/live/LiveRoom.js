@@ -17,7 +17,7 @@ function LiveRoom() {
   const [livekitUrl, setLivekitUrl] = useState('');
   const [bidAmount, setBidAmount] = useState('');
   const [statusMsg, setStatusMsg] = useState('');
-  const [statusType, setStatusType] = useState(''); // 'bid' | 'sold' | 'skipped' | ''
+  const [statusType, setStatusType] = useState('');
   const [streamEnded, setStreamEnded] = useState(false);
 
   const timerRef = useRef(null);
@@ -175,7 +175,7 @@ function LiveRoom() {
 
   return (
     <div className="live-room-container">
-      {/* 映像エリア */}
+      {/* フルスクリーン映像 */}
       <div className="live-video-area">
         {livekitToken && livekitUrl ? (
           <LiveKitRoom serverUrl={livekitUrl} token={livekitToken} connect>
@@ -184,92 +184,97 @@ function LiveRoom() {
         ) : (
           <div className="live-video-placeholder">映像読み込み中...</div>
         )}
-        <div className="live-room-info-overlay">
-          <div className="live-overlay-left">
-            <button className="live-back-btn" onClick={() => navigate('/live')}>&#8249;</button>
-            <span className="live-badge-overlay">LIVE</span>
-            <span className="live-room-title-overlay">{room?.title}</span>
-          </div>
-          <span className="live-viewer-overlay">{room?.viewer_count || 0} 視聴中</span>
-        </div>
       </div>
 
-      {/* 商品パネル */}
-      {product ? (
-        <div className="live-product-panel">
-          {/* タイマーバー */}
-          {product.mode === 'auction' && product.status === 'active' && (
-            <div className="live-timer-bar-wrap">
-              <div
-                className={`live-timer-bar ${secondsLeft <= 10 ? 'urgent' : secondsLeft <= 20 ? 'warning' : ''}`}
-                style={{ width: `${timerPct}%` }}
-              />
-            </div>
-          )}
-
-          <div className="live-product-row">
-            {product.product_image && (
-              <img src={product.product_image} alt="" className="live-product-img" />
-            )}
-            <div className="live-product-detail">
-              <p className="live-product-name">{product.product_name}</p>
-              <p className="live-current-price">¥{(product.current_price || 0).toLocaleString()}</p>
-              {product.mode === 'auction' && secondsLeft > 0 && product.status === 'active' && (
-                <p className={`live-timer-text ${secondsLeft <= 10 ? 'urgent' : ''}`}>
-                  残り {secondsLeft}秒
-                </p>
-              )}
-              {product.bidder_name && (
-                <p className="live-current-bidder">最高入札者: {product.bidder_name}</p>
-              )}
-            </div>
-          </div>
-
-          {statusMsg && (
-            <p className={`live-status-msg ${statusType}`}>{statusMsg}</p>
-          )}
-
-          {product.status === 'active' && (
-            <div className="live-action-area">
-              {product.mode === 'auction' ? (
-                <div className="live-bid-area">
-                  <div className="live-bid-presets">
-                    {[100, 500, 1000].map(delta => (
-                      <button
-                        key={delta}
-                        className="live-bid-preset-btn"
-                        onClick={() => setBidAmount(String((product.current_price || 0) + delta))}
-                      >
-                        +{delta.toLocaleString()}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="live-bid-row">
-                    <input
-                      className="live-bid-input"
-                      type="number"
-                      placeholder={`¥${((product.current_price || 0) + 100).toLocaleString()} 以上`}
-                      value={bidAmount}
-                      onChange={e => setBidAmount(e.target.value)}
-                      onKeyDown={e => e.key === 'Enter' && handleBid()}
-                    />
-                    <button className="live-bid-btn" onClick={handleBid}>入札する</button>
-                  </div>
-                </div>
-              ) : (
-                <div className="live-buy-row">
-                  <p className="live-instant-label">
-                    即決価格: ¥{(product.instant_price || product.current_price || 0).toLocaleString()}
-                  </p>
-                  <button className="live-buy-btn" onClick={handleBuy}>今すぐ購入</button>
-                </div>
-              )}
-            </div>
-          )}
+      {/* 上部オーバーレイ */}
+      <div className="live-top-bar">
+        <div className="live-overlay-left">
+          <button className="live-back-btn" onClick={() => navigate('/live')}>&#8249;</button>
+          <span className="live-badge-overlay">LIVE</span>
+          <span className="live-room-title-overlay">{room?.title}</span>
         </div>
-      ) : (
-        <div className="live-no-product">配信準備中...</div>
-      )}
+        <span className="live-viewer-overlay">{room?.viewer_count || 0} 視聴中</span>
+      </div>
+
+      {/* 下部オーバーレイ */}
+      <div className="live-bottom-panel">
+        {product ? (
+          <>
+            {product.mode === 'auction' && product.status === 'active' && (
+              <div className="live-timer-bar-wrap">
+                <div
+                  className={`live-timer-bar ${secondsLeft <= 10 ? 'urgent' : secondsLeft <= 20 ? 'warning' : ''}`}
+                  style={{ width: `${timerPct}%` }}
+                />
+              </div>
+            )}
+
+            <div className="live-bottom-content">
+              <div className="live-product-row">
+                {product.product_image && (
+                  <img src={product.product_image} alt="" className="live-product-img" />
+                )}
+                <div className="live-product-detail">
+                  <p className="live-product-name">{product.product_name}</p>
+                  <p className="live-current-price">¥{(product.current_price || 0).toLocaleString()}</p>
+                  {product.mode === 'auction' && secondsLeft > 0 && product.status === 'active' && (
+                    <p className={`live-timer-text ${secondsLeft <= 10 ? 'urgent' : ''}`}>残り {secondsLeft}秒</p>
+                  )}
+                  {product.bidder_name && (
+                    <p className="live-current-bidder">最高入札: {product.bidder_name}</p>
+                  )}
+                </div>
+              </div>
+
+              {statusMsg && (
+                <p className={`live-status-msg ${statusType}`}>{statusMsg}</p>
+              )}
+
+              {product.status === 'active' && (
+                <div className="live-action-area">
+                  {product.mode === 'auction' ? (
+                    <div className="live-bid-area">
+                      <div className="live-bid-presets">
+                        {[100, 500, 1000].map(delta => (
+                          <button
+                            key={delta}
+                            className="live-bid-preset-btn"
+                            onClick={() => setBidAmount(String((product.current_price || 0) + delta))}
+                          >
+                            +{delta.toLocaleString()}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="live-bid-row">
+                        <input
+                          className="live-bid-input"
+                          type="number"
+                          placeholder={`¥${((product.current_price || 0) + 100).toLocaleString()} 以上`}
+                          value={bidAmount}
+                          onChange={e => setBidAmount(e.target.value)}
+                          onKeyDown={e => e.key === 'Enter' && handleBid()}
+                        />
+                        <button className="live-bid-btn" onClick={handleBid}>入札する</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="live-buy-row">
+                      <p className="live-instant-label">
+                        即決 ¥{(product.instant_price || product.current_price || 0).toLocaleString()}
+                      </p>
+                      <button className="live-buy-btn" onClick={handleBuy}>今すぐ購入</button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          <div className="live-bottom-content">
+            <p className="live-no-product">配信準備中...</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
