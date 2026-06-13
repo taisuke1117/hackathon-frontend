@@ -29,15 +29,15 @@ body, html {
   margin: 0;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: var(--background); /* 全体の背景を漆黒に */
-  color: var(--text);                  /* 基本テキストをすべて白系に */
-  -webkit-font-smoothing: antialiased; /* macOS でフォントを滑らかにレンダリング */
+  background-color: var(--background);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;                  /* 横スクロール禁止 */
 }
 
 body {
-  overscroll-behavior-y: none; /* iOS/Androidのゴムバンドスクロールを抑制 */
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
 }
 
 /* ── メインコンテンツ領域 ──────────────────────────────────────── */
@@ -46,10 +46,12 @@ body {
 .main-content {
   padding-top: 60px;
   padding-bottom: 75px;
-  min-height: 100vh;   /* fallback */
-  min-height: 100svh;  /* iOS Safari アドレスバー対応 */
+  min-height: 100vh;
+  min-height: 100svh;
   box-sizing: border-box;
   background-color: var(--background);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ── 汎用センタリングクラス ────────────────────────────────────── */
