@@ -123,16 +123,6 @@ function LiveRoom() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
-  const resetTimer = (seconds) => {
-    clearInterval(timerRef.current);
-    let s = seconds;
-    timerRef.current = setInterval(() => {
-      s -= 1;
-      setSecondsLeft(s);
-      if (s <= 0) clearInterval(timerRef.current);
-    }, 1000);
-  };
-
   useEffect(() => () => clearInterval(timerRef.current), []);
 
   const handleBid = async () => {
