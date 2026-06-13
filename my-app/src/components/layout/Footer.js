@@ -6,6 +6,7 @@ import './Footer.css';
 import homeIcon    from '../../assets/home.svg';
 import dealsIcon   from '../../assets/modeling.svg';
 import listingIcon from '../../assets/add_circle.svg';
+import liveIcon    from '../../assets/live.svg';
 import chatIcon    from '../../assets/chat.svg';
 import PersonIcon  from '../../assets/person.svg';
 
@@ -33,6 +34,12 @@ function Footer() {
         <NavLink to="/listing" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
           <img src={listingIcon} alt="Listing" className="nav-icon-img" />
           <span className="nav-icon-text">出品</span>
+        </NavLink>
+
+        {/* ライブ */}
+        <NavLink to="/live" className={({ isActive }) => isActive ? "nav-item nav-live active" : "nav-item nav-live"}>
+          <img src={liveIcon} alt="Live" className="nav-icon-img" />
+          <span className="nav-icon-text">ライブ</span>
         </NavLink>
 
         {/* チャット: 未読がある場合は右上にドット */}

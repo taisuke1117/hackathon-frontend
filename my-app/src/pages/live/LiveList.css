@@ -1,0 +1,114 @@
+.live-list-container {
+  padding: 16px;
+  padding-bottom: 80px;
+}
+
+.live-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.live-list-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary, #fff);
+}
+
+.live-create-btn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.live-loading,
+.live-empty {
+  text-align: center;
+  color: var(--text-muted, #888);
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.live-create-btn-large {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 12px 32px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.live-room-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.live-room-card {
+  background: var(--surface, #1a1f2e);
+  border: 1px solid var(--border, #2a3040);
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s;
+}
+
+.live-room-card:active { transform: scale(0.98); }
+
+.live-badge {
+  display: inline-block;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.live-card-seller {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.live-seller-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.live-seller-name {
+  font-size: 13px;
+  color: var(--text-muted, #888);
+}
+
+.live-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+  margin: 0 0 8px;
+}
+
+.live-viewer-count {
+  font-size: 12px;
+  color: var(--text-muted, #888);
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}

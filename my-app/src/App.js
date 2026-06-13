@@ -25,6 +25,10 @@ import Purchases from './pages/mypage/Purchase';
 import Notification from './pages/misc/Notification';
 import Checkout from './pages/misc/Checkout';
 import UserProfile from './pages/misc/UserProfile';
+import LiveList from './pages/live/LiveList';
+import LiveCreate from './pages/live/LiveCreate';
+import LiveRoom from './pages/live/LiveRoom';
+import LiveHost from './pages/live/LiveHost';
 
 // ─────────────────────────────────────────────────────────
 // App: アプリ全体のルーティング定義
@@ -75,6 +79,11 @@ function App() {
               <Route path="/notifications"                     element={<Notification />} />
               <Route path="/checkout/:id"                      element={<Checkout />} />
               <Route path="/user/profile/:userId"              element={<UserProfile />} />
+              {/* ライブ配信 */}
+              <Route path="/live"                              element={<LiveList />} />
+              <Route path="/live/create"                       element={<LiveCreate />} />
+              <Route path="/live/host/:roomId"                 element={<LiveHost />} />
+              <Route path="/live/:roomId"                      element={<LiveRoom />} />
             </Routes>
           </main>
           <Footer />

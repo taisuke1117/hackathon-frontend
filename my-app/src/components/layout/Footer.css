@@ -106,6 +106,12 @@
   transform: translateY(-1px) scale(1.03);
 }
 
+/* LIVE タブ */
+.nav-live .nav-icon-text { color: #ef4444 !important; }
+.nav-live .nav-icon-img  { filter: invert(30%) sepia(90%) saturate(2000%) hue-rotate(340deg) !important; opacity: 0.9; }
+.nav-live.active .nav-icon-text { color: #ef4444 !important; }
+.nav-live.active .nav-icon-img  { filter: invert(30%) sepia(90%) saturate(2000%) hue-rotate(340deg) !important; opacity: 1; }
+
 /*  チャットアイコンの未読バッジ  */
 /* アイコン画像を基準点にして右上に配置する */
 .nav-icon-wrapper {

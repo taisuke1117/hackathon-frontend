@@ -1,0 +1,226 @@
+.livehost-container {
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+  background: #000;
+  overflow: hidden;
+}
+
+.livehost-video-area {
+  flex: 1;
+  position: relative;
+  background: #111;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.livehost-video-area > div:first-child {
+  height: 100%;
+}
+
+.livehost-video-placeholder {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 14px;
+  text-align: center;
+  padding: 20px;
+}
+
+.livehost-badge-overlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.livehost-live-badge {
+  background: #ef4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 3px 8px;
+  letter-spacing: 0.5px;
+}
+
+.livehost-viewer {
+  color: #fff;
+  font-size: 12px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+}
+
+/* コントロールパネル */
+.livehost-panel {
+  background: var(--surface, #1a1f2e);
+  border-top: 1px solid var(--border, #2a3040);
+  padding: 14px 16px;
+  flex-shrink: 0;
+}
+
+.livehost-start-btn {
+  width: 100%;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.livehost-start-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.livehost-current-label {
+  font-size: 11px;
+  color: #ef4444;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin: 0 0 8px;
+}
+
+.livehost-product-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.livehost-product-thumb {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.livehost-product-info { flex: 1; }
+
+.livehost-product-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+  margin: 0 0 3px;
+}
+
+.livehost-product-price {
+  font-size: 18px;
+  color: #38bdf8;
+  font-weight: 700;
+  margin: 0 0 3px;
+}
+
+.livehost-timer {
+  font-size: 13px;
+  color: #4ade80;
+  font-weight: 600;
+  margin: 0 0 2px;
+}
+
+.livehost-timer.urgent {
+  color: #ef4444;
+  animation: pulse 0.5s infinite alternate;
+}
+
+@keyframes pulse {
+  from { opacity: 1; }
+  to { opacity: 0.5; }
+}
+
+.livehost-bidder {
+  font-size: 12px;
+  color: var(--text-muted, #888);
+  margin: 0;
+}
+
+.livehost-no-product {
+  color: var(--text-muted, #888);
+  font-size: 14px;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.livehost-status {
+  font-size: 12px;
+  color: #fbbf24;
+  margin: 4px 0 8px;
+}
+
+.livehost-queue {
+  border-top: 1px solid var(--border, #2a3040);
+  padding-top: 8px;
+  margin: 8px 0;
+}
+
+.livehost-queue-label {
+  font-size: 11px;
+  color: var(--text-muted, #888);
+  margin: 0 0 6px;
+}
+
+.livehost-queue-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted, #888);
+  padding: 3px 0;
+}
+
+.livehost-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.livehost-next-btn {
+  flex: 1;
+  background: var(--primary, #38bdf8);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.livehost-end-btn {
+  background: #374151;
+  color: #9ca3af;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.livehost-ended {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100svh;
+  gap: 20px;
+  color: var(--text-muted, #888);
+}
+
+.livehost-ended button {
+  background: var(--primary, #38bdf8);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 24px;
+  font-size: 14px;
+  cursor: pointer;
+}
