@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 
 import { useAuth } from './context/AuthContext';
@@ -46,47 +46,54 @@ import LiveHost from './pages/live/LiveHost';
 //   ※ React Router は上から順に評価するので 'seller' が静的パスとして先に一致する
 // ─────────────────────────────────────────────────────────
 
+// ライブ配信中はフッターを非表示にするためルートを監視するコンポーネント
+function AppLayout() {
+  const location = useLocation();
+  const isLiveStream = /^\/live\/(host\/)?[^/]+/.test(location.pathname);
+
+  return (
+    <>
+      <Header />
+      <main className={`main-content${isLiveStream ? ' no-footer' : ''}`}>
+        <Routes>
+          <Route path="/"                                  element={<Home />} />
+          <Route path="/listing"                           element={<ListingInput />} />
+          <Route path="/listing/confirm"                   element={<ListingConfirm />} />
+          <Route path="/product/:id"                       element={<ProductDetail />} />
+          <Route path="/deals"                             element={<Deals />} />
+          <Route path="/deals/manage/:id"                  element={<ProductManage />} />
+          <Route path="/deals/edit/:id"                    element={<ProductEdit />} />
+          <Route path="/chat"                              element={<ChatList />} />
+          <Route path="/chat/:productId/:roomId"           element={<BuyerChatRoom />} />
+          <Route path="/chat/seller/:productId/:roomId"    element={<SellerChatRoom />} />
+          <Route path="/mypage"                            element={<MyPage />} />
+          <Route path="/mypage/account"                    element={<Account />} />
+          <Route path="/mypage/likes"                      element={<LikedProducts />} />
+          <Route path="/mypage/purchases"                  element={<Purchases />} />
+          <Route path="/notifications"                     element={<Notification />} />
+          <Route path="/checkout/:id"                      element={<Checkout />} />
+          <Route path="/user/profile/:userId"              element={<UserProfile />} />
+          <Route path="/live"                              element={<LiveList />} />
+          <Route path="/live/create"                       element={<LiveCreate />} />
+          <Route path="/live/host/:roomId"                 element={<LiveHost />} />
+          <Route path="/live/:roomId"                      element={<LiveRoom />} />
+        </Routes>
+      </main>
+      {!isLiveStream && <Footer />}
+    </>
+  );
+}
+
 function App() {
   const { loginUser } = useAuth();
 
   return (
     <>
       {!loginUser ? (
-        // 未ログイン: ルーティングなしでログインフォームを表示
         <LoginForm />
       ) : (
-        // ログイン済み: Header + Routes + Footer
         <BrowserRouter>
-          <Header />
-          <main className="main-content">
-            <Routes>
-              <Route path="/"                                  element={<Home />} />
-              <Route path="/listing"                           element={<ListingInput />} />
-              <Route path="/listing/confirm"                   element={<ListingConfirm />} />
-              <Route path="/product/:id"                       element={<ProductDetail />} />
-              <Route path="/deals"                             element={<Deals />} />
-              <Route path="/deals/manage/:id"                  element={<ProductManage />} />
-              <Route path="/deals/edit/:id"                    element={<ProductEdit />} />
-              <Route path="/chat"                              element={<ChatList />} />
-              {/* 購入者チャット: /chat/:productId/:roomId */}
-              <Route path="/chat/:productId/:roomId"           element={<BuyerChatRoom />} />
-              {/* 出品者チャット: /chat/seller/:productId/:roomId */}
-              <Route path="/chat/seller/:productId/:roomId"    element={<SellerChatRoom />} />
-              <Route path="/mypage"                            element={<MyPage />} />
-              <Route path="/mypage/account"                    element={<Account />} />
-              <Route path="/mypage/likes"                      element={<LikedProducts />} />
-              <Route path="/mypage/purchases"                  element={<Purchases />} />
-              <Route path="/notifications"                     element={<Notification />} />
-              <Route path="/checkout/:id"                      element={<Checkout />} />
-              <Route path="/user/profile/:userId"              element={<UserProfile />} />
-              {/* ライブ配信 */}
-              <Route path="/live"                              element={<LiveList />} />
-              <Route path="/live/create"                       element={<LiveCreate />} />
-              <Route path="/live/host/:roomId"                 element={<LiveHost />} />
-              <Route path="/live/:roomId"                      element={<LiveRoom />} />
-            </Routes>
-          </main>
-          <Footer />
+          <AppLayout />
         </BrowserRouter>
       )}
     </>

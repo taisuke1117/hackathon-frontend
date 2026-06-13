@@ -54,6 +54,10 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+.main-content.no-footer {
+  padding-bottom: 0;
+}
+
 /* ── 汎用センタリングクラス ────────────────────────────────────── */
 /* ローディング中・エラー文・空状態のテキストに使う */
 .app-center-text {
