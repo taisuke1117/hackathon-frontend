@@ -180,6 +180,7 @@ function LiveRoom() {
         )}
         <div className="live-room-info-overlay">
           <div className="live-overlay-left">
+            <button className="live-back-btn" onClick={() => navigate('/live')}>&#8249;</button>
             <span className="live-badge-overlay">LIVE</span>
             <span className="live-room-title-overlay">{room?.title}</span>
           </div>

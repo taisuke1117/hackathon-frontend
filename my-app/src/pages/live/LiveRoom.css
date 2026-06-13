@@ -53,6 +53,25 @@
   gap: 8px;
 }
 
+.live-back-btn {
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+  transition: background 0.15s;
+}
+
+.live-back-btn:active { background: rgba(0, 0, 0, 0.7); }
+
 .live-badge-overlay {
   background: #ef4444;
   color: #fff;
