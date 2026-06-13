@@ -19,6 +19,7 @@ function LiveRoom() {
   const [statusMsg, setStatusMsg] = useState('');
   const [statusType, setStatusType] = useState('');
   const [streamEnded, setStreamEnded] = useState(false);
+  const [streamStatus, setStreamStatus] = useState('live'); // scheduled / live / ended
 
   const timerRef = useRef(null);
   const sseRef = useRef(null);
@@ -27,11 +28,12 @@ function LiveRoom() {
     apiFetch(`/api/live/rooms/${roomId}`)
       .then(data => {
         setRoom(data);
+        setStreamStatus(data.status);
         if (data.current_product) {
           setProduct(data.current_product);
           setSecondsLeft(data.current_product.seconds_left || 0);
         }
-        if (data.status !== 'live') setStreamEnded(true);
+        if (data.status === 'ended') setStreamEnded(true);
       })
       .catch(err => console.error('ルーム取得失敗:', err));
 
@@ -98,6 +100,7 @@ function LiveRoom() {
             clearInterval(timerRef.current);
             break;
           case 'next':
+            setStreamStatus('live');
             setProduct(event.product);
             setSecondsLeft(event.product?.seconds_left || 30);
             if (event.product?.mode === 'auction') resetTimer(event.product?.seconds_left || 30);
@@ -163,6 +166,15 @@ function LiveRoom() {
   };
 
   const timerPct = Math.max(0, Math.min(100, (secondsLeft / 30) * 100));
+
+  if (streamStatus === 'scheduled') {
+    return (
+      <div className="live-ended">
+        <p className="live-ended-text">配信開始まで少々お待ちください</p>
+        <button className="live-ended-btn" onClick={() => navigate('/live')}>一覧へ戻る</button>
+      </div>
+    );
+  }
 
   if (streamEnded) {
     return (
