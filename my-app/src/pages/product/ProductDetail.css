@@ -1,26 +1,34 @@
-/* 🌌 商品詳細全体のコンテナ：深淵なる闇 */
+/* ==========================================================================
+   ProductDetail.css: 商品詳細ページのスタイル
+   ========================================================================== */
+
+/* ── ページ全体のコンテナ ────────────────────────────────── */
+/* padding-bottom: 120px = 固定フッター(購入ボタン80px) + アプリフッター(55px) + 余白 */
 .detail-container {
   max-width: 600px;
   margin: 0 auto;
   background-color: var(--background);
-  padding-bottom: 120px; /* 💡 60px ➔ 100px に拡張 */
+  padding-bottom: 120px;
   min-height: 100vh;
+  min-height: 100svh;
   position: relative;
 }
 
-/* 📷 カルーセル構造：写真を最高に引き立てる完全な黒 */
+/* ── カルーセル（横スワイプ画像スライダー）────────────── */
+/* aspect-ratio: 1/1 で正方形に固定 → 画像の縦横比がバラバラでも統一感が出る */
 .carousel-wrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1; 
-  background-color: #0b0f17; /* 💡 画像が一番浮き出る超・漆黒空間 */
-  padding: 0 5%; /* 💡 左右の余白を10%➔5%に調整し、ダイナミックな写真サイズを両立 */
-  box-sizing: border-box; 
+  aspect-ratio: 1 / 1;
+  background-color: #0b0f17; /* 超・漆黒: 明るい画像が最も映える色 */
+  padding: 0 5%;           /* 左右5%の余白でサイドが少し見えて「スワイプできる」と気付かせる */
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* scroll-snap-type: x mandatory → 画像を1枚ずつぴったり止める */
 .image-swipe-track {
   display: flex;
   overflow-x: auto;
@@ -28,25 +36,28 @@
   scroll-behavior: smooth;
   width: 100%;
   height: 100%;
-  align-items: center; 
+  align-items: center;
 }
 
-/* スクロールバーを隠す */
+/* スクロールバーを非表示（見た目をすっきりさせる） */
 .image-swipe-track::-webkit-scrollbar { display: none; }
 .image-swipe-track { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* scroll-snap-align: center → スワイプ後に中心に整列 */
+/* object-fit: contain → 画像をトリミングせず全体を表示 */
 .carousel-img {
-  width: 100%; 
-  height: auto; 
-  max-height: 95%; 
-  object-fit: contain; 
+  width: 100%;
+  height: auto;
+  max-height: 95%;
+  object-fit: contain;
   flex-shrink: 0;
-  scroll-snap-align: center; 
+  scroll-snap-align: center;
   border-radius: var(--radius-md);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6); /* 画像に映画館のような立体感を */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
 }
 
-/* カルーセルのインジケーター（ドット） */
+/* ── カルーセルドットインジケーター ─────────────────────── */
+/* position: absolute + transform: translateX(-50%) で水平中央に配置 */
 .carousel-dots {
   position: absolute;
   bottom: 16px;
@@ -65,14 +76,15 @@
   transition: all 0.2s ease;
 }
 
-/* アクティブドット：アイスブルーに輝く */
+/* 現在表示中の画像に対応するドット: アイスブルーで光る */
 .dot.active {
   background-color: #0ea5e9;
   transform: scale(1.2);
   box-shadow: 0 0 8px #0ea5e9;
 }
 
-/* ⚡ アクションバー（いいね・チャット・出品者）：1歩手前のチャコール */
+/* ── アクションバー（いいね / チャット / 出品者） ────────── */
+/* height: 64px 固定 → 指が届きやすいタップ領域を確保 */
 .action-row-bar {
   display: flex;
   align-items: center;
@@ -90,12 +102,12 @@
   justify-content: center;
 }
 
-/* 繊細な氷河の亀裂ライン */
+/* アクション間の区切り線 */
 .border-right {
   border-right: 1px solid var(--border);
 }
 
-/* チャットボタンのカスタム */
+/* チャットアイコンボタン */
 .chat-action-btn {
   background: none;
   border: none;
@@ -103,17 +115,14 @@
   transition: opacity 0.2s;
 }
 
-.chat-action-btn:hover {
-  opacity: 0.8;
-}
+.chat-action-btn:hover { opacity: 0.8; }
 
-/* 💡 チャットアイコン：白へ透過 */
 .chat-icon-svg {
   width: 22px;
   height: 22px;
 }
 
-/* ボタンの下の小さい文字ラベル */
+/* アイコン下のラベルテキスト */
 .action-label {
   font-size: 10px;
   color: var(--text-muted);
@@ -122,7 +131,8 @@
   letter-spacing: 0.5px;
 }
 
-/* 出品者ブロック（右側を広く使う） */
+/* ── 出品者ブロック（アクションバー右側）────────────────── */
+/* flex: 1 で残りスペースを占有、クリックでユーザープロフィールへ遷移 */
 .seller-action-block {
   flex: 1;
   height: 100%;
@@ -133,9 +143,7 @@
   transition: background-color 0.2s ease;
 }
 
-.seller-action-block:hover {
-  background-color: var(--surface-hover);
-}
+.seller-action-block:hover { background-color: var(--surface-hover); }
 
 .seller-mini-avatar {
   width: 36px;
@@ -158,10 +166,10 @@
   color: var(--text);
 }
 
-/* 💡 星マークをアイスブルーにして統一感を加速 */
+/* 評価星: アイスブルーで表示 */
 .seller-mini-rating {
   font-size: 11px;
-  color: var(--primary); 
+  color: var(--primary);
   font-weight: bold;
   margin-top: 2px;
 }
@@ -172,12 +180,11 @@
   font-size: 14px;
 }
 
-/* 📝 テキスト情報エリア */
+/* ── 商品情報テキストエリア ──────────────────────────────── */
 .detail-info-content {
   padding: 24px 16px;
 }
 
-/* 商品タイトル */
 .detail-product-title {
   font-size: 22px;
   font-weight: 800;
@@ -186,7 +193,7 @@
   line-height: 1.4;
 }
 
-/* 💡 価格：ピンクを廃止して、マットな高発色アイスブルーへ大改造 */
+/* 価格: var(--primary) = アイスブルー (#38bdf8) で強調 */
 .detail-price-tag {
   font-size: 28px;
   font-weight: 900;
@@ -195,13 +202,14 @@
   margin-bottom: 24px;
 }
 
-/* 各セクションブロック（区切り線も闇に馴染ませる） */
+/* 各情報セクション（説明文 / 商品状態 / カテゴリ）の仕切り */
 .detail-section-block {
   margin-top: 24px;
   border-top: 1px solid var(--border);
   padding-top: 20px;
 }
 
+/* セクション見出しラベル */
 .detail-sub-title {
   font-size: 13px;
   font-weight: bold;
@@ -211,6 +219,7 @@
   margin: 0 0 12px 0;
 }
 
+/* 商品説明テキスト: white-space: pre-wrap で改行を保持 */
 .detail-description-text {
   font-size: 14px;
   color: var(--text);
@@ -219,6 +228,7 @@
   margin: 0;
 }
 
+/* 商品状態バッジ（未使用・未使用に近い等） */
 .detail-condition-badge {
   display: inline-block;
   padding: 4px 12px;
@@ -228,10 +238,9 @@
   background: rgba(14, 165, 233, 0.12);
   color: var(--primary);
   border: 1px solid rgba(14, 165, 233, 0.3);
-  margin: 0;
 }
 
-/* カテゴリパスリンク：パキッとしたマット水色でサイバーに */
+/* カテゴリパス（例: ファッション > トップス）*/
 .detail-category-path {
   font-size: 13px;
   color: #0ea5e9;
@@ -244,26 +253,23 @@
   transition: color 0.2s;
 }
 
-.path-node:hover {
-  color: var(--primary);
-}
+.path-node:hover { color: var(--primary); }
 
-/* 💡 左上の「×」ボタン：完全にSFチックなダークフロート型へリファイン */
+/* ── 左上の「×」戻るボタン ───────────────────────────────── */
+/* カルーセル画像の上に absolute で浮かせる。backdrop-filter でガラス風 */
 .detail-back-close-btn {
   position: absolute;
   top: 16px;
   left: 16px;
-  z-index: 50; 
-  
+  z-index: 50;
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: rgba(15, 20, 29, 0.6); /* surfaceに近い闇を透過 */
-  backdrop-filter: blur(8px); /* 💡 後ろの画像がすりガラス風にボケる神エフェクト */
-  color: var(--text); 
-  border: 1px solid var(--border); /* 繊細な白透過枠 */
+  background-color: rgba(15, 20, 29, 0.6);
+  backdrop-filter: blur(8px); /* 後ろの画像をすりガラス風にボカす */
+  color: var(--text);
+  border: 1px solid var(--border);
   font-size: 14px;
-  
   display: flex;
   align-items: center;
   justify-content: center;
@@ -273,24 +279,25 @@
 
 .detail-back-close-btn:hover {
   background-color: var(--surface);
-  border-color: var(--primary); /* ホバーすると水色に光る */
+  border-color: var(--primary);
   color: var(--primary);
 }
 
-.detail-back-close-btn:active {
-  transform: scale(0.92); 
-}
+.detail-back-close-btn:active { transform: scale(0.92); }
 
+/* ── 固定購入フッター ─────────────────────────────────────── */
+/* bottom: 64px = アプリ下部フッター(55px) + 余白 の上に固定 */
+/* transform: translateX(-50%) + left: 50% で水平中央に配置 */
 .detail-fixed-purchase-footer {
   position: fixed;
-  bottom: 64px; /* アクションバーの上に配置 */
+  bottom: 64px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 600px; /* コンテナの最大幅と同期 */
+  max-width: 600px;
   height: 80px;
-  background-color: rgba(22, 27, 37, 0.8); /* var(--surface) を透過 */
-  backdrop-filter: blur(12px); /* 背後を美しくぼかすSFエフェクト */
+  background-color: rgba(22, 27, 37, 0.8); /* 半透明で後ろのコンテンツが透けて見える */
+  backdrop-filter: blur(12px);
   border-top: 1px solid var(--border);
   box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
   z-index: 100;
@@ -307,7 +314,7 @@
   gap: 16px;
 }
 
-/* 左側：価格の控えめな再表示 */
+/* 左側: 価格の小さな再表示（ユーザーが確認できるように）*/
 .purchase-price-display {
   display: flex;
   flex-direction: column;
@@ -322,26 +329,28 @@
   letter-spacing: 0.5px;
 }
 
+/* 価格は白にして購入ボタンを目立たせる（競合を避ける）*/
 .purchase-price-amount {
   font-size: 20px;
   font-weight: 900;
-  color: var(--text); /* ここは純白にしてボタンを目立たせる */
+  color: var(--text);
   margin-top: 2px;
 }
 
-/* 右側：主役の覚醒アイスブルーボタン */
+/* ── 購入ボタン（メインCTA）────────────────────────────────── */
+/* アイスブルーの発光ボタン。box-shadow でグロウエフェクト */
 .detail-primary-buy-btn {
   flex: 1;
   height: 48px;
-  background-color: var(--primary); /* 鮮烈なアイスブルー */
-  color: #05080e; /* 漆黒文字でくり抜く */
+  background-color: var(--primary);
+  color: #05080e; /* 漆黒文字でコントラストを確保 */
   border: none;
   font-size: 15px;
   font-weight: 900;
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 16px rgba(14, 165, 233, 0.3); /* ビカビカに発光 */
+  box-shadow: 0 0 16px rgba(14, 165, 233, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -349,7 +358,7 @@
 }
 
 .detail-primary-buy-btn:hover {
-  background-color: #38bdf8; /* さらに明るい水色へ */
+  background-color: #38bdf8; /* より明るいアイスブルーへ */
   box-shadow: 0 0 24px rgba(14, 165, 233, 0.5);
   transform: translateY(-1px);
 }

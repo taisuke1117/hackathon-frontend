@@ -4,25 +4,39 @@ import { apiFetch } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 import './Listing.css';
 
+// ─────────────────────────────────────────────────────────
+// ListingConfirm: 出品確認ページ（出品フロー Step 2）
+//
+// ListingInput（Step 1）から navigate('/listing/confirm', { state: {...} }) で来る。
+// location.state に以下が含まれている:
+//   images, title, description, condition, price, selectedCategories, tags
+//
+// 「修正する」ボタン: 同じ state を乗せて ListingInput に戻る（入力値が保持される）
+// 「この内容で出品する」ボタン:
+//   1. カテゴリ名 → カテゴリIDに変換（AuthContextのカテゴリマスターを使う）
+//   2. POST /api/products で出品
+//   3. ホームに遷移
+// ─────────────────────────────────────────────────────────
+
 function ListingConfirm() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { categories } = useAuth();
+  const { categories } = useAuth(); // カテゴリマスター（名前→IDの変換に使う）
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 前のページ（ListingInput）から送られてきたデータを受け取る（防衛策付き）
+  // location.state がない（直接URLアクセス等）場合のフォールバック
   const { images, title, description, condition, price, selectedCategories, tags } = location.state || {
     images: [], title: '', description: '', condition: '', price: '', selectedCategories: [], tags: []
   };
 
-  // 💾 バックエンド（Go）にデータを送信して出品を確定する
+  // 出品確定: カテゴリ名をIDに変換してバックエンドに送信
   const handleFinalSubmit = async () => {
     setIsSubmitting(true);
     try {
-      // カテゴリ名 → カテゴリIDに変換
+      // カテゴリは名前で管理しているが、APIにはIDで送る
       const categoryIds = selectedCategories
         .map(name => categories.find(c => c.name === name)?.category_id)
-        .filter(Boolean);
+        .filter(Boolean); // IDが見つからない場合（異常系）は除外
 
       await apiFetch('/api/products', {
         method: 'POST',
@@ -37,7 +51,7 @@ function ListingConfirm() {
         },
       });
       alert('出品が完了しました！');
-      navigate('/');
+      navigate('/'); // ホームへ
     } catch (err) {
       alert(`出品に失敗しました: ${err.message}`);
       setIsSubmitting(false);
@@ -50,7 +64,7 @@ function ListingConfirm() {
 
       <div className="confirm-box">
 
-        {/* 📷 画像プレビュー一覧 */}
+        {/* 画像プレビュー（1枚目に「メイン」バッジ）*/}
         <div className="form-group">
           <span className="confirm-label">商品画像</span>
           <div className="image-preview-grid" style={{ marginTop: '6px' }}>
@@ -64,25 +78,26 @@ function ListingConfirm() {
           </div>
         </div>
 
-        {/* ✍️ 商品名 */}
+        {/* 商品名 */}
         <div className="confirm-item">
           <span className="confirm-label">商品名</span>
           <p className="confirm-value">{title || <span className="no-cat">未入力</span>}</p>
         </div>
 
-        {/* 📝 詳細説明 */}
+        {/* 詳細説明 */}
         <div className="confirm-item">
           <span className="confirm-label">詳細説明</span>
+          {/* whitespace-pre クラスで改行を保持 */}
           <p className="confirm-value whitespace-pre">{description || <span className="no-cat">未入力</span>}</p>
         </div>
 
-        {/* 🏷️ 商品の状態 */}
+        {/* 状態 */}
         <div className="confirm-item">
           <span className="confirm-label">商品の状態</span>
           <p className="confirm-value">{condition || <span className="no-cat">未選択</span>}</p>
         </div>
 
-        {/* 💰 価格 */}
+        {/* 価格 */}
         <div className="confirm-item">
           <span className="confirm-label">価格</span>
           <p className="confirm-value price-text">
@@ -90,7 +105,7 @@ function ListingConfirm() {
           </p>
         </div>
 
-        {/* 🏷️ 選択されたカテゴリバッジ */}
+        {/* 選択カテゴリ（チップ形式）*/}
         <div className="confirm-item">
           <span className="confirm-label">選択したカテゴリ</span>
           <div className="category-tags" style={{ marginTop: '4px' }}>
@@ -101,7 +116,7 @@ function ListingConfirm() {
           </div>
         </div>
 
-        {/* 🔖 検索用タグ */}
+        {/* 検索用タグ（AI生成の場合のみ表示）*/}
         {tags && tags.length > 0 && (
           <div className="confirm-item">
             <span className="confirm-label">検索用タグ</span>
@@ -114,8 +129,9 @@ function ListingConfirm() {
         )}
       </div>
 
-      {/* 🛠️ アクションボタンエリア */}
+      {/* アクションボタン */}
       <div className="action-buttons-row">
+        {/* 修正する: 入力値を state に乗せて ListingInput に戻る */}
         <button
           type="button"
           className="back-button"

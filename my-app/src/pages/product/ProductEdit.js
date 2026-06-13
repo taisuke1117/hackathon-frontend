@@ -5,16 +5,30 @@ import { useAuth } from '../../context/AuthContext';
 import { CategoryChipSelector } from '../../components/listing/CategoryChipSelector';
 import './ProductEdit.css';
 
-function ProductEdit() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const { categories } = useAuth();
+// ─────────────────────────────────────────────────────────
+// ProductEdit: 出品商品の編集ページ（取引管理画面の「商品情報を書き換える」から来る）
+//
+// ListingInput との違い:
+//   - 既存商品データを取得してフォームを初期化する
+//   - 画像は変更できない（image_urls は既存のものをそのまま送る）
+//   - PUT /api/products/:id で更新する（新規作成ではない）
+//   - 削除も可能（DELETEを叩いて /deals に戻る）
+//
+// カテゴリは名前文字列の配列で管理し、送信時に category_ids に変換する
+// （ListingInput・ListingConfirm と同じパターン）
+// ─────────────────────────────────────────────────────────
 
-  const [product, setProduct] = useState(null);
+function ProductEdit() {
+  const { id } = useParams(); // URL: /deals/edit/:id
+  const navigate = useNavigate();
+  const { categories } = useAuth(); // カテゴリマスター（名前→IDの変換に使う）
+
+  const [product, setProduct] = useState(null); // 既存商品データ（画像URLの参照に使う）
   const [formData, setFormData] = useState({ title: '', price: '', description: '' });
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]); // カテゴリ名の配列
   const [isSaving, setIsSaving] = useState(false);
 
+  // マウント時に既存商品データを取得してフォームに反映
   useEffect(() => {
     apiFetch(`/api/products/${id}`)
       .then(detail => {
@@ -24,6 +38,7 @@ function ProductEdit() {
           price: detail.price,
           description: detail.detail,
         });
+        // categories はオブジェクト配列なので、名前だけの配列に変換
         setSelectedCategories(detail.categories.map(c => c.name));
       })
       .catch(err => {
@@ -34,18 +49,22 @@ function ProductEdit() {
 
   if (!product) return <div className="app-center-text">読み込み中…</div>;
 
+  // フォーム各フィールドの変更ハンドラ（name 属性でフィールドを特定）
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // 保存: カテゴリ名→ID変換 → PUT /api/products/:id
   const handleSave = async (e) => {
     e.preventDefault();
     setIsSaving(true);
     try {
+      // カテゴリ名をマスターでIDに変換（存在しない名前はフィルタで除外）
       const categoryIds = selectedCategories
         .map(name => categories.find(c => c.name === name)?.category_id)
         .filter(Boolean);
+
       await apiFetch(`/api/products/${id}`, {
         method: 'PUT',
         body: {
@@ -53,19 +72,19 @@ function ProductEdit() {
           price: Number(formData.price),
           detail: formData.description,
           category_ids: categoryIds,
-          tags: product.tags || [],
-          image_urls: product.images,
+          tags: product.tags || [],          // タグは変更しない（既存のまま）
+          image_urls: product.images,        // 画像も変更しない（既存のまま）
         },
       });
       alert("商品情報を更新しました！");
-      navigate(`/deals/manage/${id}`);
+      navigate(`/deals/manage/${id}`); // 取引管理画面に戻る
     } catch (err) {
       alert(`更新に失敗しました: ${err.message}`);
       setIsSaving(false);
     }
   };
 
-  // 削除
+  // 出品削除: DELETE /api/products/:id → 取引一覧に遷移
   const handleDelete = async () => {
     if (!window.confirm("この出品を完全に削除してもよろしいですか？")) return;
     try {
@@ -89,7 +108,7 @@ function ProductEdit() {
 
       <form className="edit-form" onSubmit={handleSave}>
 
-        {/* 📷 画像プレビュー */}
+        {/* 画像プレビュー（1枚目のみ表示。画像変更はできない）*/}
         <div className="edit-section">
           <label className="edit-label">出品画像</label>
           <div className="edit-image-preview">
@@ -97,7 +116,7 @@ function ProductEdit() {
           </div>
         </div>
 
-        {/* 📝 商品名入力 */}
+        {/* 商品名 */}
         <div className="edit-section">
           <label className="edit-label">商品名</label>
           <input
@@ -111,13 +130,13 @@ function ProductEdit() {
           />
         </div>
 
-        {/* 📂 カテゴリ選択 */}
+        {/* カテゴリ選択（チップUI）*/}
         <div className="edit-section">
           <label className="edit-label">カテゴリー（複数選択可）</label>
           <CategoryChipSelector selected={selectedCategories} onChange={setSelectedCategories} />
         </div>
 
-        {/* 💬 商品の説明 */}
+        {/* 商品説明 */}
         <div className="edit-section">
           <label className="edit-label">商品の説明</label>
           <textarea
@@ -130,7 +149,7 @@ function ProductEdit() {
           ></textarea>
         </div>
 
-        {/* 💰 販売価格 */}
+        {/* 販売価格 */}
         <div className="edit-section no-border">
           <label className="edit-label">販売価格 (¥300〜9,999,999)</label>
           <div className="price-input-wrapper">
@@ -147,7 +166,7 @@ function ProductEdit() {
           </div>
         </div>
 
-        {/* 🚀 アクションボタン固定フッター */}
+        {/* アクションボタン（下部固定）*/}
         <div className="edit-actions-footer">
           <button type="submit" className="edit-save-btn" disabled={isSaving}>
             {isSaving ? '保存中…' : '変更を保存する'}

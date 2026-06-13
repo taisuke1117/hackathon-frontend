@@ -1,7 +1,14 @@
+/* ==========================================================================
+   AvatarCropModal.css: アバター画像トリミングモーダルのスタイル
+   ========================================================================== */
+
+/* ── オーバーレイ（背景の暗幕）────────────────────────────── */
+/* position: fixed + inset: 0 で画面全体を覆う */
+/* z-index: 1000 でヘッダー・フッターより前面に表示 */
 .crop-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.75); /* 後ろのコンテンツを透かして見せる半透明黒 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,9 +16,10 @@
   padding: 20px;
 }
 
+/* ── モーダルカード本体 ──────────────────────────────────── */
 .crop-modal-card {
-  background: var(--surface, #15181d);
-  border: 1px solid var(--border, #2a2f37);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 20px;
   width: 100%;
@@ -22,19 +30,23 @@
 .crop-modal-title {
   margin: 0 0 14px;
   font-size: 16px;
-  color: var(--text, #fff);
+  color: var(--text);
   text-align: center;
 }
 
+/* ── クロップエリア ──────────────────────────────────────── */
+/* react-easy-crop ライブラリのコンテナ。position: relative が必須 */
+/* height: 300px 固定で一定のクロップ領域を確保 */
 .crop-area-wrapper {
   position: relative;
   width: 100%;
   height: 300px;
   border-radius: 10px;
   overflow: hidden;
-  background: #000;
+  background: #000; /* クロップ外の余白を黒で埋める */
 }
 
+/* ── ズームスライダー ────────────────────────────────────── */
 .crop-zoom-row {
   display: flex;
   align-items: center;
@@ -44,42 +56,47 @@
 
 .crop-zoom-label {
   font-size: 11px;
-  color: var(--text-muted, #9aa3ad);
+  color: var(--text-muted);
   white-space: nowrap;
 }
 
+/* accent-color でスライダーのつまみをアイスブルーに染める */
 .crop-zoom-slider {
   flex: 1;
-  accent-color: var(--primary, #0ea5e9);
+  accent-color: var(--primary);
 }
 
+/* ── アクションボタン（キャンセル・確定）────────────────── */
 .crop-modal-actions {
   display: flex;
   gap: 10px;
   margin-top: 14px;
 }
 
+/* キャンセル: 控えめなアウトラインスタイル */
 .crop-cancel-btn {
   flex: 1;
   padding: 11px;
   border-radius: 8px;
-  border: 1px solid var(--border, #2a2f37);
+  border: 1px solid var(--border);
   background: transparent;
-  color: var(--text-muted, #9aa3ad);
+  color: var(--text-muted);
   cursor: pointer;
 }
 
+/* 確定: アイスブルーのソリッドボタン */
 .crop-confirm-btn {
-  flex: 2;
+  flex: 2; /* キャンセルより広く取る */
   padding: 11px;
   border-radius: 8px;
   border: none;
-  background: var(--primary, #0ea5e9);
+  background: var(--primary);
   color: #0b0d10;
   font-weight: bold;
   cursor: pointer;
 }
 
+/* クロップ処理中（Canvas 描画中）は無効化 */
 .crop-confirm-btn:disabled {
   opacity: 0.5;
   cursor: default;

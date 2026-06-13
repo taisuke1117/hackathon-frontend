@@ -1,4 +1,5 @@
-/* DealsDashboard — サマリーカード */
+/* サマリーカードのグリッドレイアウト*/
+/* 2カラムグリッドで並べる*/
 .dashboard-summary-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -6,9 +7,10 @@
   margin-bottom: 20px;
 }
 
+/* 通常サマリーカード*/
 .summary-card {
-  background: var(--surface, #15181d);
-  border: 1px solid var(--border, #2a2f37);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 14px;
   display: flex;
@@ -16,32 +18,37 @@
   gap: 4px;
 }
 
+/* 累計売上カード */
 .summary-card.gold-card {
-  grid-column: 1 / -1;
+  grid-column: 1 / -1; /* 2カラム幅を全部占有する */
   border-color: rgba(251, 191, 36, 0.4);
   background: rgba(251, 191, 36, 0.06);
 }
 
+/* 未発送カード */
 .summary-card.highlight-card {
   border-color: rgba(239, 68, 68, 0.4);
   background: rgba(239, 68, 68, 0.06);
 }
 
+/* カードのラベル*/
 .summary-label {
   font-size: 11px;
-  color: var(--text-muted, #9aa3ad);
+  color: var(--text-muted);
   font-weight: 500;
 }
 
+/* カードの数値（大きく表示）*/
 .summary-value {
   font-size: 22px;
   font-weight: 700;
-  color: var(--text, #fff);
+  color: var(--text);
 }
 
+/* 単位（「円」「件」など）*/
 .summary-value small {
   font-size: 13px;
   font-weight: 400;
-  color: var(--text-muted, #9aa3ad);
+  color: var(--text-muted);
   margin-left: 2px;
 }

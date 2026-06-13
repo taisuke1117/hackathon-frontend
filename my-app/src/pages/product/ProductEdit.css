@@ -1,13 +1,20 @@
-/* 🌌 編集画面全体のコンテナ：深淵なる漆黒 */
+/* ==========================================================================
+   ProductEdit.css: 商品編集ページのスタイル
+   ========================================================================== */
+
+/* ── ページ全体のコンテナ ────────────────────────────────── */
+/* padding-bottom: 140px = 固定フッターボタンエリア(約120px) + 余白 */
 .edit-page-container {
   max-width: 600px;
   margin: 0 auto;
   background-color: var(--background);
   min-height: 100vh;
-  padding-bottom: 140px; /* 下の固定ボタンと絶対に被らないように広めに確保 */
+  min-height: 100svh;
+  padding-bottom: 140px;
 }
 
-/* 👤 ヘッダー：固定配置も闇色にシンクロ */
+/* ── スティッキーヘッダー ────────────────────────────────── */
+/* position: sticky でスクロール時も画面上部に留まる */
 .edit-header {
   display: flex;
   align-items: center;
@@ -20,7 +27,6 @@
   z-index: 100;
 }
 
-/* キャンセルボタン：氷河の透過感を持たせる */
 .edit-cancel-btn {
   background: none;
   border: none;
@@ -30,9 +36,7 @@
   transition: color 0.2s;
 }
 
-.edit-cancel-btn:hover {
-  color: var(--text);
-}
+.edit-cancel-btn:hover { color: var(--text); }
 
 .edit-page-title {
   font-size: 16px;
@@ -41,20 +45,16 @@
   margin: 0;
 }
 
-/* フォーム全体 */
-.edit-form {
-  padding: 0;
-}
+/* ── フォーム全体 ────────────────────────────────────────── */
+.edit-form { padding: 0; }
 
-/* フォームの各セクション：繊細な境界線 */
+/* 各セクション（画像 / タイトル / 説明 / カテゴリ / 価格）を区切り線で分ける */
 .edit-section {
   padding: 20px 16px;
   border-bottom: 1px solid var(--border);
 }
 
-.edit-section.no-border {
-  border-bottom: none;
-}
+.edit-section.no-border { border-bottom: none; }
 
 .edit-label {
   display: block;
@@ -65,8 +65,10 @@
   letter-spacing: 0.5px;
 }
 
-/* ✏️ 入力パーツ：背景透過で完全に闇に馴染ませる */
-.edit-input, .edit-textarea {
+/* ── テキスト入力・テキストエリア ───────────────────────── */
+/* border: none + background: transparent で背景に溶け込み、入力に集中させる */
+.edit-input,
+.edit-textarea {
   width: 100%;
   border: none;
   background: transparent;
@@ -81,7 +83,7 @@
   line-height: 1.6;
 }
 
-/* 📷 画像プレビュー枠 */
+/* ── 画像プレビュー枠 ────────────────────────────────────── */
 .edit-image-preview {
   position: relative;
   width: 100px;
@@ -98,12 +100,12 @@
   object-fit: cover;
 }
 
-/* 画像に被る半透明帯 */
+/* 画像下部の「変更」テキスト帯 */
 .image-change-overlay {
   position: absolute;
   bottom: 0;
   width: 100%;
-  background-color: rgba(11, 15, 23, 0.75); /* より深い闇透過 */
+  background-color: rgba(11, 15, 23, 0.75);
   color: var(--text-muted);
   font-size: 10px;
   text-align: center;
@@ -111,7 +113,8 @@
   font-weight: bold;
 }
 
-/* カテゴリ選択リンク（マットな水色で発光） */
+/* ── カテゴリ選択行 ──────────────────────────────────────── */
+/* クリックでカテゴリ選択モーダルを開く */
 .edit-category-selector {
   display: flex;
   justify-content: space-between;
@@ -123,11 +126,10 @@
   padding: 4px 0;
 }
 
-.arrow-right {
-  color: var(--border);
-}
+.arrow-right { color: var(--border); }
 
-/* 💰 価格入力エリア */
+/* ── 価格入力エリア ──────────────────────────────────────── */
+/* ¥マーク + 大きな数字入力でメルカリ風の価格入力UI */
 .price-input-wrapper {
   display: flex;
   align-items: center;
@@ -142,7 +144,7 @@
   margin-right: 8px;
 }
 
-/* 金額入力文字：アイスブルーで太く発光させる */
+/* 価格入力: アイスブルーの大きな数字 */
 .edit-price-input {
   flex: 1;
   border: none;
@@ -153,7 +155,8 @@
   outline: none;
 }
 
-/* 🚀 フッター固定ボタン：1歩手前のチャコールで引き締める */
+/* ── 固定フッターボタンエリア ───────────────────────────── */
+/* 「保存」と「削除」を画面下部に固定して常にアクセスできるようにする */
 .edit-actions-footer {
   position: fixed;
   bottom: 0;
@@ -162,14 +165,14 @@
   background-color: var(--surface);
   border-top: 1px solid var(--border);
   padding: 16px;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   gap: 12px;
   box-sizing: border-box;
 }
 
-/* 保存ボタン：マットアイスブルーに黒文字 */
+/* 保存ボタン: ソリッドなアイスブルー */
 .edit-save-btn {
   background-color: #0ea5e9;
   color: var(--background);
@@ -182,15 +185,13 @@
   transition: opacity 0.2s ease;
 }
 
-.edit-save-btn:hover {
-  opacity: 0.9;
-}
+.edit-save-btn:hover { opacity: 0.9; }
 
-/* 削除ボタン：闇に静かに溶け込むアンダーライン型の退色レッド */
+/* 削除ボタン: 赤のテキストのみ（目立ちすぎない危険操作ゾーン）*/
 .edit-delete-btn {
   background: none;
   border: none;
-  color: #ef4444; /* 退色ソリッドレッド */
+  color: #ef4444;
   font-size: 13px;
   font-weight: bold;
   cursor: pointer;

@@ -1,30 +1,32 @@
 /* ==========================================================================
-   🔔 通知画面（Notification）専用スタイル
+   Notification.css: 通知一覧画面のスタイル
    ========================================================================== */
 
+/* ── ページ全体のコンテナ ────────────────────────────────── */
 .notify-container {
   max-width: 600px;
   margin: 0 auto;
-  background-color: var(--background, #05080e); /* 闇ベース */
+  background-color: var(--background);
   min-height: 100vh;
+  min-height: 100svh;
   padding-bottom: 60px;
 }
 
-/* 1. ヘッダー */
+/* ── ページヘッダー ──────────────────────────────────────── */
 .notify-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--background, #05080e);
+  background-color: var(--background);
   padding: 12px 16px;
-  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  border-bottom: 1px solid var(--border);
 }
 
 .notify-back-btn {
   background: none;
   border: none;
   font-size: 14px;
-  color: var(--text-muted, #8a99ad);
+  color: var(--text-muted);
   cursor: pointer;
   font-weight: bold;
 }
@@ -32,15 +34,15 @@
 .notify-page-title {
   font-size: 16px;
   font-weight: bold;
-  color: var(--text, #ffffff);
+  color: var(--text);
   margin: 0;
 }
 
-/* 2. シンプルな2つの切り替えタブ */
+/* ── タブバー（取引通知 / お知らせ）────────────────────── */
 .notify-tab-bar {
   display: flex;
-  background-color: var(--surface, #0f141d);
-  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
 }
 
 .notify-tab-btn {
@@ -49,7 +51,7 @@
   border: none;
   padding: 14px 0;
   font-size: 13px;
-  color: var(--text-muted, #8a99ad);
+  color: var(--text-muted);
   font-weight: bold;
   cursor: pointer;
   position: relative;
@@ -60,11 +62,10 @@
   gap: 6px;
 }
 
-.notify-tab-btn.active {
-  color: var(--primary, #0ea5e9); /* アイスブルー */
-}
+/* アクティブなタブ: アイスブルー */
+.notify-tab-btn.active { color: var(--primary); }
 
-/* アクティブタブの下線 */
+/* アクティブタブのアンダーライン */
 .notify-tab-btn.active::after {
   content: '';
   position: absolute;
@@ -72,11 +73,11 @@
   left: 25%;
   width: 50%;
   height: 2px;
-  background-color: var(--primary, #0ea5e9);
+  background-color: var(--primary);
   border-radius: 2px;
 }
 
-/* 未読がある場合の小さなアラートポチ */
+/* 未読がある場合に表示する小さなドット */
 .notify-alert-dot {
   width: 6px;
   height: 6px;
@@ -84,9 +85,9 @@
   border-radius: 50%;
 }
 
-/* 3. 通知リストの1行スタイル */
+/* ── 通知リスト ──────────────────────────────────────────── */
 .notify-list-wrapper {
-  background-color: var(--surface, #0f141d);
+  background-color: var(--surface);
 }
 
 .notify-row-item {
@@ -94,27 +95,20 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.06));
+  border-bottom: 1px solid var(--border);
   transition: background-color 0.2s ease;
 }
 
-.notify-row-item:last-child {
-  border-bottom: none;
-}
+.notify-row-item:last-child { border-bottom: none; }
 
-/* 未読の通知行はほんのり青みがかった背景で強調 */
+/* 未読通知: ほんのり青みがかった背景で視覚的に区別 */
 .notify-row-item.unread {
   background-color: rgba(14, 165, 233, 0.03);
 }
 
-/* タップして画面遷移できる通知 */
-.notify-row-item.clickable {
-  cursor: pointer;
-}
-
-.notify-row-item.clickable:hover {
-  background-color: var(--surface-hover, #161c28);
-}
+/* タップできる通知（チャットや商品に紐づくもの）*/
+.notify-row-item.clickable { cursor: pointer; }
+.notify-row-item.clickable:hover { background-color: var(--surface-hover); }
 
 .notify-main-content {
   flex: 1;
@@ -129,44 +123,45 @@
   gap: 8px;
 }
 
-/* 未読通知のタイトルは太字にしてクッキリ */
+/* 未読の場合はタイトルを太字で強調 */
 .notify-row-item.unread .notify-item-title {
-  color: var(--text, #ffffff);
+  color: var(--text);
   font-weight: bold;
 }
 
 .notify-item-title {
   font-size: 13px;
-  color: var(--text, #ffffff);
+  color: var(--text);
   font-weight: 500;
 }
 
 .notify-timestamp {
   font-size: 11px;
-  color: var(--text-muted, #8a99ad);
+  color: var(--text-muted);
   white-space: nowrap;
   opacity: 0.7;
 }
 
 .notify-item-desc {
   font-size: 12px;
-  color: var(--text-muted, #8a99ad);
+  color: var(--text-muted);
   margin: 0;
   line-height: 1.5;
 }
 
+/* タップできる通知の右矢印 */
 .notify-arrow-hint {
   font-size: 12px;
-  color: var(--text-muted, #8a99ad);
+  color: var(--text-muted);
   margin-left: 12px;
   opacity: 0.4;
 }
 
-/* リストが空っぽのときのメッセージ */
+/* 通知がない場合のメッセージ */
 .notify-empty-message {
   text-align: center;
   padding: 80px 20px;
-  color: var(--text-muted, #8a99ad);
+  color: var(--text-muted);
   font-size: 13px;
-  background-color: var(--background, #05080e);
+  background-color: var(--background);
 }

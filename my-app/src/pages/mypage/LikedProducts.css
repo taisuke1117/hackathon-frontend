@@ -1,13 +1,20 @@
-/* 🌌 いいね一覧全体コンテナ */
+/* ==========================================================================
+   LikedProducts.css: いいね済み商品一覧ページのスタイル
+   ========================================================================== */
+
+/* ── ページ全体のコンテナ ────────────────────────────────── */
+/* padding-bottom: 80px = フッターナビ(55px) + 余白 で商品が隠れないよう確保 */
 .liked-page-container {
-  max-width: 600px; /* 他のマイページや詳細画面の幅と同期 */
+  max-width: 600px;
   margin: 0 auto;
   background-color: var(--background);
   min-height: 100vh;
-  padding-bottom: 80px; /* 下部ナビゲーションバーに被らない余白 */
+  min-height: 100svh;
+  padding-bottom: 80px;
 }
 
-/* 👤 ヘッダー */
+/* ── スティッキーヘッダー ────────────────────────────────── */
+/* スクロール中も固定。box-shadow で下に浮いているように見せる */
 .liked-page-header {
   display: flex;
   align-items: center;
@@ -33,9 +40,7 @@
   transition: color 0.2s;
 }
 
-.liked-page-back-btn:hover {
-  color: var(--text);
-}
+.liked-page-back-btn:hover { color: var(--text); }
 
 .liked-page-title {
   font-size: 16px;
@@ -44,26 +49,24 @@
   margin: 0;
 }
 
-/* 🧱 商品カードを並べるグリッドエリア */
-.liked-page-content {
-  padding: 16px;
-}
+/* ── 商品グリッドエリア ──────────────────────────────────── */
+.liked-page-content { padding: 16px; }
 
+/* デフォルト: 2カラム（スマホ幅） */
 .liked-products-grid {
   display: grid;
-  /* スマホ環境を想定して綺麗に2列で並べる設定 */
-  grid-template-columns: repeat(2, 1fr); 
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
 
-/* 💡 もし画面幅が広がった場合は自動で3列にするレスポンシブ対応 */
+/* 480px 以上の幅なら 3カラムに広げる */
 @media (min-width: 480px) {
   .liked-products-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
-/* 📭 まだいいねが無いときの状態（エンプティステート） */
+/* ── 空の状態（いいねがない）────────────────────────────── */
 .liked-empty-state {
   display: flex;
   flex-direction: column;
@@ -79,7 +82,7 @@
   margin-bottom: 20px;
 }
 
-/* サイバーパンクなディスカバーボタン */
+/* 「商品を探す」ボタン: アイスブルー枠のアウトラインスタイル */
 .empty-discover-btn {
   background-color: transparent;
   color: var(--primary);
@@ -93,6 +96,7 @@
   box-shadow: 0 0 10px rgba(14, 165, 233, 0.1);
 }
 
+/* ホバーで塗りつぶしに変わる: アウトライン → ソリッド */
 .empty-discover-btn:hover {
   background-color: var(--primary);
   color: var(--background);

@@ -1,10 +1,17 @@
+/* ==========================================================================
+   SearchBar.css: 検索バー（旧バージョン）
+   ※ 新バージョン: components/ui/SearchBar.css
+   ========================================================================== */
+
+/* ── 検索バー全体のラッパー ──────────────────────────────── */
+/* position: sticky + top: 50px でヘッダーのすぐ下に固定 */
 .search-wrapper {
   background-color: var(--background);
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
   position: sticky;
-  top: 50px; 
-  z-index: 900; 
+  top: 50px;  /* ヘッダー(60px) - 余白 */
+  z-index: 900;
 }
 
 .search-bar-row {
@@ -13,33 +20,27 @@
   align-items: center;
 }
 
+/* メイン検索インプット: ピル形状 */
 .main-search-input {
   flex: 1;
-  padding: 10px 16px; 
+  padding: 10px 16px;
   background-color: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 20px; 
+  border-radius: 20px;
   font-size: 15px;
   color: var(--text);
   outline: none;
   transition: all 0.2s ease;
 }
 
-.main-search-input::placeholder {
-  color: var(--text-muted);
-  opacity: 0.6;
-}
+.main-search-input::placeholder { color: var(--text-muted); opacity: 0.6; }
+.main-search-input:focus { background-color: var(--surface-hover); border-color: var(--primary); }
 
-.main-search-input:focus {
-  background-color: var(--surface-hover);
-  border-color: var(--primary);
-}
-
-/* 🤍 閉じるボタン：視認性を高く太めに維持 */
+/* 「閉じる」ボタン */
 .close-filter-btn {
   background: none;
   border: none;
-  color: var(--text); 
+  color: var(--text);
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
@@ -47,22 +48,21 @@
   transition: color 0.2s ease;
 }
 
-.close-filter-btn:hover {
-  color: #38bdf8; /* 水色にシャープに光る */
-}
+.close-filter-btn:hover { color: #38bdf8; }
 
-/* 詳細検索メニュー */
+/* ── フィルターパネル（アコーディオン）────────────────────── */
+/* max-height: 0 → 500px のトランジションで開閉アニメーション */
 .detailed-filter-menu {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
   padding: 0;
   position: relative;
-  z-index: 10; 
+  z-index: 10;
 }
 
 .detailed-filter-menu.open {
-  max-height: 500px; 
+  max-height: 500px;
   padding: 16px 0 12px 0;
 }
 
@@ -83,20 +83,21 @@
 .filter-group label {
   font-size: 13px;
   font-weight: bold;
-  color: var(--text-muted); 
+  color: var(--text-muted);
 }
 
 .filter-group select {
   padding: 10px;
   background-color: var(--surface);
   color: var(--text);
-  border: 1px solid var(--border); 
-  border-radius: var(--radius-md); 
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   font-size: 14px;
   outline: none;
   cursor: pointer;
 }
 
+/* 価格帯 Min〜Max 入力 */
 .price-range-inputs {
   display: flex;
   align-items: center;
@@ -110,17 +111,17 @@
   background-color: var(--surface);
   color: var(--text);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md); 
+  border-radius: var(--radius-md);
   font-size: 14px;
   outline: none;
 }
 
 .filter-search-btn {
-  background-color: var(--surface-hover); 
+  background-color: var(--surface-hover);
   color: var(--primary);
   border: 1px solid rgba(56, 189, 248, 0.3);
   padding: 12px;
-  border-radius: var(--radius-md); 
+  border-radius: var(--radius-md);
   font-size: 15px;
   font-weight: bold;
   cursor: pointer;
@@ -134,8 +135,9 @@
   transform: translateY(-1px);
 }
 
-/* ーーー AIセクション（全面作り直し） ーーー */
+/* ── AI 検索セクション ───────────────────────────────────── */
 
+/* 区切り線（テキスト付き）*/
 .ai-search-divider {
   display: flex;
   align-items: center;
@@ -157,37 +159,36 @@
   letter-spacing: 0.5px;
 }
 
-/* 💡 枠が絶対に切れないように、paddingと角の丸みを完全にシンクロさせた新仕様 */
+/* AI入力エリア: 水色→インディゴのグラデーション枠 */
+/* padding: 1px でグラデーション線をちょうど1px分表示する */
 .ai-input-wrapper {
   display: flex;
   align-items: center;
   border-radius: 24px;
-  padding: 1px; /* 💡 1pxの極細グラデーション線をクッキリ見せる隙間 */
+  padding: 1px;
   background: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
   box-shadow: 0 0 14px rgba(56, 189, 248, 0.2);
-  overflow: hidden; /* 内側のはみ出しを確実にブロック */
+  overflow: hidden;
   box-sizing: border-box;
 }
 
+/* テキストボックス: 外枠 24px に対して 1px 縮めた 23px の角丸 */
 .ai-search-input {
   flex: 1;
   padding: 12px 16px;
   border: none;
-  background-color: var(--surface); /* 1歩手前の漆黒グレー */
+  background-color: var(--surface);
   color: var(--text);
   font-size: 14px;
-  border-top-left-radius: 23px; /* 外枠の24pxと喧嘩しないように1px縮める */
+  border-top-left-radius: 23px;
   border-bottom-left-radius: 23px;
   outline: none;
   box-sizing: border-box;
 }
 
-.ai-search-input::placeholder {
-  color: var(--text-muted);
-  opacity: 0.5;
-}
+.ai-search-input::placeholder { color: var(--text-muted); opacity: 0.5; }
 
-/* 💡 送信ボタン：アイコンと背景を完璧に馴染ませる */
+/* 送信ボタン */
 .ai-search-btn {
   background-color: var(--surface);
   border: none;
@@ -195,7 +196,7 @@
   align-items: center;
   justify-content: center;
   padding: 0 16px;
-  height: 43px; /* 入力欄の縦幅と完全に一致させて隙間を消す */
+  height: 43px; /* 入力欄の高さと合わせて隙間をなくす */
   border-top-right-radius: 23px;
   border-bottom-right-radius: 23px;
   cursor: pointer;
@@ -203,34 +204,28 @@
   box-sizing: border-box;
 }
 
-/* 💡 黒いsend.svgを、美しいアイスブルーへと輝かせる魔法のフィルター */
+/* CSS filter で黒いSVGアイコンをアイスブルーに変換する数値計算フィルター */
 .ai-send-icon {
   width: 18px;
   height: 18px;
   object-fit: contain;
-  /* 黒いSVGを「鮮やかな水色（#38bdf8）」へ1発変換する数値計算フィルタ */
   filter: invert(73%) sepia(41%) saturate(2326%) hue-rotate(174deg) brightness(101%) contrast(97%);
   transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-/* ホバー時の近未来エフェクト */
-.ai-input-wrapper:hover {
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
-}
+.ai-input-wrapper:hover { box-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
 
+/* ホバーでアイコンが右に少し動き、純白に変わる */
 .ai-search-btn:hover .ai-send-icon {
-  transform: translateX(2px) scale(1.05); /* 💡 飛び立つように少し右上に動く可愛い演出 */
-  filter: invert(100%) sepia(0%) saturate(0%) brightness(200%); /* ホバーで純白にブースト */
+  transform: translateX(2px) scale(1.05);
+  filter: invert(100%) sepia(0%) saturate(0%) brightness(200%);
 }
 
-/* 背景オーバーレイ */
+/* ── 背景オーバーレイ（フィルター外クリックで閉じる）── */
 .search-overlay {
-  position: fixed; 
-  top: 0; 
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(5, 6, 10, 0.7); 
-  z-index: 1; 
+  position: fixed;
+  inset: 0;
+  background-color: rgba(5, 6, 10, 0.7);
+  z-index: 1;
   cursor: pointer;
 }

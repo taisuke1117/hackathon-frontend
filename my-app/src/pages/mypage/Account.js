@@ -6,40 +6,63 @@ import { uploadProductImage } from '../../api/storage';
 import { AvatarCropModal } from '../../components/modal/AvatarCropModal';
 import './Account.css';
 
+// ─────────────────────────────────────────────────────────
+// Account: アカウント設定ページ（マイページの歯車アイコンから来る）
+//
+// 機能:
+//   - アバター画像の変更（選択 → 切り抜きモーダル → GCSアップロード）
+//   - ニックネーム・地域・自己紹介の編集
+//   - PUT /api/users/me でプロフィール保存
+//   - ログアウトボタン
+//
+// アバター変更フロー:
+//   1. input[type=file] で画像を選択
+//   2. FileReader で DataURL に変換
+//   3. AvatarCropModal でトリミング（canvas で切り抜き）
+//   4. Blob → File → GCSアップロード → URL を profileImage state に保存
+//   5. 保存ボタンで PUT /api/users/me にまとめて送る
+// ─────────────────────────────────────────────────────────
+
 function Account() {
   const { loginUser, profile, setProfile } = useAuth();
+  // ファイルinputを非表示にして「写真を変更」ラベルから開くためのref
   const fileInputRef = useRef(null);
 
+  // フォームの各フィールドを state で管理（初期値はプロフィールから）
   const [name, setName] = useState(profile?.name || loginUser?.displayName || '');
+  // email はFirebase側で管理するため変更不可（表示のみ）
   const [email] = useState(profile?.mail || loginUser?.email || '');
   const [bio, setBio] = useState(profile?.bio || '');
   const [region, setRegion] = useState(profile?.place || '');
   const [profileImage, setProfileImage] = useState(profile?.icon_url || loginUser?.photoURL || '');
   const [isSaving, setIsSaving] = useState(false);
-  const [cropSrc, setCropSrc] = useState(null); // 切り抜きモーダルに渡す選択画像
+  // cropSrc: AvatarCropModal に渡す画像のDataURL（null なら非表示）
+  const [cropSrc, setCropSrc] = useState(null);
 
-  // 画像を選んだらまず切り抜きモーダルを開く
+  // 画像を選んだら切り抜きモーダルを開く
+  // input の value をリセットすることで同じファイルを再選択できるようにする
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    e.target.value = '';
+    e.target.value = ''; // 同一ファイルを再選択可能にするためリセット
     if (!file) return;
     const reader = new FileReader();
-    reader.onloadend = () => setCropSrc(reader.result);
+    reader.onloadend = () => setCropSrc(reader.result); // DataURLをモーダルに渡す
     reader.readAsDataURL(file);
   };
 
-  // 切り抜き確定 → アップロードしてURLを保持
+  // 切り抜き確定後: Blob → File変換 → GCSへアップロード → URLを保持
   const handleCropped = async (blob) => {
-    setCropSrc(null);
+    setCropSrc(null); // モーダルを閉じる
     try {
       const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
-      const url = await uploadProductImage(file);
-      setProfileImage(url);
+      const url = await uploadProductImage(file); // GCS署名URLを取得してアップロード
+      setProfileImage(url); // 保存ボタンが押されたときにまとめて送る
     } catch (err) {
       alert(`画像のアップロードに失敗しました: ${err.message}`);
     }
   };
 
+  // フォーム送信: PUT /api/users/me でプロフィール全体を更新
   const handleSave = async (e) => {
     e.preventDefault();
     setIsSaving(true);
@@ -51,10 +74,10 @@ function Account() {
           place: region,
           icon_url: profileImage,
           bio,
-          shipping_address: profile?.shipping_address || '',
+          shipping_address: profile?.shipping_address || '', // 配送先は設定画面では変更しない
         },
       });
-      setProfile(updated);
+      setProfile(updated); // AuthContext のプロフィールを最新状態に更新
       alert('設定を保存しました！');
     } catch (err) {
       alert(`保存に失敗しました: ${err.message}`);
@@ -69,13 +92,14 @@ function Account() {
 
       <form onSubmit={handleSave} className="account-form">
 
-        {/* プロフィール写真エリア */}
+        {/* アバター画像エリア */}
         <div className="profile-image-section">
           <div className="image-preview-wrapper">
             {profileImage
               ? <img src={profileImage} alt="プロフィール写真" className="profile-preview" />
               : <div className="profile-preview" style={{ background: '#444' }} />}
           </div>
+          {/* label クリックで非表示の input を開く */}
           <label className="image-upload-label" onClick={() => fileInputRef.current?.click()}>
             写真を変更
           </label>
@@ -95,7 +119,7 @@ function Account() {
           />
         </div>
 
-        {/* メールアドレス（編集不可） */}
+        {/* メールアドレス（Firebase管理のため変更不可）*/}
         <div className="form-group">
           <label className="form-label">メールアドレス</label>
           <input
@@ -106,7 +130,7 @@ function Account() {
           />
         </div>
 
-        {/* 住んでいる地域 */}
+        {/* 地域選択 */}
         <div className="form-group">
           <label className="form-label">発送元・住んでいる地域</label>
           <select
@@ -134,7 +158,6 @@ function Account() {
           />
         </div>
 
-        {/* 保存ボタン */}
         <button type="submit" className="save-button" disabled={isSaving}>
           {isSaving ? '保存中…' : '設定を保存する'}
         </button>
@@ -146,7 +169,7 @@ function Account() {
         <LogoutButton />
       </div>
 
-      {/* ✂️ 写真の切り抜きモーダル */}
+      {/* 画像切り抜きモーダル（cropSrc が null でない間だけ表示）*/}
       {cropSrc && (
         <AvatarCropModal
           imageSrc={cropSrc}

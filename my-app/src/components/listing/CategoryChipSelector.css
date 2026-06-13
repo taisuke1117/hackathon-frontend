@@ -1,4 +1,9 @@
-/* CategoryChipSelector — カテゴリチップ共通スタイル */
+/* ==========================================================================
+   CategoryChipSelector.css: カテゴリ選択チップのスタイル
+   ========================================================================== */
+
+/* ── チップのグリッドコンテナ ────────────────────────────── */
+/* flex-wrap: wrap でチップが多くても折り返して並ぶ */
 .category-chip-grid {
   display: flex;
   flex-wrap: wrap;
@@ -6,19 +11,23 @@
   margin-top: 4px;
 }
 
+/* ── 各チップ（非選択状態）────────────────────────────────── */
+/* background: transparent で背景を透かし、border のみで存在を示す */
 .category-chip {
   padding: 6px 14px;
-  border-radius: 16px;
-  border: 1px solid var(--border, #2a2f37);
+  border-radius: 16px; /* ピル形状 */
+  border: 1px solid var(--border);
   background: transparent;
-  color: var(--text, #fff);
+  color: var(--text);
   font-size: 13px;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
 }
 
+/* ── 選択済み状態（active）────────────────────────────────── */
+/* アイスブルーの半透明背景 + 水色の枠 + 水色のテキストで選択状態を示す */
 .category-chip.active {
-  background: rgba(14, 165, 233, 0.15);
-  border-color: var(--primary, #0ea5e9);
-  color: var(--primary, #0ea5e9);
+  background: rgba(14, 165, 233, 0.15); /* 薄い水色で塗りつぶす */
+  border-color: var(--primary);
+  color: var(--primary);
 }

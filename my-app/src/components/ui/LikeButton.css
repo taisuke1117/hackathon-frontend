@@ -1,10 +1,15 @@
+/* ==========================================================================
+   LikeButton.css: いいねボタンのスタイル
+   ========================================================================== */
+
+/* ── コンポーネントのコンテナ ────────────────────────────── */
 .like-component {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-/* いいねボタンの土台 */
+/* ── ボタン本体（見た目はなし、アニメーションだけ） ─────── */
 .like-trigger-btn {
   background: none;
   border: none;
@@ -14,25 +19,21 @@
   align-items: center;
   justify-content: center;
   outline: none;
-  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 💡 押した時にぷにっと動くアニメーション */
+  /* cubic-bezier で押したときにぷにっとバウンドするアニメーション */
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.like-trigger-btn:hover {
-  transform: scale(1.1);
-}
+.like-trigger-btn:hover  { transform: scale(1.1); }   /* ホバー: 少し拡大 */
+.like-trigger-btn:active { transform: scale(0.9); }   /* 押下: 少し縮む */
 
-.like-trigger-btn:active {
-  transform: scale(0.9);
-}
-
-/* ハートSVGの基本共通スタイル */
+/* ── ハートアイコン（SVG） ───────────────────────────────── */
 .heart-svg {
   width: 20px;
   height: 20px;
   transition: all 0.25s ease;
 }
 
-/* 🤍 1. 通常時（未選択）のハート：ブルーグレーの細い線 */
+/* 未いいね状態: 枠線のみのハート（ブルーグレー） */
 .like-trigger-btn .heart-svg {
   fill: none;
   stroke: var(--text-muted);
@@ -43,24 +44,23 @@
   stroke: var(--text); /* ホバーで少し白く光る */
 }
 
-/* ❄️ 2. 選択時（いいね済）のハート：優しい水色で満たす */
+/* いいね済み状態: アイスブルーで塗りつぶし + グロウエフェクト */
 .like-trigger-btn.liked .heart-svg {
-  fill: var(--primary); /* 💡 派手な赤から「アイスブルー」へ */
+  fill: var(--primary);
   stroke: var(--primary);
   stroke-width: 2px;
-  /* 💡 ハートの周りに優しい水色の残光（グロウエフェクト）をまとわせる */
-  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.5));
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.5)); /* 水色の残光 */
 }
 
-/* カウンターの数字テキスト */
+/* ── カウンター数字 ───────────────────────────────────────── */
 .like-counter-text {
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-muted); /* 通常時はブルーグレー */
+  color: var(--text-muted); /* 通常: ブルーグレー */
   transition: color 0.2s ease;
 }
 
-/* 選択時は数字も優しい水色へ */
+/* いいね済み: 数字も水色に変わる */
 .like-counter-text.liked {
   color: var(--primary);
 }

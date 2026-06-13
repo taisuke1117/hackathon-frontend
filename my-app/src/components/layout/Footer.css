@@ -1,17 +1,17 @@
-/* 💡 フッター全体を『氷河と漆黒』のダークグレーに */
+/* フッター本体 */
 .footer {
-  position: fixed;
+  position: fixed;      /* 画面下部に固定 */
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 55px; 
-  background-color: var(--surface); 
-  border-top: 1px solid var(--border); 
+  height: 55px;
+  background-color: var(--surface);
+  border-top: 1px solid var(--border);
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4); 
-  z-index: 1000; 
+  z-index: 1000;
 }
 
-/* 💡 アイコンを等間隔に整列するコンテナ */
+/* ナビアイテムのコンテナ（5等分） */
 .footer-nav {
   display: flex;
   justify-content: space-around;
@@ -21,7 +21,7 @@
   margin: 0 auto;
 }
 
-/* 💡 ナビゲーションリンクの基本設定 */
+/*  各ナビアイテム */
 .nav-item {
   display: flex;
   flex-direction: column;
@@ -34,51 +34,44 @@
   gap: 2px;
 }
 
-/* 💡 通常時のアイコン画像（ブルーグレーに馴染む明るさ） */
+/* アイコン画像 */
 .nav-icon-img {
   width: 22px;
   height: 22px;
   object-fit: contain;
-  filter: invert(0.5) sepia(10%) saturate(800%) hue-rotate(180deg); 
+  filter: invert(0.5) sepia(10%) saturate(800%) hue-rotate(180deg);
   opacity: 0.7;
   transition: all 0.2s ease;
 }
 
-/* 💡 通常時のテキスト（静かなブルーグレー） */
+/* テキストラベル */
 .nav-icon-text {
   font-size: 10px;
-  color: var(--text-muted) !important; /* 💡 他のスタイルの干渉を防ぐため強制指定 */
+  color: var(--text-muted) !important;
   font-weight: 500;
   transition: all 0.2s ease;
 }
 
-/* 💻 パソコン等でのマウスホバー時の挙動 */
-.nav-item:hover .nav-icon-text {
-  color: #ffffff !important; 
-}
-.nav-item:hover .nav-icon-img {
-  filter: invert(1); 
-  opacity: 1;
-}
+/*  ホバー状態  */
+.nav-item:hover .nav-icon-text { color: #ffffff !important; }
+.nav-item:hover .nav-icon-img  { filter: invert(1); opacity: 1; }
 
-/* 🎯 選択中（アクティブ）のメニューのスタイル */
-/* 💡 文字とアイコンを確実に「純白」にして、見えなくなる現象を絶対防ぐ */
+/* アクティブ状態（現在のページ） */
 .nav-item.active .nav-icon-text {
-  color: #ffffff !important; /* 💡 選択されたら絶対に主役の「白」にする */
+  color: #ffffff !important;
   font-weight: 600;
 }
-
 .nav-item.active .nav-icon-img {
-  filter: invert(1) !important; /* 💡 アイコンも完全な白にしてクッキリ認識させる */
+  filter: invert(1) !important;
   opacity: 1;
 }
 
-/* 💡 中央の「出品」ボタン（/listing）のデザイン */
+/*  出品ボタン（中央の＋ボタン） */
 .nav-item[href="/listing"] {
   position: relative;
-  top: -6px; 
-  background: var(--surface-hover); 
-  border: 1px solid rgba(56, 189, 248, 0.4); /* 💡 差し色：優しい水色の極細枠 */
+  top: -6px; /* フッターから少し浮かせる */
+  background: var(--surface-hover);
+  border: 1px solid rgba(56, 189, 248, 0.4); /* 水色の細枠 */
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -86,35 +79,35 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* 出品ボタン専用：中のアイコンとテキストの調整 */
 .nav-item[href="/listing"] .nav-icon-img {
-  filter: invert(75%) sepia(40%) saturate(1000%) hue-rotate(170deg) !important; /* 💡 アイコンを優しい水色に */
+  filter: invert(75%) sepia(40%) saturate(1000%) hue-rotate(170deg) !important;
   opacity: 1;
 }
 
-/* 💡 出品ボタンの文字が見えなくなっていた対策：色の指定をより強固に */
 .nav-item[href="/listing"] .nav-icon-text {
-  color: var(--primary) !important; /* 💡 優しい水色に強制指定 */
+  color: var(--primary) !important;
   font-size: 9px;
   font-weight: bold;
 }
 
-/* 出品ボタン自体がアクティブ（選択中）の時は、水色をさらにクッキリ際立たせる */
+/* 出品ボタンのアクティブ状態 */
 .nav-item[href="/listing"].active {
   background: var(--surface-hover);
-  border-color: var(--primary); 
-  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.2); 
+  border-color: var(--primary);
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.2);
 }
 .nav-item[href="/listing"].active .nav-icon-text {
-  color: var(--primary) !important; /* アクティブ時も水色をキープ */
+  color: var(--primary) !important;
 }
 
-/* 出品ボタンのホバー挙動 */
+/* 出品ボタンのホバー */
 .nav-item[href="/listing"]:hover {
-  background: #2b313d; 
+  background: #2b313d;
   transform: translateY(-1px) scale(1.03);
 }
-/* 🔵 チャットタブの未読ドット */
+
+/*  チャットアイコンの未読バッジ  */
+/* アイコン画像を基準点にして右上に配置する */
 .nav-icon-wrapper {
   position: relative;
   display: inline-flex;

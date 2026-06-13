@@ -1,14 +1,20 @@
-/* 🌌 チェックアウト全体コンテナ */
+/* ==========================================================================
+   Checkout.css: 購入確認・チェックアウト画面のスタイル
+   ========================================================================== */
+
+/* ── ページ全体のコンテナ ────────────────────────────────── */
 .checkout-container {
-  max-width: 600px; /* 縦スクロールに最適なモバイルサイズ */
+  max-width: 600px;
   margin: 0 auto;
   background-color: var(--background);
   color: var(--text);
   min-height: 100vh;
+  min-height: 100svh;
   padding-bottom: 60px;
 }
 
-/* ヘッダー */
+/* ── スティッキーヘッダー（スクロール中も固定）────────── */
+/* position: sticky + z-index: 100 でコンテンツの上に常に表示 */
 .checkout-header {
   display: flex;
   align-items: center;
@@ -35,7 +41,8 @@
   margin: 0;
 }
 
-/* 縦並びのスクロールフロー */
+/* ── コンテンツスクロールエリア ─────────────────────────── */
+/* 各セクションカードを縦に並べる */
 .checkout-scroll-flow {
   display: flex;
   flex-direction: column;
@@ -43,7 +50,8 @@
   padding: 16px;
 }
 
-/* 各セクションカード */
+/* ── セクションカード（住所・支払い・商品）────────────── */
+/* 各情報グループをカード形式でまとめる */
 .checkout-section-card {
   background-color: var(--surface);
   border: 1px solid var(--border);
@@ -51,6 +59,7 @@
   padding: 20px;
 }
 
+/* カードヘッダー: タイトル + 編集ボタン */
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -64,6 +73,7 @@
   color: var(--text-muted);
 }
 
+/* 「編集」ボタン: 水色テキストで軽いアクション感 */
 .section-edit-btn {
   background: none;
   border: none;
@@ -73,7 +83,8 @@
   cursor: pointer;
 }
 
-/* フォームその場書き換え（インライン編集）スタイル */
+/* ── インライン編集フォーム ──────────────────────────────── */
+/* 住所を外部ページに遷移せずその場で編集する。変更内容は PUT /api/users/me で保存 */
 .inline-edit-form {
   display: flex;
   flex-direction: column;
@@ -81,7 +92,8 @@
   width: 100%;
 }
 
-.inline-input, .inline-select {
+.inline-input,
+.inline-select {
   width: 100%;
   padding: 10px;
   background-color: var(--background);
@@ -92,15 +104,18 @@
   outline: none;
 }
 
+/* select のドロップダウン背景もダークに */
 .inline-select option {
   background-color: var(--surface);
   color: var(--text);
 }
 
-.inline-input:focus, .inline-select:focus {
+.inline-input:focus,
+.inline-select:focus {
   border-color: var(--primary);
 }
 
+/* 保存 / キャンセル ボタン */
 .inline-actions {
   display: flex;
   justify-content: flex-end;
@@ -128,20 +143,22 @@
   cursor: pointer;
 }
 
-/* 表示テキスト */
-.address-text, .payment-method-text {
+/* ── 情報表示テキスト ────────────────────────────────────── */
+.address-text,
+.payment-method-text {
   font-size: 14px;
   color: var(--text);
   margin: 0 0 6px 0;
 }
 
+/* 配送日: グリーンで安心感を演出 */
 .delivery-estimate {
   font-size: 13px;
-  color: #34d399; /* 配送日は安心のグリーン */
+  color: #34d399;
   margin: 0;
 }
 
-/* 商品プレビュー */
+/* ── 商品プレビュー ──────────────────────────────────────── */
 .checkout-item-preview {
   display: flex;
   gap: 16px;
@@ -167,18 +184,20 @@
   margin: 0 0 4px 0;
 }
 
-.item-qty, .item-price {
+.item-qty,
+.item-price {
   font-size: 13px;
   margin: 0;
 }
 
+/* 価格はアイスブルーで強調 */
 .item-price {
   color: var(--primary);
   font-weight: bold;
   margin-top: 2px;
 }
 
-/* 📜 一番下に鎮座する明細＆確定ブロック */
+/* ── 注文サマリー・確定ブロック ─────────────────────────── */
 .checkout-summary-block {
   margin-top: 12px;
   background-color: var(--surface);
@@ -187,9 +206,7 @@
   padding: 24px;
 }
 
-.summary-details {
-  margin-bottom: 24px;
-}
+.summary-details { margin-bottom: 24px; }
 
 .summary-title {
   font-size: 16px;
@@ -198,6 +215,7 @@
   padding-bottom: 8px;
 }
 
+/* 明細行: ラベル ←→ 金額 */
 .summary-row {
   display: flex;
   justify-content: space-between;
@@ -212,19 +230,22 @@
   margin: 16px 0;
 }
 
+/* 合計行は太字・白文字 */
 .total-row {
   color: var(--text);
   font-weight: bold;
   font-size: 16px;
 }
 
+/* 最終金額: アイスブルーで強調 */
 .final-price {
   color: var(--primary);
   font-size: 20px;
   font-weight: 900;
 }
 
-/* 確定ネオンボタン */
+/* ── 購入確定ボタン ──────────────────────────────────────── */
+/* グロウエフェクト付きのアイスブルーCTAボタン */
 .checkout-submit-btn {
   width: 100%;
   padding: 16px;
@@ -244,6 +265,7 @@
   box-shadow: 0 0 25px rgba(14, 165, 233, 0.5);
 }
 
+/* 利用規約テキスト */
 .terms-text {
   font-size: 11px;
   color: var(--text-muted);

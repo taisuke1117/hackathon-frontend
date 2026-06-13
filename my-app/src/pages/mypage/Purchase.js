@@ -5,14 +5,32 @@ import { ReviewModal } from '../../components/modal/ReviewModal';
 import '../../components/product/PurchaseProductCard.css';
 import './Purchase.css';
 
+// ─────────────────────────────────────────────────────────
+// Purchases: 購入履歴一覧ページ（マイページ → 「購入履歴をすべて見る」）
+//
+// 表示内容:
+//   - 各購入商品のステータスバッジ（未発送 / 評価待ち / 受取済み）
+//   - 「受取済みを非表示」チェックボックスで完了した取引を隠せる
+//   - 「評価待ち」商品には「受取評価をする」ボタンが表示される
+//   - 評価モーダルを閉じると一覧を再取得して評価済みに更新
+//
+// statusConfig のロジック:
+//   unshipped → 「未発送」
+//   shipped & 未評価 → 「評価待ち」（次のアクションが必要）
+//   それ以外（shipped & 評価済み）→ 「受取済み」
+// ─────────────────────────────────────────────────────────
+
 function Purchases() {
   const navigate = useNavigate();
 
+  // 「受取済みを非表示」フィルタ
   const [hideReceived, setHideReceived] = useState(false);
   const [purchases, setPurchases] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [reviewTarget, setReviewTarget] = useState(null); // 評価モーダルの対象商品
+  // reviewTarget: 評価モーダルに渡す対象商品（null なら非表示）
+  const [reviewTarget, setReviewTarget] = useState(null);
 
+  // useCallback で安定した参照を作る（評価後に再取得するために load を外で呼ぶ）
   const load = useCallback(() => {
     apiFetch('/api/me/purchases')
       .then(list => setPurchases(list || []))
@@ -22,12 +40,14 @@ function Purchases() {
 
   useEffect(() => { load(); }, [load]);
 
+  // ステータスに応じた表示設定（バッジテキストとCSSクラス）
   const statusConfig = (item) => {
     if (item.status === 'unshipped') return { text: '未発送', className: 'status-unshipped' };
     if (item.status === 'shipped' && !item.reviewed) return { text: '評価待ち', className: 'status-shipping' };
     return { text: '受取済み', className: 'status-received' };
   };
 
+  // hideReceived が true なら「shipped かつ reviewed済み」の商品を除外
   const displayed = hideReceived
     ? purchases.filter(item => !(item.status === 'shipped' && item.reviewed))
     : purchases;
@@ -40,6 +60,7 @@ function Purchases() {
         <h1 className="purchases-page-title">購入した商品</h1>
       </div>
 
+      {/* 受取済み非表示フィルタ */}
       <div className="purchases-filter-bar">
         <label className="filter-toggle-label">
           <input
@@ -52,7 +73,6 @@ function Purchases() {
         </label>
       </div>
 
-      {/* リストエリア */}
       <div className="purchases-page-content">
         {isLoading ? (
           <div className="purchases-empty-state"><p className="empty-text">読み込み中…</p></div>
@@ -68,6 +88,7 @@ function Purchases() {
             {displayed.map((item) => {
               const config = statusConfig(item);
               return (
+                // カード全体クリックで商品詳細へ
                 <div key={item.product_id} className="purchase-card" onClick={() => navigate(`/product/${item.product_id}`)}>
                   {item.image_url && <img src={item.image_url} alt={item.name} className="purchase-card-img" />}
 
@@ -78,7 +99,8 @@ function Purchases() {
                     <h3 className="purchase-card-title">{item.name}</h3>
                     <p className="purchase-card-price">¥{item.price.toLocaleString()}</p>
 
-                    {/* ⭐ 発送済み＆未評価なら受取評価ボタンを表示 */}
+                    {/* 発送済み＆未評価のときだけ評価ボタンを表示 */}
+                    {/* e.stopPropagation() でカードクリック（詳細遷移）を止める */}
                     {item.status === 'shipped' && !item.reviewed && (
                       <button
                         type="button"
@@ -98,14 +120,14 @@ function Purchases() {
         )}
       </div>
 
-      {/* ⭐ 受取評価モーダル */}
+      {/* 受取評価モーダル（reviewTarget がセットされたとき表示）*/}
       {reviewTarget && (
         <ReviewModal
           product={reviewTarget}
           onClose={() => setReviewTarget(null)}
           onSubmitted={() => {
             setReviewTarget(null);
-            load();
+            load(); // 評価後に一覧を再取得してステータスを更新
           }}
         />
       )}

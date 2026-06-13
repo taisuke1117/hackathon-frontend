@@ -5,18 +5,34 @@ import { formatTime } from '../../utils/format';
 import { StatusBanner } from '../../components/deals/StatusBanner';
 import './ProductManage.css';
 
+// ─────────────────────────────────────────────────────────
+// ProductManage: 出品商品の個別取引管理画面
+//
+// 商品一覧（Deals）→ ManagedProductCard クリックで来る。
+// URLパラメータ :id が対象商品のID。
+//
+// 表示内容:
+//   - StatusBanner: ステータスに応じたアクション（発送ボタンなど）
+//   - 商品情報カード（サムネイル・いいね数・閲覧数・編集/削除ボタン）
+//   - この商品に届いたチャット一覧（取引中は購入者チャットを最上位に表示）
+// ─────────────────────────────────────────────────────────
+
 function ProductManage() {
-  const { id } = useParams();
+  const { id } = useParams(); // URL: /deals/manage/:id
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
+  // itemChats: この商品への出品者側チャット一覧
   const [itemChats, setItemChats] = useState([]);
 
+  // load: 商品詳細 + チャット一覧を取得してstateに格納
+  // useCallback で安定した関数参照を作り、useEffect の依存に含められるようにする
   const load = useCallback(async () => {
     try {
       const detail = await apiFetch(`/api/products/${id}`);
       setProduct(detail);
-      // この商品に紐づくチャット一覧（販売側ルームを商品でフィルタ）
+      // /api/chatrooms?role=selling は全チャットを返すので、
+      // product_id で絞り込みてこの商品だけのチャットを取り出す
       const rooms = await apiFetch('/api/chatrooms?role=selling');
       setItemChats((rooms || []).filter(r => String(r.product_id) === String(id)));
     } catch (err) {
@@ -29,19 +45,19 @@ function ProductManage() {
 
   if (!product) return <div className="app-center-text">読み込み中…</div>;
 
-  // 💡 発送処理アクション
+  // 発送処理: 確認ダイアログ → PUT /api/products/:id/ship → 画面リロード
   const handleShipProduct = async () => {
     if (!window.confirm("商品を発送しましたか？\n購入者に発送通知が送信されます。")) return;
     try {
       await apiFetch(`/api/products/${id}/ship`, { method: 'PUT' });
       alert("発送通知を送信しました。");
-      await load();
+      await load(); // ステータスが shipped に変わるので再取得
     } catch (err) {
       alert(`発送処理に失敗しました: ${err.message}`);
     }
   };
 
-  // 💡 出品取り消し
+  // 出品取り消し: DELETE /api/products/:id → 取引一覧に戻る
   const handleDelete = async () => {
     if (!window.confirm("この商品の出品を取り消し、削除してもよろしいですか？\n（この操作は取り消せません）")) return;
     try {
@@ -54,9 +70,10 @@ function ProductManage() {
   };
 
   const status = product.status;
+  // 取引中 = 購入者が決まった後（未発送 or 発送済み）
   const isTrading = status === 'unshipped' || status === 'shipped';
 
-  // 取引中は購入者のチャットを最上位へ
+  // 取引中は実際の購入者チャットを先頭に並べる（複数の問い合わせがある場合のUX）
   const sortedChats = [...itemChats].sort((a, b) => {
     if (isTrading) {
       const aIsBuyer = a.other_user_id === product.buyer_id;
@@ -75,16 +92,18 @@ function ProductManage() {
         <div style={{ width: '48px' }}></div>
       </div>
 
+      {/* StatusBanner: ステータスに応じたアクション表示（発送ボタンなど）*/}
       <StatusBanner status={status} onShip={handleShipProduct} />
 
-      {/* 📊 商品情報セクション */}
+      {/* 商品情報カード */}
       <div className="manage-product-summary-card">
         <div className="manage-product-meta-row">
           {product.images[0] && <img src={product.images[0]} alt={product.name} className="manage-product-thumb" />}
           <div className="manage-product-info-text">
-            {status === 'available' && <span className="manage-product-status-tag">出品中</span>}
+            {/* ステータスバッジ（色違い）*/}
+            {status === 'available'  && <span className="manage-product-status-tag">出品中</span>}
             {status === 'unshipped' && <span className="manage-product-status-tag tag-unshipped">未発送</span>}
-            {status === 'shipped' && <span className="manage-product-status-tag tag-shipped">発送済み</span>}
+            {status === 'shipped'   && <span className="manage-product-status-tag tag-shipped">発送済み</span>}
 
             <h3 className="manage-product-title-text">{product.name}</h3>
             <span className="manage-product-price-text">¥{product.price.toLocaleString()}</span>
@@ -96,6 +115,7 @@ function ProductManage() {
           <div className="stat-item">いいね!: <strong>{product.likes_count}</strong></div>
         </div>
 
+        {/* 出品中のときだけ編集・削除が可能（取引開始後は変更不可）*/}
         {status === 'available' && (
           <>
             <button
@@ -116,11 +136,11 @@ function ProductManage() {
         )}
       </div>
 
-      {/* 💬 チャット一覧 */}
+      {/* チャット一覧 */}
       <div className="manage-chat-section">
         <h4 className="manage-section-sub-title">
           {isTrading
-            ? "⚠️ 取引相手のチャット（最上部固定）"
+            ? "取引相手のチャット（最上部固定）"
             : "この商品への問い合わせ・価格交渉"}
         </h4>
 
@@ -129,6 +149,7 @@ function ProductManage() {
             <div className="app-center-text">この商品へのチャットはまだありません</div>
           )}
           {sortedChats.map(chat => {
+            // isTrading かつ buyer_id が一致するチャットを購入者として強調表示
             const isBuyer = isTrading && chat.other_user_id === product.buyer_id;
             return (
               <div
@@ -152,6 +173,7 @@ function ProductManage() {
                 </div>
 
                 <div className="manage-chat-right">
+                  {/* 値引き交渉額バッジ（0なら「質問のみ」表示）*/}
                   {chat.discount_proposed > 0 ? (
                     <div className="negotiation-target-badge">
                       <span className="negotiation-label">希望額</span>
@@ -161,6 +183,7 @@ function ProductManage() {
                     <div className="negotiation-empty-placeholder">質問のみ</div>
                   )}
 
+                  {/* 未読数バッジ */}
                   {chat.unread_count > 0 && (
                     <span className="manage-unread-count-dot">{chat.unread_count}</span>
                   )}

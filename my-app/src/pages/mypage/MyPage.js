@@ -5,26 +5,43 @@ import { apiFetch } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 import './MyPage.css';
 
+// ─────────────────────────────────────────────────────────
+// MyPage: マイページ（フッターのユーザーアイコンから来る）
+//
+// 表示内容:
+//   1. プロフィールヘッダー（アイコン・名前・評価スコア）→クリックで設定画面へ
+//   2. 最近購入した商品（最大3件のプレビュー）→「すべて見る」ボタン
+//   3. いいね！した商品（最大3件のプレビュー）→「すべて見る」ボタン
+//
+// データは2本のAPIを並列に取得し、それぞれ先頭3件だけ表示する。
+// AuthContext の profile にはアイコン・名前・評価スコアが入っている。
+// ─────────────────────────────────────────────────────────
+
 function MyPage() {
   const navigate = useNavigate();
+  // AuthContext から自分のプロフィール情報を取得
   const { profile } = useAuth();
 
+  // 最近購入した商品（APIから取得後に先頭3件に絞る）
   const [recentPurchases, setRecentPurchases] = useState([]);
+  // いいねした商品（同様に3件）
   const [likedProducts, setLikedProducts] = useState([]);
 
+  // マウント時に購入履歴といいね一覧を並列取得
   useEffect(() => {
     apiFetch('/api/me/purchases')
-      .then(list => setRecentPurchases((list || []).slice(0, 3)))
+      .then(list => setRecentPurchases((list || []).slice(0, 3))) // 先頭3件だけ
       .catch(err => console.error('購入履歴の取得に失敗:', err));
+
     apiFetch('/api/me/likes')
-      .then(list => setLikedProducts((list || []).slice(0, 3)))
+      .then(list => setLikedProducts((list || []).slice(0, 3)))   // 先頭3件だけ
       .catch(err => console.error('いいね一覧の取得に失敗:', err));
   }, []);
 
   return (
     <div className="mypage-container">
 
-      {/* 👤 1. プロフィールヘッダー */}
+      {/* プロフィールヘッダー（クリックで設定画面へ） */}
       <div
         className="mypage-profile-section clickable"
         onClick={() => navigate('/mypage/account')}
@@ -38,6 +55,7 @@ function MyPage() {
             <span className="mypage-settings-arrow">⚙️</span>
           </div>
           <div className="mypage-rating">
+            {/* 評価が1件以上あれば星スコア、なければ「評価なし」 */}
             {profile?.review_count > 0 ? (
               <>
                 <span>⭐ {profile.rating.toFixed(1)}</span>
@@ -50,7 +68,7 @@ function MyPage() {
         </div>
       </div>
 
-      {/* 🤝 2. 最近購入した商品セクション */}
+      {/* 最近購入した商品（3件プレビュー）*/}
       <div className="mypage-collection-section">
         <div className="collection-header-row">
           <h4 className="collection-section-title">最近購入した商品</h4>
@@ -80,7 +98,7 @@ function MyPage() {
         </button>
       </div>
 
-      {/* ❤️ 3. いいねした商品セクション */}
+      {/* いいねした商品（3件プレビュー）*/}
       <div className="mypage-collection-section">
         <div className="collection-header-row">
           <h4 className="collection-section-title">いいね！した商品</h4>
@@ -96,7 +114,7 @@ function MyPage() {
               image={product.image_url}
               category={product.category}
               likeCountInitial={product.likes_count}
-              isLikedInitial={true}
+              isLikedInitial={true} // いいね一覧なので常にtrue
             />
           ))}
           {likedProducts.length === 0 && <span className="mypage-reviews">いいねした商品はまだありません</span>}

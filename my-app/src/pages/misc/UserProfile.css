@@ -1,13 +1,18 @@
-/* 🌌 プロフィール画面全体のコンテナ：深淵なる漆黒 */
+/* ==========================================================================
+   UserProfile.css: 他ユーザーの公開プロフィールページのスタイル
+   ========================================================================== */
+
+/* ── ページ全体のコンテナ ────────────────────────────────── */
 .profile-page-container {
   max-width: 600px;
   margin: 0 auto;
   background-color: var(--background);
   min-height: 100vh;
+  min-height: 100svh;
   padding-bottom: 40px;
 }
 
-/* ヘッダー：シームレスに闇へ固定 */
+/* ── ページヘッダー ──────────────────────────────────────── */
 .profile-header {
   display: flex;
   align-items: center;
@@ -27,9 +32,7 @@
   transition: color 0.2s;
 }
 
-.profile-back-btn:hover {
-  color: var(--text);
-}
+.profile-back-btn:hover { color: var(--text); }
 
 .profile-page-title {
   font-size: 16px;
@@ -38,15 +41,16 @@
   margin: 0;
 }
 
-/* 👤 ユーザー情報カード（1歩手前のチャコール） */
+/* ── ユーザー情報カード（上部）────────────────────────────── */
 .profile-top-card {
   background-color: var(--surface);
   padding: 24px 16px;
   margin-bottom: 12px;
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+/* アバター + 名前・評価の横並び */
 .profile-main-row {
   display: flex;
   align-items: center;
@@ -74,7 +78,8 @@
   margin: 0;
 }
 
-/* 評価エリア：アイスブルーを散りばめる */
+/* ── 評価エリア ──────────────────────────────────────────── */
+/* ★の記号はアイスブルー、スコアも水色で統一感を出す */
 .profile-rating-stars {
   display: flex;
   align-items: center;
@@ -84,7 +89,7 @@
 
 .star-icon {
   margin-right: 3px;
-  color: var(--primary); /* 星もテーマカラーにシンクロ */
+  color: var(--primary);
 }
 
 .rating-score {
@@ -98,8 +103,8 @@
   opacity: 0.6;
 }
 
-
-/* 自己紹介ボックス（区切り線を馴染ませる） */
+/* ── 自己紹介ボックス ────────────────────────────────────── */
+/* white-space: pre-wrap で改行を保持 */
 .profile-intro-box {
   margin-top: 20px;
   padding-top: 18px;
@@ -114,9 +119,10 @@
   white-space: pre-wrap;
 }
 
-/* 📦 下半分の出品商品セクション */
+/* ── 出品商品グリッド（下部）────────────────────────────── */
+/* available + negotiating ステータスの商品のみ表示 */
 .profile-products-section {
-  background-color: var(--background); /* 商品リストの背景は深く落とす */
+  background-color: var(--background);
   padding: 16px;
 }
 
@@ -129,7 +135,7 @@
   letter-spacing: 0.5px;
 }
 
-/* 商品をきれいに横2列で並べるグリッド構造 */
+/* 2カラムグリッドで商品を並べる */
 .profile-products-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

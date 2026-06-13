@@ -1,3 +1,4 @@
+/* ── バナー共通スタイル ──────────────────────────────────── */
 .status-alert-banner {
   margin: 12px;
   padding: 16px;
@@ -8,16 +9,19 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
+/* 未発送バナー*/
 .unshipped-banner {
   background: linear-gradient(135deg, rgba(249, 115, 22, 0.12) 0%, rgba(249, 115, 22, 0.02) 100%);
   border: 1px solid rgba(249, 115, 22, 0.4);
 }
 
+/* 発送済みバナー */
 .shipped-banner {
   background: linear-gradient(135deg, rgba(14, 165, 233, 0.12) 0%, rgba(14, 165, 233, 0.02) 100%);
   border: 1px solid rgba(14, 165, 233, 0.4);
 }
 
+/* アイコン + テキスト */
 .banner-message-row {
   display: flex;
   gap: 12px;
@@ -43,6 +47,7 @@
   color: var(--text-muted);
 }
 
+/* 「発送しました」ボタン */
 .action-btn-ship {
   background-color: #f97316;
   color: #05080e;

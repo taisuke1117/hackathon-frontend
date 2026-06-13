@@ -1,33 +1,39 @@
-/* 💡 商品カード全体の箱：『氷河と漆黒』の立体的なグレーに */
+/* ==========================================================================
+   ProductCard.css: 商品一覧用カードコンポーネントのスタイル
+   ========================================================================== */
+
+/* ── カード全体 ──────────────────────────────────────────── */
+/* aspect-ratio: 1/1.25 で画像(1:1) + 情報行の縦長カード */
 .product-card {
-  background-color: var(--surface); /* 💡 背景より一段明るい上質なチャコール */
+  background-color: var(--surface);
   display: flex;
   flex-direction: column;
   cursor: pointer;
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1.25; /* スマートな縦長比率を維持 */
-  border-radius: var(--radius-lg); /* シャープに引き締めた丸み（12px）を適用 */
-  border: 1px solid var(--border); /* 💡 かすかな白透過線で輪郭をシャープに見せる */
+  aspect-ratio: 1 / 1.25;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
   overflow: hidden;
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* ホバー時のカード全体の挙動 */
+/* ホバー: 少し浮き上がる + 深い影でカードに奥行きが出る */
 .product-card:hover {
-  transform: translateY(-3px); /* 💡 浮き上がる立体感を少し強化 */
+  transform: translateY(-3px);
   background-color: var(--surface-hover);
-  border-color: rgba(255, 255, 255, 0.15); /* 枠線が少し白く反応 */
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5); /* 闇に溶け込む深い空間の影 */
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
 }
 
-/* 📷 画像の表示エリア（正方形を維持） */
+/* ── 画像エリア（正方形）────────────────────────────────── */
+/* aspect-ratio: 1/1 で必ず正方形を保持。object-fit: cover でトリミング */
 .product-image-wrapper {
   width: 100%;
   aspect-ratio: 1 / 1;
-  background-color: rgba(0, 0, 0, 0.2); /* 画像の裏に敷く静かな暗がり */
+  background-color: rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  border-bottom: 1px solid var(--border); /* データエリアとの綺麗な境界線 */
+  border-bottom: 1px solid var(--border);
 }
 
 .product-image {
@@ -37,47 +43,44 @@
   transition: transform 0.2s ease;
 }
 
-/* ホバー時に写真がぷにっと滑らかに拡大する気持ちいい演出 */
-.product-card:hover .product-image {
-  transform: scale(1.04); 
-}
+/* ホバー時に画像が少し拡大するズームエフェクト */
+.product-card:hover .product-image { transform: scale(1.04); }
 
-/* 📊 下部のテキスト＆いいね情報エリア */
+/* ── 価格・カテゴリ・いいねボタンの行 ──────────────────── */
 .product-info-row {
   display: flex;
   align-items: center;
-  justify-content: space-between; 
-  padding: 10px 12px; /* 管理用カードと余白のピクセル数を統一 */
+  justify-content: space-between;
+  padding: 10px 12px;
   flex: 1;
-  background-color: rgba(0, 0, 0, 0.05); /* 💡 ほんの少しだけ色を沈めて写真を主役に */
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* 左側：価格とカテゴリのテキスト */
 .product-text-meta {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  overflow: hidden; 
+  overflow: hidden;
   flex: 1;
 }
 
-/* 💡 主役の価格テキスト：眩しさを抑えた上質なシルキーホワイト */
+/* 価格テキスト */
 .product-price {
-  font-size: 15px; /* 14pxから1pxだけ上げて視認性アップ */
+  font-size: 15px;
   font-weight: 700;
-  color: var(--text); 
+  color: var(--text);
 }
 
-/* 💡 補足のカテゴリ名：不透明度ではなく、上品なブルーグレー変数を直接指定 */
+/* カテゴリ名: 長い場合は省略 */
 .product-category {
   font-size: 11px;
-  color: var(--text-muted); 
+  color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* 長すぎるカテゴリ名は「...」にする */
+  text-overflow: ellipsis;
 }
 
-/* 右側：共通いいねボタンを設置するコンテナ */
+/* いいねボタンのコンテナ */
 .like-container {
   display: flex;
   align-items: center;

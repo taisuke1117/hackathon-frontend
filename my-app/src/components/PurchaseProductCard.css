@@ -1,3 +1,9 @@
+/* ==========================================================================
+   PurchaseProductCard.css: 購入履歴カード（旧バージョン）
+   ※ 新バージョン: components/product/PurchaseProductCard.css
+   ========================================================================== */
+
+/* カード全体: サムネイル + テキストの横並びレイアウト */
 .purchase-card {
   display: flex;
   align-items: center;
@@ -11,11 +17,13 @@
   gap: 16px;
 }
 
+/* ホバー: アイスブルーの枠 */
 .purchase-card:hover {
   border-color: var(--primary);
   box-shadow: 0 0 12px rgba(14, 165, 233, 0.1);
 }
 
+/* 商品サムネイル */
 .purchase-card-img {
   width: 72px;
   height: 72px;
@@ -31,6 +39,7 @@
   gap: 4px;
 }
 
+/* 商品名: 1行で省略 */
 .purchase-card-title {
   font-size: 14px;
   font-weight: bold;
@@ -48,7 +57,7 @@
   margin: 0;
 }
 
-/* 🏷️ ステータスバッジのスタイル */
+/* ステータスバッジ */
 .purchase-status-badge {
   align-self: flex-start;
   font-size: 11px;
@@ -58,21 +67,21 @@
   margin-bottom: 2px;
 }
 
-/* 未発送：サイバーな警告オレンジ */
+/* 未発送: アンバーオレンジ */
 .status-unshipped {
   background-color: rgba(245, 158, 11, 0.15);
   color: #f59e0b;
   border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
-/* 配達中：氷河ネオン水色 */
+/* 配達中: アイスブルー */
 .status-shipping {
   background-color: rgba(14, 165, 233, 0.15);
   color: var(--primary);
   border: 1px solid rgba(14, 165, 233, 0.3);
 }
 
-/* 受取済み：安心のネオングリーン */
+/* 受取済み: エメラルドグリーン */
 .status-received {
   background-color: rgba(52, 211, 153, 0.15);
   color: #34d399;
@@ -84,7 +93,8 @@
   font-size: 14px;
   padding-right: 4px;
 }
-/* ⭐ 受取評価ボタン（評価待ちの商品にだけ表示） */
+
+/* レビューボタン: 受取済みで未レビューの場合のみ表示 */
 .purchase-review-btn {
   align-self: flex-start;
   margin-top: 6px;
@@ -99,6 +109,4 @@
   transition: opacity 0.15s ease;
 }
 
-.purchase-review-btn:hover {
-  opacity: 0.85;
-}
+.purchase-review-btn:hover { opacity: 0.85; }

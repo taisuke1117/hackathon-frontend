@@ -1,11 +1,11 @@
 import React from 'react';
 import './StatusBanner.css';
 
-/**
- * ProductManage用のステータスバナー。
- * props: status("unshipped"|"shipped"), onShip()
- */
+// StatusBanner: 取引管理画面（ProductManage）のステータスアクションバナー
+// ステータスに応じて異なるバナーを表示する（または何も表示しない）:
+
 export function StatusBanner({ status, onShip }) {
+  // 未発送: ユーザーにアクションが必要なため強調バナー + 発送ボタン
   if (status === 'unshipped') {
     return (
       <div className="status-alert-banner unshipped-banner">
@@ -16,12 +16,15 @@ export function StatusBanner({ status, onShip }) {
             <span className="banner-subtitle">梱包を済ませ、速やかに発送を行ってください。</span>
           </div>
         </div>
+        {/* 発送ボタン: クリックで ProductManage の handleShipProduct が呼ばれる */}
         <button className="action-btn-ship" onClick={onShip}>
           🚛 発送しました
         </button>
       </div>
     );
   }
+
+  // 発送済み: 購入者の評価待ち（出品者側に必要なアクションはない）
   if (status === 'shipped') {
     return (
       <div className="status-alert-banner shipped-banner">
@@ -35,5 +38,7 @@ export function StatusBanner({ status, onShip }) {
       </div>
     );
   }
+
+  // available / negotiating などアクション不要なステータスは表示しない
   return null;
 }

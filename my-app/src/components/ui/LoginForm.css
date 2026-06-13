@@ -1,62 +1,66 @@
-/* 💡 大元の index.css で定義した新パレットをそのまま反映します */
+/* ==========================================================================
+   LoginForm.css: ログイン画面のスタイル
+   ========================================================================== */
 
-/* 画面中央に配置するためのコンテナ */
+/* ── 画面中央に配置するコンテナ ────────────────────────── */
+/* min-height: 100vh でビューポート全体を占有 */
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  min-height: 100svh;
   padding: 20px;
-  background-color: var(--background); /* 💡 深いチャコールグレーの闇に */
+  background-color: var(--background);
 }
 
-/* ロゴとカードを縦に綺麗に並べるためのラッパー */
+/* ロゴとカードを縦並びにするラッパー */
 .login-welcome-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px; 
+  gap: 24px;
   max-width: 400px;
   width: 100%;
 }
 
-/* 💡 ロゴ設置エリア：座布団を消し、背景に完全透過させてロゴだけを浮き立たせる */
+/* ── ロゴエリア ──────────────────────────────────────────── */
+/* background: transparent で座布団を排除してロゴだけを浮き立たせる */
 .login-logo-area {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: transparent; /* 💡 無駄な黒い箱を撤去してシンプルに */
+  background-color: transparent;
   padding: 0;
   border-radius: 0;
   box-shadow: none;
   overflow: hidden;
-  height: 40px; /* スマートな高さに調整 */
+  height: 40px;
 }
 
-/* 💡 黒いロゴを自動で美しい純白に反転させる */
+/* filter: invert(1) で黒いロゴ画像を白に反転。白い背景向けのロゴをダークUIで使う場合に使用 */
 .login-app-logo {
-  height: 40px; /* エリアの高さにジャストフィットさせる */
+  height: 40px;
   width: auto;
   object-fit: contain;
-  filter: invert(1) drop-shadow(0 0 6px rgba(255, 255, 255, 0.15)); /* 💡 完全な白にしてほんのり輝かせる */
+  filter: invert(1) drop-shadow(0 0 6px rgba(255, 255, 255, 0.15));
 }
 
-/* ログインボタンを囲うカード */
+/* ── ログインカード ───────────────────────────────────────── */
 .login-card {
-  background: var(--surface); /* 💡 白から、一段明るい上品なグレーの箱へ */
+  background: var(--surface);
   padding: 40px 30px;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border); /* 💡 極細の白透過線で輪郭をシャープに見せる */
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); /* 闇に溶け込む深い影 */
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   text-align: center;
   width: 100%;
   box-sizing: border-box;
 }
 
-/* タイトルとサブタイトル */
 .login-title {
   font-size: 24px;
-  color: var(--text); /* クッキリとした白文字 */
+  color: var(--text);
   margin-bottom: 8px;
   font-weight: bold;
   letter-spacing: -0.5px;
@@ -64,17 +68,17 @@
 
 .login-subtitle {
   font-size: 14px;
-  color: var(--text-muted); /* 💡 優しいブルーグレーにして眩しさを抑える */
+  color: var(--text-muted);
   margin-bottom: 35px;
   line-height: 1.6;
 }
 
-/* ボタンの共通スタイル */
+/* ── ログインボタン共通 ──────────────────────────────────── */
 .login-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px; 
+  gap: 12px;
   width: 100%;
   padding: 14px;
   border: none;
@@ -85,7 +89,7 @@
   transition: all 0.2s ease;
 }
 
-/* Googleログインボタン（ダークモードに映えるスタイリッシュなブランドカラー） */
+/* Google ログインボタン: Google ブランドカラー (#4285F4) */
 .google-btn {
   background-color: #4285F4;
   color: #ffffff;
@@ -98,7 +102,7 @@
   box-shadow: 0 6px 18px rgba(66, 133, 244, 0.35);
 }
 
-/* ボタン内の即席Gアイコンのスタイル */
+/* ボタン内の「G」アイコン（白ボックスに青テキスト）*/
 .google-icon-placeholder {
   font-family: 'Inter', sans-serif;
   font-size: 18px;
@@ -113,13 +117,14 @@
   justify-content: center;
 }
 
-/* クリックした時のエフェクト */
+/* ボタン押下時のアニメーション */
 .login-button:active {
   transform: translateY(1px);
   box-shadow: none;
 }
 
-/* ログイン画面が表示されている間は、bodyの余白を強制的にゼロにして全画面表示にする */
+/* ── ログイン画面表示時のグローバル上書き ─────────────────── */
+/* ログイン画面は全画面表示のため、アプリフッター・ヘッダー分の padding を除去する */
 :has(.login-container) body {
   padding-top: 0 !important;
   padding-bottom: 0 !important;

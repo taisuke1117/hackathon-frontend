@@ -1,13 +1,19 @@
-/* 🌌 マイページ専用スタイル（氷河と漆黒テーマ） */
+/* ==========================================================================
+   MyPage.css: マイページ（購入履歴プレビュー + いいね一覧プレビュー）
+   ========================================================================== */
+
+/* ── ページ全体のコンテナ ────────────────────────────────── */
 .mypage-container {
   max-width: 600px;
   margin: 0 auto;
   background-color: var(--background);
   min-height: 100vh;
+  min-height: 100svh;
   padding-bottom: 60px;
 }
 
-/* 👤 1. プロフィールサマリー */
+/* ── プロフィールサマリー（上部）────────────────────────── */
+/* クリックでアカウント設定画面へ遷移 */
 .mypage-profile-section {
   background-color: var(--surface);
   padding: 24px 16px;
@@ -20,9 +26,7 @@
   cursor: pointer;
 }
 
-.mypage-profile-section:hover {
-  background-color: var(--surface-hover);
-}
+.mypage-profile-section:hover { background-color: var(--surface-hover); }
 
 .mypage-avatar {
   width: 64px;
@@ -32,9 +36,7 @@
   border: 1px solid var(--border);
 }
 
-.mypage-profile-info {
-  flex: 1;
-}
+.mypage-profile-info { flex: 1; }
 
 .mypage-user-name-row {
   display: flex;
@@ -50,6 +52,7 @@
   color: var(--text);
 }
 
+/* ホバー時に回転して「設定へ行ける」ことを示すアニメーション */
 .mypage-settings-arrow {
   font-size: 16px;
   color: var(--text-muted);
@@ -62,6 +65,7 @@
   opacity: 1;
 }
 
+/* 評価スコア: アイスブルー */
 .mypage-rating {
   font-size: 13px;
   color: var(--primary);
@@ -75,7 +79,8 @@
   opacity: 0.7;
 }
 
-/* 📦 2. コレクションセクション（共通） */
+/* ── コレクションセクション（購入履歴・いいね）────────── */
+/* 各セクション3件プレビュー + 「すべて見る」ボタン */
 .mypage-collection-section {
   margin-top: 24px;
   padding: 0 16px;
@@ -97,22 +102,23 @@
   margin: 0;
 }
 
-/* 🧱 マイページ専用 3列グリッド */
+/* 3カラムグリッドで商品カードを並べる */
 .mypage-products-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
 }
 
-/* 💡 ProductCardの微調整（マイページ用） */
+/* マイページの狭いグリッドに合わせてカード内テキストを縮小 */
 .mypage-products-grid .product-card-title {
   font-size: 11px !important;
 }
+
 .mypage-products-grid .product-card-price {
   font-size: 12px !important;
 }
 
-/* 🔗 「すべて見る」ボタン */
+/* 「すべて見る」ボタン: 透明・控えめなデザイン */
 .collection-see-all-btn {
   width: 100%;
   background-color: transparent;

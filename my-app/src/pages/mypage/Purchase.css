@@ -1,11 +1,20 @@
+/* ==========================================================================
+   Purchase.css: 購入履歴一覧ページのスタイル
+   ========================================================================== */
+
+/* ── ページ全体のコンテナ ────────────────────────────────── */
+/* padding-bottom: 80px = フッターナビ(55px) + 余白 */
 .purchases-page-container {
   max-width: 600px;
   margin: 0 auto;
   background-color: var(--background);
   min-height: 100vh;
+  min-height: 100svh;
   padding-bottom: 80px;
 }
 
+/* ── スティッキーヘッダー ────────────────────────────────── */
+/* position: sticky でスクロール中も常に画面上部に固定 */
 .purchases-page-header {
   display: flex;
   align-items: center;
@@ -35,7 +44,8 @@
   margin: 0;
 }
 
-/* 🎛️ 追加：フィルターバーのスタイル */
+/* ── フィルターバー（受け取り完了を隠す）────────────────── */
+/* accent-color で標準チェックボックスをアイスブルーに変える */
 .purchases-filter-bar {
   display: flex;
   justify-content: flex-end;
@@ -49,13 +59,14 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  user-select: none;
+  user-select: none; /* テキストが誤選択されないよう防止 */
 }
 
+/* accent-color: var(--primary) でチェック時のアイコンをアイスブルーに */
 .filter-checkbox {
   width: 16px;
   height: 16px;
-  accent-color: var(--primary); /* チェック時に氷河ネオン水色になる */
+  accent-color: var(--primary);
   cursor: pointer;
 }
 
@@ -66,22 +77,22 @@
   transition: color 0.2s;
 }
 
-/* チェックが入っている時は文字を少し強調 */
+/* チェック ON 時: 隣接するテキストも水色に変わる（+ セレクタ利用）*/
 .filter-checkbox:checked + .filter-text {
   color: var(--primary);
 }
 
-.purchases-page-content {
-  padding: 16px;
-}
+/* ── コンテンツエリア ────────────────────────────────────── */
+.purchases-page-content { padding: 16px; }
 
+/* 購入カードを縦に積む */
 .purchases-list-layout {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-/* 空白状態 */
+/* ── 空の状態（購入履歴なし）────────────────────────────── */
 .purchases-empty-state {
   display: flex;
   flex-direction: column;
@@ -96,6 +107,7 @@
   margin-bottom: 16px;
 }
 
+/* フィルター解除ボタン */
 .empty-reset-btn {
   background-color: transparent;
   color: var(--text);
@@ -107,6 +119,4 @@
   cursor: pointer;
 }
 
-.empty-reset-btn:hover {
-  border-color: var(--text);
-}
+.empty-reset-btn:hover { border-color: var(--text); }
