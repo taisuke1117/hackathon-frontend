@@ -122,6 +122,13 @@ function LiveHost() {
             setStatusMsg('入札なし — 次の商品へ移動します');
             setStatusType('skipped');
             break;
+          case 'queue_empty':
+            setProduct(null);
+            setQueue([]);
+            setStatusMsg('すべての商品が終了しました。配信を終了してください。');
+            setStatusType('skipped');
+            clearInterval(timerRef.current);
+            break;
           case 'next':
             setProduct(event.product);
             setQueue(prev => prev.filter(q => q.id !== event.product?.id));

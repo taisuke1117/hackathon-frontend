@@ -219,6 +219,34 @@
 /* ── アクションエリア ── */
 .live-action-area { margin-top: 8px; }
 
+.live-bid-area {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.live-bid-presets {
+  display: flex;
+  gap: 6px;
+}
+
+.live-bid-preset-btn {
+  flex: 1;
+  background-color: var(--surface-hover);
+  color: var(--primary);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: var(--radius-md);
+  padding: 7px 0;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.live-bid-preset-btn:active {
+  background-color: var(--primary-bg);
+}
+
 .live-bid-row {
   display: flex;
   gap: 8px;

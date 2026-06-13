@@ -91,6 +91,12 @@ function LiveRoom() {
             setStatusType('skipped');
             setBidAmount('');
             break;
+          case 'queue_empty':
+            setProduct(null);
+            setStatusMsg('すべての商品が終了しました');
+            setStatusType('skipped');
+            clearInterval(timerRef.current);
+            break;
           case 'next':
             setProduct(event.product);
             setSecondsLeft(event.product?.seconds_left || 30);
@@ -226,16 +232,29 @@ function LiveRoom() {
           {product.status === 'active' && (
             <div className="live-action-area">
               {product.mode === 'auction' ? (
-                <div className="live-bid-row">
-                  <input
-                    className="live-bid-input"
-                    type="number"
-                    placeholder={`¥${((product.current_price || 0) + 100).toLocaleString()} 以上`}
-                    value={bidAmount}
-                    onChange={e => setBidAmount(e.target.value)}
-                    onKeyDown={e => e.key === 'Enter' && handleBid()}
-                  />
-                  <button className="live-bid-btn" onClick={handleBid}>入札する</button>
+                <div className="live-bid-area">
+                  <div className="live-bid-presets">
+                    {[100, 500, 1000].map(delta => (
+                      <button
+                        key={delta}
+                        className="live-bid-preset-btn"
+                        onClick={() => setBidAmount(String((product.current_price || 0) + delta))}
+                      >
+                        +{delta.toLocaleString()}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="live-bid-row">
+                    <input
+                      className="live-bid-input"
+                      type="number"
+                      placeholder={`¥${((product.current_price || 0) + 100).toLocaleString()} 以上`}
+                      value={bidAmount}
+                      onChange={e => setBidAmount(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && handleBid()}
+                    />
+                    <button className="live-bid-btn" onClick={handleBid}>入札する</button>
+                  </div>
                 </div>
               ) : (
                 <div className="live-buy-row">
