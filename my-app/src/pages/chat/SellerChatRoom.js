@@ -35,12 +35,6 @@ function SellerChatRoom() {
     el.style.height = Math.min(el.scrollHeight, 104) + 'px';
   }, [inputText]);
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      handleSend(e);
-    }
-  };
-
   if (!room) return <div className="app-center-text">読み込み中…</div>;
 
   const myId = loginUser?.uid;
@@ -141,7 +135,6 @@ function SellerChatRoom() {
           className="room-input-field"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          onKeyDown={handleKeyDown}
           placeholder="メッセージを入力..."
           rows={1}
         />

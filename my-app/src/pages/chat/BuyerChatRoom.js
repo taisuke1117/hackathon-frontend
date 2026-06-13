@@ -39,12 +39,6 @@ function BuyerChatRoom() {
     el.style.height = Math.min(el.scrollHeight, 104) + 'px';
   }, [inputText]);
 
-  // Enter で送信、Shift+Enter で改行
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      handleSend(e);
-    }
-  };
 
   // myPurchase: 購入済みかどうか（発送後の受取評価ボタン表示に使う）
   const [myPurchase, setMyPurchase] = useState(null);
@@ -161,7 +155,6 @@ function BuyerChatRoom() {
           className="room-input-field"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          onKeyDown={handleKeyDown}
           placeholder="メッセージを入力..."
           rows={1}
         />
