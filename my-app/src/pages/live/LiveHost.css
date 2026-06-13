@@ -1,20 +1,27 @@
+/* ==========================================================================
+   LiveHost.css: 配信者ページ（フルスクリーン）
+   ========================================================================== */
+
 .livehost-container {
   display: flex;
   flex-direction: column;
   height: calc(100svh - 135px);
-  background: #000;
+  background-color: var(--background);
   overflow: hidden;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
+/* ── カメラ映像エリア ── */
 .livehost-video-area {
   flex: 1;
   position: relative;
-  background: #111;
+  background: #000;
   overflow: hidden;
   min-height: 0;
 }
 
-.livehost-video-area > div:first-child {
+.livehost-video-area > div {
   height: 100%;
 }
 
@@ -23,19 +30,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #666;
+  color: var(--text-muted);
   font-size: 14px;
   text-align: center;
   padding: 20px;
+  line-height: 1.6;
 }
 
+/* ── 配信中バッジオーバーレイ ── */
 .livehost-badge-overlay {
   position: absolute;
   top: 12px;
   left: 12px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   pointer-events: none;
 }
 
@@ -46,52 +55,55 @@
   font-weight: 700;
   border-radius: 4px;
   padding: 3px 8px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
 }
 
 .livehost-viewer {
   color: #fff;
   font-size: 12px;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
 }
 
-/* コントロールパネル */
+/* ── コントロールパネル ── */
 .livehost-panel {
-  background: var(--surface, #1a1f2e);
-  border-top: 1px solid var(--border, #2a3040);
+  background-color: var(--surface);
+  border-top: 1px solid var(--border);
   padding: 14px 16px;
   flex-shrink: 0;
 }
 
+/* 配信開始ボタン */
 .livehost-start-btn {
   width: 100%;
   background: #ef4444;
   color: #fff;
   border: none;
-  border-radius: 14px;
+  border-radius: var(--radius-lg);
   padding: 14px;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: opacity 0.2s;
+  letter-spacing: 0.3px;
 }
 
 .livehost-start-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
+/* ── 販売中の商品 ── */
 .livehost-current-label {
-  font-size: 11px;
-  color: #ef4444;
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  color: #ef4444;
+  letter-spacing: 0.8px;
   margin: 0 0 8px;
 }
 
 .livehost-product-row {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: flex-start;
   margin-bottom: 8px;
 }
@@ -99,9 +111,11 @@
 .livehost-product-thumb {
   width: 52px;
   height: 52px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   object-fit: cover;
   flex-shrink: 0;
+  background-color: var(--surface-hover);
+  border: 1px solid var(--border);
 }
 
 .livehost-product-info { flex: 1; }
@@ -109,73 +123,87 @@
 .livehost-product-name {
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-primary, #fff);
+  color: var(--text);
   margin: 0 0 3px;
+  line-height: 1.3;
 }
 
 .livehost-product-price {
-  font-size: 18px;
-  color: #38bdf8;
-  font-weight: 700;
+  font-size: 20px;
+  color: var(--primary);
+  font-weight: 800;
   margin: 0 0 3px;
+  letter-spacing: -0.5px;
 }
 
 .livehost-timer {
   font-size: 13px;
   color: #4ade80;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0 0 2px;
 }
 
 .livehost-timer.urgent {
   color: #ef4444;
-  animation: pulse 0.5s infinite alternate;
+  animation: blink 0.5s infinite alternate;
 }
 
-@keyframes pulse {
+@keyframes blink {
   from { opacity: 1; }
-  to { opacity: 0.5; }
+  to   { opacity: 0.4; }
 }
 
 .livehost-bidder {
   font-size: 12px;
-  color: var(--text-muted, #888);
+  color: var(--text-muted);
   margin: 0;
 }
 
 .livehost-no-product {
-  color: var(--text-muted, #888);
-  font-size: 14px;
   text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
   padding: 8px 0;
 }
 
+/* ステータスメッセージ */
 .livehost-status {
-  font-size: 12px;
+  font-size: 13px;
   color: #fbbf24;
   margin: 4px 0 8px;
+  padding: 6px 10px;
+  background-color: rgba(251, 191, 36, 0.08);
+  border-radius: var(--radius-md);
+  border-left: 2px solid #fbbf24;
 }
 
+/* ── 次の商品キュー ── */
 .livehost-queue {
-  border-top: 1px solid var(--border, #2a3040);
-  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
   margin: 8px 0;
 }
 
 .livehost-queue-label {
   font-size: 11px;
-  color: var(--text-muted, #888);
+  color: var(--text-muted);
+  font-weight: 600;
   margin: 0 0 6px;
 }
 
 .livehost-queue-item {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 12px;
-  color: var(--text-muted, #888);
-  padding: 3px 0;
+  color: var(--text-muted);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
 }
 
+.livehost-queue-item:last-child { border-bottom: none; }
+
+/* ── 操作ボタン ── */
 .livehost-controls {
   display: flex;
   gap: 8px;
@@ -184,27 +212,37 @@
 
 .livehost-next-btn {
   flex: 1;
-  background: var(--primary, #38bdf8);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: 10px;
+  background-color: var(--primary-bg);
+  color: var(--primary);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: var(--radius-md);
+  padding: 11px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
+  transition: opacity 0.15s;
 }
 
+.livehost-next-btn:active { opacity: 0.75; }
+
 .livehost-end-btn {
-  background: #374151;
-  color: #9ca3af;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 16px;
+  background-color: var(--surface-hover);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 11px 18px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.15s;
 }
 
+.livehost-end-btn:active {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* ── 配信終了画面 ── */
 .livehost-ended {
   display: flex;
   flex-direction: column;
@@ -212,15 +250,20 @@
   justify-content: center;
   height: calc(100svh - 135px);
   gap: 20px;
-  color: var(--text-muted, #888);
+  color: var(--text-muted);
+  font-size: 15px;
 }
 
 .livehost-ended button {
-  background: var(--primary, #38bdf8);
-  color: #fff;
-  border: none;
-  border-radius: 20px;
-  padding: 10px 24px;
+  background-color: var(--primary-bg);
+  color: var(--primary);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 12px 28px;
   font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
+  transition: opacity 0.15s;
 }
+
+.livehost-ended button:active { opacity: 0.75; }

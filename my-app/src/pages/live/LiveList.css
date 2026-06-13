@@ -1,72 +1,98 @@
+/* ==========================================================================
+   LiveList.css: ライブ配信一覧ページ
+   ========================================================================== */
+
 .live-list-container {
-  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: var(--background);
+  min-height: 100svh;
   padding-bottom: 80px;
 }
 
+/* ── ページヘッダー ── */
 .live-list-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--surface);
 }
 
 .live-list-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary, #fff);
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--text);
+  margin: 0;
 }
 
 .live-create-btn {
   background: #ef4444;
   color: #fff;
   border: none;
-  border-radius: 20px;
-  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: opacity 0.15s;
 }
 
-.live-loading,
-.live-empty {
+.live-create-btn:active { opacity: 0.75; }
+
+/* ── ローディング / 空状態 ── */
+.live-loading {
   text-align: center;
-  color: var(--text-muted, #888);
-  margin-top: 60px;
+  padding: 60px 20px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.live-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  padding: 60px 20px;
+  color: var(--text-muted);
+  font-size: 14px;
 }
 
 .live-create-btn-large {
   background: #ef4444;
   color: #fff;
   border: none;
-  border-radius: 24px;
+  border-radius: var(--radius-lg);
   padding: 12px 32px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
+  transition: opacity 0.15s;
 }
 
+.live-create-btn-large:active { opacity: 0.75; }
+
+/* ── 配信カードリスト ── */
 .live-room-grid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 1px;
+  background-color: var(--border);
 }
 
 .live-room-card {
-  background: var(--surface, #1a1f2e);
-  border: 1px solid var(--border, #2a3040);
-  border-radius: 12px;
-  padding: 14px;
+  background-color: var(--surface);
+  padding: 14px 16px;
   cursor: pointer;
   position: relative;
-  transition: transform 0.15s;
+  transition: background-color 0.15s;
 }
 
-.live-room-card:active { transform: scale(0.98); }
+.live-room-card:active { background-color: var(--surface-hover); }
 
+/* ── LIVEバッジ ── */
 .live-badge {
   display: inline-block;
   background: #ef4444;
@@ -76,39 +102,41 @@
   border-radius: 4px;
   padding: 2px 6px;
   margin-bottom: 8px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
 }
 
+/* ── 配信者情報 ── */
 .live-card-seller {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .live-seller-icon {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   object-fit: cover;
+  border: 1px solid var(--border);
 }
 
 .live-seller-name {
-  font-size: 13px;
-  color: var(--text-muted, #888);
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
 .live-card-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--text-primary, #fff);
-  margin: 0 0 8px;
+  color: var(--text);
+  margin: 0;
 }
 
 .live-viewer-count {
-  font-size: 12px;
-  color: var(--text-muted, #888);
   position: absolute;
   top: 14px;
-  right: 14px;
+  right: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
 }

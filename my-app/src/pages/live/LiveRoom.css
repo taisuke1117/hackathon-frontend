@@ -1,34 +1,41 @@
+/* ==========================================================================
+   LiveRoom.css: 視聴者ページ（フルスクリーン）
+   ========================================================================== */
+
 .live-room-container {
   display: flex;
   flex-direction: column;
   height: calc(100svh - 135px);
-  background: #000;
+  background-color: var(--background);
   overflow: hidden;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-/* Livekit映像エリア */
+/* ── Livekit映像エリア ── */
 .live-video-area {
   flex: 1;
   position: relative;
-  background: #111;
+  background: #000;
   overflow: hidden;
   min-height: 0;
 }
 
-.live-video-area > div:first-child {
+/* LiveKitRoom の直下 div に高さを引き継がせる */
+.live-video-area > div {
   height: 100%;
 }
 
 .live-video-placeholder {
-  width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #666;
+  color: var(--text-muted);
   font-size: 14px;
 }
 
+/* ── 映像上のオーバーレイ ── */
 .live-room-info-overlay {
   position: absolute;
   top: 12px;
@@ -53,26 +60,31 @@
   font-size: 10px;
   font-weight: 700;
   border-radius: 4px;
-  padding: 2px 6px;
+  padding: 2px 7px;
+  letter-spacing: 0.8px;
 }
 
 .live-room-title-overlay {
   color: #fff;
   font-size: 13px;
   font-weight: 600;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .live-viewer-overlay {
   color: #fff;
   font-size: 12px;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
 }
 
-/* 商品パネル */
+/* ── 商品パネル ── */
 .live-product-panel {
-  background: var(--surface, #1a1f2e);
-  border-top: 1px solid var(--border, #2a3040);
+  background-color: var(--surface);
+  border-top: 1px solid var(--border);
   padding: 12px 16px;
   flex-shrink: 0;
 }
@@ -85,63 +97,69 @@
 }
 
 .live-product-img {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
+  width: 58px;
+  height: 58px;
+  border-radius: var(--radius-md);
   object-fit: cover;
   flex-shrink: 0;
+  background-color: var(--surface-hover);
+  border: 1px solid var(--border);
 }
 
-.live-product-detail {
-  flex: 1;
-}
+.live-product-detail { flex: 1; }
 
 .live-product-name {
   font-size: 14px;
-  color: var(--text-primary, #fff);
   font-weight: 600;
+  color: var(--text);
   margin: 0 0 4px;
+  line-height: 1.3;
 }
 
 .live-current-price {
-  font-size: 20px;
-  color: #38bdf8;
-  font-weight: 700;
-  margin: 0 0 4px;
+  font-size: 22px;
+  color: var(--primary);
+  font-weight: 800;
+  margin: 0 0 3px;
+  letter-spacing: -0.5px;
 }
 
 .live-timer {
   font-size: 13px;
   color: #4ade80;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0 0 2px;
 }
 
 .live-timer.urgent {
   color: #ef4444;
-  animation: pulse 0.5s infinite alternate;
+  animation: blink 0.5s infinite alternate;
 }
 
-@keyframes pulse {
+@keyframes blink {
   from { opacity: 1; }
-  to { opacity: 0.5; }
+  to   { opacity: 0.4; }
 }
 
 .live-current-bidder {
   font-size: 12px;
-  color: var(--text-muted, #888);
+  color: var(--text-muted);
   margin: 0;
 }
 
+/* ステータスメッセージ */
 .live-status-msg {
   font-size: 13px;
   color: #fbbf24;
   margin: 4px 0 8px;
+  padding: 6px 10px;
+  background-color: rgba(251, 191, 36, 0.08);
+  border-radius: var(--radius-md);
+  border-left: 2px solid #fbbf24;
 }
 
-.live-action-area {
-  margin-top: 8px;
-}
+/* ── アクションエリア ── */
+.live-action-area { margin-top: 8px; }
 
 .live-bid-row {
   display: flex;
@@ -150,35 +168,45 @@
 
 .live-bid-input {
   flex: 1;
-  background: var(--surface-hover, #242938);
-  border: 1px solid var(--border, #2a3040);
-  border-radius: 10px;
-  color: var(--text-primary, #fff);
-  padding: 10px 12px;
+  background-color: var(--surface-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  padding: 11px 12px;
   font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
 }
+
+.live-bid-input:focus { border-color: var(--primary); }
+.live-bid-input::placeholder { color: var(--text-muted); }
 
 .live-bid-btn {
   background: #ef4444;
   color: #fff;
   border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  padding: 11px 20px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  transition: opacity 0.15s;
 }
+
+.live-bid-btn:active { opacity: 0.75; }
 
 .live-buy-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
 }
 
 .live-instant-label {
   font-size: 15px;
-  color: var(--text-primary, #fff);
+  font-weight: 700;
+  color: var(--text);
   margin: 0;
 }
 
@@ -186,18 +214,23 @@
   background: #ef4444;
   color: #fff;
   border: none;
-  border-radius: 10px;
-  padding: 10px 24px;
+  border-radius: var(--radius-md);
+  padding: 11px 24px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
 }
 
+.live-buy-btn:active { opacity: 0.75; }
+
+/* ── 商品なし / 配信終了 ── */
 .live-no-product {
-  background: var(--surface, #1a1f2e);
+  background-color: var(--surface);
   padding: 20px;
   text-align: center;
-  color: var(--text-muted, #888);
+  color: var(--text-muted);
   font-size: 14px;
 }
 
@@ -208,15 +241,20 @@
   justify-content: center;
   height: calc(100svh - 135px);
   gap: 20px;
-  color: var(--text-muted, #888);
+  color: var(--text-muted);
+  font-size: 15px;
 }
 
 .live-ended button {
-  background: var(--primary, #38bdf8);
-  color: #fff;
-  border: none;
-  border-radius: 20px;
-  padding: 10px 24px;
+  background-color: var(--primary-bg);
+  color: var(--primary);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 12px 28px;
   font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
+  transition: opacity 0.15s;
 }
+
+.live-ended button:active { opacity: 0.75; }
