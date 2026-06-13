@@ -170,8 +170,10 @@ function LiveRoom() {
           </div>
         )}
         <div className="live-room-info-overlay">
-          <span className="live-badge-overlay">LIVE</span>
-          <span className="live-room-title-overlay">{room?.title}</span>
+          <div className="live-overlay-left">
+            <span className="live-badge-overlay">LIVE</span>
+            <span className="live-room-title-overlay">{room?.title}</span>
+          </div>
           <span className="live-viewer-overlay">👁 {room?.viewer_count || 0}</span>
         </div>
       </div>

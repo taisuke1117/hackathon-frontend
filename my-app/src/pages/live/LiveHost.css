@@ -1,7 +1,7 @@
 .livehost-container {
   display: flex;
   flex-direction: column;
-  height: 100svh;
+  height: calc(100svh - 135px);
   background: #000;
   overflow: hidden;
 }
@@ -210,7 +210,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100svh;
+  height: calc(100svh - 135px);
   gap: 20px;
   color: var(--text-muted, #888);
 }

@@ -96,6 +96,45 @@ function LiveHost() {
       const decoder = new TextDecoder();
       let buffer = '';
 
+      const resetTimer = (seconds) => {
+        clearInterval(timerRef.current);
+        let s = seconds;
+        timerRef.current = setInterval(() => {
+          s -= 1;
+          setSecondsLeft(s);
+          if (s <= 0) clearInterval(timerRef.current);
+        }, 1000);
+      };
+
+      const onEvent = (event) => {
+        switch (event.type) {
+          case 'bid':
+            setProduct(event.product);
+            setSecondsLeft(event.seconds_left || 30);
+            resetTimer(event.seconds_left || 30);
+            setStatusMsg(`💰 ${event.product?.bidder_name} が ¥${event.product?.current_price?.toLocaleString()} で入札`);
+            break;
+          case 'sold':
+            setProduct(prev => prev ? { ...prev, status: 'sold' } : prev);
+            setStatusMsg(`🎉 ¥${event.final_price?.toLocaleString()} で ${event.buyer_name} が落札！`);
+            clearInterval(timerRef.current);
+            break;
+          case 'next':
+            setProduct(event.product);
+            setQueue(prev => prev.filter(q => q.id !== event.product?.id));
+            setSecondsLeft(event.product?.seconds_left || 30);
+            if (event.product?.mode === 'auction') resetTimer(event.product?.seconds_left || 30);
+            setStatusMsg('次の商品に移りました');
+            break;
+          case 'end':
+            setStreamEnded(true);
+            clearInterval(timerRef.current);
+            break;
+          default:
+            break;
+        }
+      };
+
       while (!cancelled) {
         let chunk;
         try { chunk = await reader.read(); } catch { break; }
@@ -105,7 +144,7 @@ function LiveHost() {
         buffer = lines.pop() || '';
         for (const line of lines) {
           if (line.startsWith('data: ')) {
-            try { handleSSEEvent(JSON.parse(line.slice(6))); } catch {}
+            try { onEvent(JSON.parse(line.slice(6))); } catch {}
           }
         }
       }
@@ -113,45 +152,6 @@ function LiveHost() {
 
     connect();
     sseRef.current = { cancel: () => { cancelled = true; reader?.cancel(); } };
-  };
-
-  const handleSSEEvent = (event) => {
-    switch (event.type) {
-      case 'bid':
-        setProduct(event.product);
-        setSecondsLeft(event.seconds_left || 30);
-        resetTimer(event.seconds_left || 30);
-        setStatusMsg(`💰 ${event.product?.bidder_name} が ¥${event.product?.current_price?.toLocaleString()} で入札`);
-        break;
-      case 'sold':
-        setProduct(prev => prev ? { ...prev, status: 'sold' } : prev);
-        setStatusMsg(`🎉 ¥${event.final_price?.toLocaleString()} で ${event.buyer_name} が落札！`);
-        clearInterval(timerRef.current);
-        break;
-      case 'next':
-        setProduct(event.product);
-        setQueue(prev => prev.filter(q => q.id !== event.product?.id));
-        setSecondsLeft(event.product?.seconds_left || 30);
-        if (event.product?.mode === 'auction') resetTimer(event.product?.seconds_left || 30);
-        setStatusMsg('次の商品に移りました');
-        break;
-      case 'end':
-        setStreamEnded(true);
-        clearInterval(timerRef.current);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const resetTimer = (seconds) => {
-    clearInterval(timerRef.current);
-    let s = seconds;
-    timerRef.current = setInterval(() => {
-      s -= 1;
-      setSecondsLeft(s);
-      if (s <= 0) clearInterval(timerRef.current);
-    }, 1000);
   };
 
   useEffect(() => () => {
