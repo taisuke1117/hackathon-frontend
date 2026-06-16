@@ -1,0 +1,21 @@
+# 環境変数（Firebaseキー等）
+.env
+.env.*
+!.env.example
+
+# Claude関連
+.claude/
+**/.claude/
+
+# IDE
+.idea/
+.vscode/
+
+# macOS
+.DS_Store
+
+# 依存関係
+node_modules/
+
+# ビルド成果物
+my-app/build/
