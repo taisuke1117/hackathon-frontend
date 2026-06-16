@@ -40,23 +40,18 @@
   height: 100%;
 }
 
-/*  Loopa ロゴ画像  */
+/* SVG ロゴ（白パス・透明背景） */
 .header-loopa-logo {
-  height: 42px;
+  height: 36px;
   width: auto;
   object-fit: contain;
-
-  /* mix-blend-mode: screen で黒背景を透明化して文字だけ抽出する */
-  mix-blend-mode: screen;
-  filter: invert(0.85);  /* 少しスモークがかった白に調整 */
-  opacity: 0.8;
-
+  opacity: 0.85;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ロゴホバー: アイスブルーのグロウ + わずかに拡大 */
 .header-loopa-logo:hover {
-  filter: invert(1) drop-shadow(0 0 8px rgba(56, 189, 248, 0.7));
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.7));
   opacity: 1;
   transform: scale(1.02);
 }
