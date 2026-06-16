@@ -3,7 +3,7 @@
    ========================================================================== */
 
 /* ── カード全体 ──────────────────────────────────────────── */
-/* aspect-ratio: 1/1.25 で画像(1:1) + 情報行の縦長カード */
+/* 画像(1:1正方形) + 情報行(内容ぶんの高さ) を縦に積む */
 .product-card {
   background-color: var(--surface);
   display: flex;
@@ -11,7 +11,6 @@
   cursor: pointer;
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1.25;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   overflow: hidden;
@@ -51,8 +50,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
-  flex: 1;
+  padding: 8px 10px;
   background-color: rgba(0, 0, 0, 0.05);
 }
 
