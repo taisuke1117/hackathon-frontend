@@ -1,9 +1,8 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './Header.css';
 
-import loopaLogo from '../../assets/loopa-logo.svg';
+import loopaLogo from '../../assets/logo.png';
 import bellIcon from '../../assets/bell.svg';
 import userIcon from '../../assets/user.svg';
 
