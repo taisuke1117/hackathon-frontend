@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../../api/client';
+import { PurchaseProductCard } from '../../components/product/PurchaseProductCard';
 import { ReviewModal } from '../../components/modal/ReviewModal';
-import '../../components/product/PurchaseProductCard.css';
 import './Purchase.css';
 
-// Purchases: 購入履歴一覧（ステータスバッジ・受取評価モーダル）
+// Purchases: 購入履歴一覧（縦型グリッド・受取評価モーダル）
 
 function Purchases() {
   const navigate = useNavigate();
@@ -23,13 +23,6 @@ function Purchases() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
-
-  // ステータスに応じた表示設定（バッジテキストとCSSクラス）
-  const statusConfig = (item) => {
-    if (item.status === 'unshipped') return { text: '未発送', className: 'status-unshipped' };
-    if (item.status === 'shipped' && !item.reviewed) return { text: '評価待ち', className: 'status-shipping' };
-    return { text: '受取済み', className: 'status-received' };
-  };
 
   // hideReceived が true なら「shipped かつ reviewed済み」の商品を除外
   const displayed = hideReceived
@@ -68,38 +61,19 @@ function Purchases() {
             </button>
           </div>
         ) : (
-          <div className="purchases-list-layout">
-            {displayed.map((item) => {
-              const config = statusConfig(item);
-              return (
-                // カード全体クリックで商品詳細へ
-                <div key={item.product_id} className="purchase-card" onClick={() => navigate(`/product/${item.product_id}`)}>
-                  {item.image_url && <img src={item.image_url} alt={item.name} className="purchase-card-img" />}
-
-                  <div className="purchase-card-info">
-                    <span className={`purchase-status-badge ${config.className}`}>
-                      {config.text}
-                    </span>
-                    <h3 className="purchase-card-title">{item.name}</h3>
-                    <p className="purchase-card-price">¥{item.price.toLocaleString()}</p>
-
-                    {/* 発送済み＆未評価のときだけ評価ボタンを表示 */}
-                    {/* e.stopPropagation() でカードクリック（詳細遷移）を止める */}
-                    {item.status === 'shipped' && !item.reviewed && (
-                      <button
-                        type="button"
-                        className="purchase-review-btn"
-                        onClick={(e) => { e.stopPropagation(); setReviewTarget(item); }}
-                      >
-                        ⭐ 受取評価をする
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="purchase-card-arrow">＞</div>
-                </div>
-              );
-            })}
+          <div className="purchases-grid">
+            {displayed.map((item) => (
+              <PurchaseProductCard
+                key={item.product_id}
+                id={item.product_id}
+                title={item.name}
+                price={item.price}
+                image={item.image_url}
+                status={item.status}
+                reviewed={item.reviewed}
+                onReview={() => setReviewTarget(item)}
+              />
+            ))}
           </div>
         )}
       </div>

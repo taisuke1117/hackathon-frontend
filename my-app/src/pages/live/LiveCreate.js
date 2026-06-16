@@ -69,7 +69,10 @@ function LiveCreate() {
 
   return (
     <div className="live-create-container">
-      <h2 className="live-create-heading">配信を作成</h2>
+      <h2 className="live-create-heading">
+        <button className="live-create-back-btn" onClick={() => navigate(-1)} aria-label="戻る">←</button>
+        配信を作成
+      </h2>
 
       <div className="live-create-section">
         <label className="live-create-label">配信タイトル</label>

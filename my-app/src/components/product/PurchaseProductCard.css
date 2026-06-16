@@ -1,112 +1,118 @@
 /* ==========================================================================
-   PurchaseProductCard.css: 購入履歴の各カードスタイル
+   PurchaseProductCard.css: 購入した商品の縦型カード（ProductCard と同形状）
    ========================================================================== */
 
-/* ── カード全体 ──────────────────────────────────────────── */
-/* 横並び（サムネイル + テキスト）レイアウト */
-.purchase-card {
-  display: flex;
-  align-items: center;
+/* ── カード全体（縦積み）────────────────────────────────────── */
+.purchase-card-vertical {
   background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-  gap: 16px;
-}
-
-/* ホバー: 枠がアイスブルーに光る */
-.purchase-card:hover {
-  border-color: var(--primary);
-  box-shadow: 0 0 12px rgba(14, 165, 233, 0.1);
-}
-
-/* ── 商品サムネイル ──────────────────────────────────────── */
-.purchase-card-img {
-  width: 72px;
-  height: 72px;
-  object-fit: cover;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-}
-
-/* ── テキスト情報エリア ──────────────────────────────────── */
-.purchase-card-info {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-
-/* タイトル: 1行で省略 */
-.purchase-card-title {
-  font-size: 14px;
-  font-weight: bold;
-  color: var(--text);
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
+  cursor: pointer;
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
   overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.purchase-card-price {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin: 0;
+.purchase-card-vertical:hover {
+  transform: translateY(-3px);
+  background-color: var(--surface-hover);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
 }
 
-/* ── ステータスバッジ（3種）────────────────────────────── */
+/* ── 画像エリア（正方形）────────────────────────────────────── */
+.purchase-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+.purchase-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.purchase-card-vertical:hover .purchase-image { transform: scale(1.04); }
+
+/* ── ステータスバッジ（画像左上オーバーレイ）─────────────── */
 .purchase-status-badge {
-  align-self: flex-start;
-  font-size: 11px;
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 10px;
   font-weight: bold;
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: 4px;
-  margin-bottom: 2px;
 }
 
-/* 未発送: アンバーオレンジ（要注意）*/
+/* 未発送: アンバーオレンジ */
 .status-unshipped {
   background-color: rgba(245, 158, 11, 0.15);
   color: #f59e0b;
   border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
-/* 配達中: アイスブルー（進行中）*/
+/* 評価待ち（配達中）: アイスブルー */
 .status-shipping {
   background-color: rgba(14, 165, 233, 0.15);
   color: var(--primary);
   border: 1px solid rgba(14, 165, 233, 0.3);
 }
 
-/* 受取済み: エメラルドグリーン（完了）*/
+/* 受取済み: エメラルドグリーン */
 .status-received {
   background-color: rgba(52, 211, 153, 0.15);
   color: #34d399;
   border: 1px solid rgba(52, 211, 153, 0.3);
 }
 
-/* 右矢印ヒント */
-.purchase-card-arrow {
-  color: var(--text-muted);
-  font-size: 14px;
-  padding-right: 4px;
+/* ── 価格・タイトル行 ────────────────────────────────────────── */
+.purchase-info-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
-/* ── レビューボタン（受取済みで未レビューの場合のみ表示）── */
+.purchase-text-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.purchase-price {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.purchase-title {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── 評価ボタン（発送済み未評価のときだけ表示）────────────── */
 .purchase-review-btn {
-  align-self: flex-start;
-  margin-top: 6px;
-  padding: 7px 14px;
-  font-size: 13px;
+  width: 100%;
+  padding: 8px;
+  font-size: 12px;
   font-weight: bold;
   color: #0b0d10;
   background: var(--primary);
   border: none;
-  border-radius: 8px;
   cursor: pointer;
   transition: opacity 0.15s ease;
 }

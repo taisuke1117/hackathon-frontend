@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ProductCard } from '../../components/product/ProductCard';
+import { PurchaseProductCard } from '../../components/product/PurchaseProductCard';
 import { apiFetch } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 import './MyPage.css';
@@ -62,15 +63,14 @@ function MyPage() {
 
         <div className="mypage-products-grid">
           {recentPurchases.map((product) => (
-            <ProductCard
+            <PurchaseProductCard
               key={product.product_id}
               id={product.product_id}
               title={product.name}
               price={product.price}
               image={product.image_url}
-              category={product.category}
-              likeCountInitial={product.likes_count}
-              isLikedInitial={product.liked_by_me}
+              status={product.status}
+              reviewed={product.reviewed}
             />
           ))}
           {recentPurchases.length === 0 && <span className="mypage-reviews">まだ購入した商品はありません</span>}

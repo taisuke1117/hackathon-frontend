@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { apiFetch } from '../../api/client';
@@ -26,6 +26,17 @@ function SellerChatRoom() {
     el.style.height = 'auto';
     el.style.height = Math.min(el.scrollHeight, 104) + 'px';
   }, [inputText]);
+
+  const [buyerReviewed, setBuyerReviewed] = useState(false);
+
+  // 取引済み（available以外）になったら購入者が評価済みか確認する
+  // 出品者が受け取った評価一覧から product_id 一致を探す
+  useEffect(() => {
+    if (!room || room.product_status === 'available') return;
+    apiFetch(`/api/users/${room.seller_id}/reviews`)
+      .then(list => setBuyerReviewed((list || []).some(rv => rv.product_id === room.product_id)))
+      .catch(() => {});
+  }, [room?.product_status, room?.product_id, room?.seller_id]);
 
   if (!room) return <div className="app-center-text">読み込み中…</div>;
 
@@ -95,26 +106,35 @@ function SellerChatRoom() {
 
       {/* アクションエリア */}
       <div className="room-action-dashboard">
-        {/* 承認済みバナー */}
-        {isApproved && (
-          <div className="discount-info-notification">
-            <span className="discount-sparkle">✅</span>
-            <span className="discount-text">¥{room.discount_approved.toLocaleString()} への値引きを承認済みです</span>
+        {room.product_status === 'available' ? (
+          /* 出品中: 承認済みバナー・ブロック・値引き承認 */
+          <>
+            {isApproved && (
+              <div className="discount-info-notification">
+                <span className="discount-sparkle">✅</span>
+                <span className="discount-text">¥{room.discount_approved.toLocaleString()} への値引きを承認済みです</span>
+              </div>
+            )}
+            <div className="seller-direct-actions">
+              <button className="action-btn-block" onClick={handleBlockUser}>
+                ユーザーをブロック
+              </button>
+              {proposedPrice > 0 && !isApproved && (
+                <button className="action-btn-approve" onClick={handleApproveDiscount}>
+                  値引きを承認 (¥{proposedPrice.toLocaleString()})
+                </button>
+              )}
+            </div>
+          </>
+        ) : (
+          /* 取引済み: 購入者の評価ステータスを表示 */
+          <div className="deal-closed-box">
+            <p className="deal-closed-label">取引が完了しました</p>
+            <p className="deal-closed-sub">
+              {buyerReviewed ? '⭐ 購入者から評価が届きました' : '購入者の評価をお待ちください'}
+            </p>
           </div>
         )}
-
-        <div className="seller-direct-actions">
-          {/* ブロックボタン（常時表示） */}
-          <button className="action-btn-block" onClick={handleBlockUser}>
-            ユーザーをブロック
-          </button>
-          {/* 値引き承認ボタン: 提案中かつ未承認のときだけ表示 */}
-          {proposedPrice > 0 && !isApproved && (
-            <button className="action-btn-approve" onClick={handleApproveDiscount}>
-              値引きを承認 (¥{proposedPrice.toLocaleString()})
-            </button>
-          )}
-        </div>
 
         {/* GeminiAIによる返信文自動生成（出品者ロール） */}
         <GeminiAssistantBox role="seller" room={room} myId={myId} onGenerated={setInputText} />

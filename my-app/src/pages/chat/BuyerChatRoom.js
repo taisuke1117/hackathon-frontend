@@ -32,9 +32,9 @@ function BuyerChatRoom() {
   const [myPurchase, setMyPurchase] = useState(null);
   const [showReview, setShowReview] = useState(false);
 
-  // 発送済みステータスになったとき、購入履歴から自分のこの取引を探す
+  // 取引済み（available以外）になったとき、購入履歴から自分がこの商品を買ったか確認する
   useEffect(() => {
-    if (room?.product_status !== 'shipped') return; // まだ発送されていなければ不要
+    if (room?.product_status === 'available') return; // 出品中はまだ取引なし
     apiFetch('/api/me/purchases')
       .then(list => {
         const mine = (list || []).find(p => p.product_id === room.product_id);
@@ -98,36 +98,42 @@ function BuyerChatRoom() {
         chatEndRef={chatEndRef}
       />
 
-      {/* アクションエリア（値引き状況・購入ボタン・評価ボタン） */}
+      {/* アクションエリア */}
       <div className="room-action-dashboard">
-        {/* 値引き承認済みのバナー */}
-        {isDiscountApproved && (
-          <div className="discount-info-notification">
-            <span className="discount-sparkle">✨</span>
-            <span className="discount-text">¥{room.discount_approved.toLocaleString()} への値引きが承認されています</span>
-          </div>
-        )}
-
-        {/* 発送済み＆未評価 → 受取評価ボタン */}
-        {/* それ以外 → 購入ボタン＋値引き交渉ボタン */}
-        {myPurchase && !myPurchase.reviewed ? (
-          <div className="buyer-direct-actions">
-            <button className="action-btn-purchase" onClick={() => setShowReview(true)}>
-              ⭐ 受取評価をする
-            </button>
-          </div>
+        {room.product_status === 'available' ? (
+          /* 出品中: 値引きバナー・購入ボタン・値引き交渉 */
+          <>
+            {isDiscountApproved && (
+              <div className="discount-info-notification">
+                <span className="discount-sparkle">✨</span>
+                <span className="discount-text">¥{room.discount_approved.toLocaleString()} への値引きが承認されています</span>
+              </div>
+            )}
+            <div className="buyer-direct-actions">
+              <button
+                className="action-btn-purchase"
+                onClick={() => navigate(`/checkout/${room.product_id}`)}
+              >
+                購入手続きへ
+              </button>
+              <button className="action-btn-offer" onClick={handleOfferPrice}>
+                値引き交渉
+              </button>
+            </div>
+          </>
         ) : (
-          <div className="buyer-direct-actions">
-            <button
-              className="action-btn-purchase"
-              disabled={room.product_status !== 'available'} // 出品中のときだけ押せる
-              onClick={() => navigate(`/checkout/${room.product_id}`)}
-            >
-              {room.product_status === 'available' ? '購入手続きへ' : '取引済み'}
-            </button>
-            <button className="action-btn-offer" onClick={handleOfferPrice}>
-              値引き交渉
-            </button>
+          /* 取引済み: 評価ステータスを表示 */
+          <div className="deal-closed-box">
+            <p className="deal-closed-label">この商品は取引済みです</p>
+            {myPurchase ? (
+              myPurchase.reviewed ? (
+                <p className="deal-closed-sub">評価済み ✓</p>
+              ) : (
+                <button className="action-btn-purchase" onClick={() => setShowReview(true)}>
+                  ⭐ 受取評価をする
+                </button>
+              )
+            ) : null}
           </div>
         )}
 

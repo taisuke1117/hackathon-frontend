@@ -85,11 +85,11 @@
 /* ── コンテンツエリア ────────────────────────────────────── */
 .purchases-page-content { padding: 16px; }
 
-/* 購入カードを縦に積む */
-.purchases-list-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+/* 購入カードを3カラムグリッドで表示（ProductCard と同形状） */
+.purchases-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
 }
 
 /* ── 空の状態（購入履歴なし）────────────────────────────── */
