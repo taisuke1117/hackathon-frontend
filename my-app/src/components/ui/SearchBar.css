@@ -5,7 +5,7 @@
 /* ── 検索バー全体のラッパー（画面上部に sticky で追従） ────── */
 .search-wrapper {
   background-color: var(--background);
-  padding: 8px 16px;
+  padding: 4px 16px;
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 60px;   /* ヘッダー(60px)のすぐ下 */

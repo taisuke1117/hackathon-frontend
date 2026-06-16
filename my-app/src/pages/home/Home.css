@@ -7,13 +7,12 @@
   max-width: 600px; /* ヘッダー・フッターと横幅を合わせる */
   margin: 0 auto;
   background-color: var(--background);
-  min-height: 100vh;
-  min-height: 100svh;
+  /* min-height を削除: 商品が少ないときも余分なスクロールが発生しないようにする */
 }
 
 /* ── 商品グリッドエリア ──────────────────────────────────── */
 .home-products-section {
-  padding: 12px 0;
+  padding: 4px 0;
 }
 
 /* 3カラムグリッド: スマホ幅を3等分して商品カードを並べる */
