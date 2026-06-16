@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../../api/client';
 import './LiveCreate.css';
@@ -7,6 +7,7 @@ function LiveCreate() {
   const [title, setTitle] = useState('');
   const [myProducts, setMyProducts] = useState([]);
   const [queue, setQueue] = useState([]); // { product, mode, startPrice, instantPrice }
+  const [timerSeconds, setTimerSeconds] = useState(30); // オークションタイマー秒数
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ function LiveCreate() {
       }));
       const res = await apiFetch('/api/live/rooms', {
         method: 'POST',
-        body: { title: title.trim(), products },
+        body: { title: title.trim(), timer_seconds: Number(timerSeconds), products },
       });
       navigate(`/live/host/${res.room_id}`);
     } catch (e) {
@@ -82,6 +83,20 @@ function LiveCreate() {
           value={title}
           onChange={e => setTitle(e.target.value)}
         />
+      </div>
+
+      <div className="live-create-section">
+        <label className="live-create-label">オークションタイマー</label>
+        <select
+          className="live-create-select"
+          value={timerSeconds}
+          onChange={e => setTimerSeconds(Number(e.target.value))}
+        >
+          <option value={30}>30秒（スピーディー）</option>
+          <option value={60}>60秒（標準）</option>
+          <option value={120}>120秒（じっくり）</option>
+        </select>
+        <p className="live-create-hint">最初の入札が入ってからカウントダウンが始まります</p>
       </div>
 
       <div className="live-create-section">

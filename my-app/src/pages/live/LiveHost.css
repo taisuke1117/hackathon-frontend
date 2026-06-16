@@ -22,10 +22,111 @@
   height: 100%;
 }
 
+/* ── HostStage（LiveKitRoom 子コンポーネント）── */
+.livehost-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* useTracks + VideoTrack で描画するカメラ映像 */
+.livehost-video-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* カメラオフ時の黒背景プレースホルダ */
+.livehost-video-off {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 14px;
+}
+
+/* 入札待ち表示（タイマー未起動） */
+.livehost-timer-waiting {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 1px;
+  font-style: italic;
+}
+
+/* 上部バー内のマイク/カメラトグル群 */
+.livehost-media-controls {
+  display: flex;
+  gap: 6px;
+  pointer-events: all; /* 親 .livehost-top-bar が pointer-events:none なので上書き */
+}
+
+/* マイク/カメラ切替ボタン（配信中・上部バー内） */
+.livehost-track-btn {
+  border: none;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.livehost-track-btn.on {
+  background: rgba(56, 189, 248, 0.85);
+  color: #0b0f17;
+}
+
+.livehost-track-btn.off {
+  background: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.livehost-track-btn:active { opacity: 0.75; }
+
+/* 配信開始前トグル群（カメラ/マイク） */
+.livehost-prestart-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+/* 配信開始前トグルボタン */
+.livehost-media-toggle {
+  border-radius: 10px;
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  min-width: 150px;
+  transition: all 0.15s;
+}
+
+.livehost-media-toggle.on {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.livehost-media-toggle.off {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.livehost-media-toggle:active { opacity: 0.75; }
+
 /* 配信開始前の黒画面 */
 .livehost-video-placeholder {
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   background: #0b0f17;
