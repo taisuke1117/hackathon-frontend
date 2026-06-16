@@ -32,9 +32,9 @@ function SellerChatRoom() {
   // 取引済み（available以外）になったら購入者が評価済みか確認する
   // 出品者が受け取った評価一覧から product_id 一致を探す
   useEffect(() => {
-    if (!room || room.product_status === 'available') return;
-    apiFetch(`/api/users/${room.seller_id}/reviews`)
-      .then(list => setBuyerReviewed((list || []).some(rv => rv.product_id === room.product_id)))
+    if (!room?.product_status || room?.product_status === 'available') return;
+    apiFetch(`/api/users/${room?.seller_id}/reviews`)
+      .then(list => setBuyerReviewed((list || []).some(rv => rv.product_id === room?.product_id)))
       .catch(() => {});
   }, [room?.product_status, room?.product_id, room?.seller_id]);
 
