@@ -1,18 +1,13 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { toggleSelection } from '../../utils/category';
 import './CategoryChipSelector.css';
 
 // カテゴリ複数選択チップUI。選択値は名前の文字列配列で管理する
 export function CategoryChipSelector({ selected, onChange }) {
   const { categories } = useAuth();
 
-  const toggle = (name) => {
-    if (selected.includes(name)) {
-      onChange(selected.filter(c => c !== name));
-    } else {
-      onChange([...selected, name]);
-    }
-  };
+  const toggle = (name) => onChange(toggleSelection(selected, name));
 
   return (
     <div className="category-chip-grid">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
+import { calcFinalPrice } from '../../utils/price';
 import './Checkout.css';
 
 // Checkout: 購入手続きページ（配送先・値引き適用後合計・注文確定）
@@ -53,8 +54,7 @@ function Checkout() {
 
   if (!product) return <div className="app-center-text">読み込み中…</div>;
 
-  // 値引き価格が正当な場合（0より大かつ通常価格より小）のみ適用
-  const finalPrice = discountPrice > 0 && discountPrice < product.price ? discountPrice : product.price;
+  const finalPrice = calcFinalPrice(discountPrice, product.price);
   const shippingFee = 0; // 送料は現在無料
   const total = finalPrice + shippingFee;
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
+import { categoryNamesToIds } from '../../utils/category';
 import './Listing.css';
 
 // ListingConfirm: 出品フロー Step 2（確認・カテゴリ名→ID変換・POST）
@@ -21,10 +22,7 @@ function ListingConfirm() {
   const handleFinalSubmit = async () => {
     setIsSubmitting(true);
     try {
-      // カテゴリは名前で管理しているが、APIにはIDで送る
-      const categoryIds = selectedCategories
-        .map(name => categories.find(c => c.name === name)?.category_id)
-        .filter(Boolean); // IDが見つからない場合（異常系）は除外
+      const categoryIds = categoryNamesToIds(selectedCategories, categories);
 
       await apiFetch('/api/products', {
         method: 'POST',
