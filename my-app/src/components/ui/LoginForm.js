@@ -5,26 +5,10 @@ import './LoginForm.css';
 
 import loopaLogo from '../../assets/logo.png';
 
-// ─────────────────────────────────────────────────────────
-// LoginForm: 未ログイン時に表示されるログイン画面
-//
-// App.js で loginUser が null のとき（Firebase の onAuthStateChanged が
-// 未認証を返したとき）に表示される。
-//
-// 認証方式: Google OAuth2（Firebase Authentication の signInWithPopup）
-//
-// 認証フロー:
-//   1. 「Googleでログイン」ボタンをクリック
-//   2. Firebase が Google のポップアップを開く
-//   3. ユーザーが Google アカウントを選択・承認
-//   4. Firebase から IDToken が発行される
-//   5. onAuthStateChanged が発火 → AuthContext の loginUser にセット
-//   6. App.js で条件分岐が切り替わり → メインアプリが表示される
-// ─────────────────────────────────────────────────────────
+// LoginForm: 未ログイン時に表示されるGoogleログイン画面
 
 export const LoginForm = () => {
 
-  // Google でログイン: ポップアップを開いて認証する
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(fireAuth, provider)

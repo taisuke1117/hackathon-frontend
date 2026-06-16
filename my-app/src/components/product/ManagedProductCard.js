@@ -3,24 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { LikeButton } from '../ui/LikeButton';
 import './ManagedProductCard.css';
 
-// ─────────────────────────────────────────────────────────
-// ManagedProductCard: 出品者視点の商品カード（取引管理ページ用）
-//
-// 通常の ProductCard との違い:
-//   - クリックで /deals/manage/:id（取引管理画面）に遷移する
-//   - ステータスバッジ（出品中 / 取引中 / 配達中 / 売却済み）を表示する
-//   - 未読チャット数バッジを画像右上に表示する
-//   - LikeButton は表示専用（onToggle が空なのでAPIは叩かない）
-//
-// Props:
-//   id             : 商品ID
-//   image          : サムネイル画像URL
-//   price          : 価格
-//   title          : 商品名（alt テキスト）
-//   status         : 商品ステータス文字列
-//   likeCount      : いいね数
-//   unreadChatCount: この商品の未読チャット数
-// ─────────────────────────────────────────────────────────
+// ManagedProductCard: 出品者視点の商品カード（ステータスバッジ・未読チャット数付き）
 
 export const ManagedProductCard = ({
   id,
@@ -71,8 +54,7 @@ export const ManagedProductCard = ({
           <span className="managed-price">¥{Number(price).toLocaleString()}</span>
         </div>
 
-        {/* LikeButton は表示専用（onToggle が空なのでAPIは叩かない）*/}
-        {/* likeCount > 0 のときはアクティブ色で表示して実感を出す */}
+        {/* LikeButton は表示専用: likeCount > 0 のときアクティブ色 */}
         <div className="managed-like-view-only">
           <LikeButton
             isLikedInitial={likeCount > 0}

@@ -1,30 +1,12 @@
 import React, { useRef } from 'react';
 import { uploadProductImage } from '../../api/storage';
 
-// ─────────────────────────────────────────────────────────
-// ImageUploadSection: 商品画像の選択・アップロード・プレビューコンポーネント
-//
-// 使用箇所: ListingInput（出品フォーム）
-//
-// 動作フロー:
-//   1. 「＋」エリアをクリック → 非表示の input[type=file] を開く（複数選択可）
-//   2. ファイルを選択 → 1枚ずつ順番に GCS へアップロード（sequential）
-//   3. アップロード完了した URL を配列に追加して親に onChange で通知
-//   4. 1枚目の画像に「メイン」バッジを表示（商品詳細のメイン画像になる）
-//   5. ×ボタンで個別に削除可能
-//
-// Props:
-//   images       : アップロード済み画像URLの配列（親が管理）
-//   onChange     : 画像配列が変わったとき親に通知するコールバック
-//   isUploading  : アップロード中フラグ（親が管理。中は＋を押せなくする）
-//   setIsUploading: フラグを変更するための setter
-// ─────────────────────────────────────────────────────────
+// ImageUploadSection: GCSへの画像アップロード・プレビュー・削除（出品フォーム用）
 
 export function ImageUploadSection({ images, onChange, isUploading, setIsUploading }) {
-  // 非表示の file input を参照するための ref（ラベルクリックで開く）
   const fileInputRef = useRef(null);
 
-  // ファイル選択後: 1枚ずつ順番にアップロード（並列にしないのは GCS 負荷考慮）
+  // 1枚ずつ順番にアップロード（並列にしないのは GCS 負荷考慮）
   const handleFileSelect = async (e) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
@@ -32,10 +14,9 @@ export function ImageUploadSection({ images, onChange, isUploading, setIsUploadi
     try {
       const urls = [];
       for (const file of files) {
-        // uploadProductImage は GCS に直接アップロードしてパブリック URL を返す
         urls.push(await uploadProductImage(file));
       }
-      onChange([...images, ...urls]); // 既存 + 新規 URL をまとめて親に渡す
+      onChange([...images, ...urls]);
     } catch (err) {
       alert(`画像のアップロードに失敗しました: ${err.message}`);
     } finally {
@@ -44,7 +25,6 @@ export function ImageUploadSection({ images, onChange, isUploading, setIsUploadi
     }
   };
 
-  // 個別削除: 対象インデックス以外の画像だけ残す
   const handleDelete = (index) => {
     onChange(images.filter((_, i) => i !== index));
   };

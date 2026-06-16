@@ -7,20 +7,6 @@ import loopaLogo from '../../assets/logo.png';
 import bellIcon from '../../assets/bell.svg';
 import userIcon from '../../assets/user.svg';
 
-// ─────────────────────────────────────────────────────────
-// Header: 全ページ共通のトップナビゲーションバー
-//
-// 表示内容:
-//   左: Loopa ロゴ（クリックでホームへ）
-//   右: 通知ベルアイコン + アカウント設定アイコン
-//
-// 未読通知バッジ:
-//   AuthContext の badges.unread_notifications が 1 以上のとき、
-//   ベルアイコンの右上に小さな赤いドット（.unread-dot）を表示する。
-//   badges は AuthContext の initData で初期取得し、
-//   25秒ごとのポーリングで更新される。
-// ─────────────────────────────────────────────────────────
-
 function Header() {
   // badges: { unread_notifications: number, unread_chats: number }
   const { badges } = useAuth();

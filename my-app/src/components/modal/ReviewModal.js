@@ -2,30 +2,14 @@ import React, { useState } from 'react';
 import { apiFetch } from '../../api/client';
 import './ReviewModal.css';
 
-// ─────────────────────────────────────────────────────────
-// ReviewModal: 受取評価モーダルコンポーネント
-//
-// 発送済み商品を受け取った購入者が出品者を星1〜5 + コメントで評価する。
-// 使用箇所: Purchase（購入履歴）/ BuyerChatRoom（チャット画面）
-//
-// Props:
-//   product     : 評価対象の商品（{ product_id, name }）
-//   onClose()   : モーダルを閉じる（キャンセル or オーバーレイクリック）
-//   onSubmitted(): 評価送信成功後のコールバック（一覧再取得などに使う）
-//
-// 星のインタラクション:
-//   hovered > 0 の間は hovered の値を優先表示
-//   マウスが外れたら rating（確定値）に戻る
-//   クリックで rating を確定
-// ─────────────────────────────────────────────────────────
+// ReviewModal: 発送済み商品に対する星1〜5評価モーダル
 
 export function ReviewModal({ product, onClose, onSubmitted }) {
-  const [rating, setRating] = useState(5);    // 確定した星の数（デフォルト5）
-  const [hovered, setHovered] = useState(0);  // ホバー中の星（0なら非ホバー）
+  const [rating, setRating] = useState(5);
+  const [hovered, setHovered] = useState(0); // ホバー中は hovered を優先表示し、外れたら rating に戻る
   const [comment, setComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 星の数に対応する日本語ラベル
   const labels = {
     1: '残念だった',
     2: 'いまいち',
@@ -34,7 +18,7 @@ export function ReviewModal({ product, onClose, onSubmitted }) {
     5: 'とても良かった！',
   };
 
-  // 評価送信: POST /api/products/:id/reviews
+  // POST /api/products/:id/reviews
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
@@ -42,7 +26,7 @@ export function ReviewModal({ product, onClose, onSubmitted }) {
         method: 'POST',
         body: { rating, comment },
       });
-      onSubmitted(); // 親に完了を通知（一覧の再取得など）
+      onSubmitted();
     } catch (err) {
       alert(`評価の送信に失敗しました: ${err.message}`);
       setIsSubmitting(false);
@@ -63,8 +47,7 @@ export function ReviewModal({ product, onClose, onSubmitted }) {
             <button
               key={n}
               type="button"
-              // hovered がある間はそちらを優先（マウス追従で星が変わる）
-              className={`review-star-btn ${(hovered || rating) >= n ? 'filled' : ''}`}
+                className={`review-star-btn ${(hovered || rating) >= n ? 'filled' : ''}`}
               onClick={() => setRating(n)}
               onMouseEnter={() => setHovered(n)}
               onMouseLeave={() => setHovered(0)}
@@ -74,7 +57,6 @@ export function ReviewModal({ product, onClose, onSubmitted }) {
             </button>
           ))}
         </div>
-        {/* 現在の星数に対応するラベルを表示 */}
         <div className="review-star-label">{labels[hovered || rating]}</div>
 
         <textarea

@@ -7,7 +7,7 @@ export function GeminiAssistantBox({ role, room, myId, onGenerated }) {
   const [aiPrompt, setAiPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // role によってプレースホルダーを切り替え（UXの文脈ヒント）
+  // role によってプレースホルダーを切り替える
   const placeholder = role === 'seller'
     ? 'Geminiに断り文や返答を作ってもらう（例: 値下げを断る）'
     : 'Geminiにチャット文を作ってもらう（例: 状態の確認）';
@@ -17,7 +17,6 @@ export function GeminiAssistantBox({ role, room, myId, onGenerated }) {
     setIsLoading(true);
     try {
       // 直近10件のメッセージを is_me フラグ付きで送る
-      // バックエンドはこれを Gemini に渡し、会話文脈を理解させる
       const msgs = (room.messages || []).slice(-10).map(m => ({
         is_me: m.sender_id === myId,
         content: m.content,

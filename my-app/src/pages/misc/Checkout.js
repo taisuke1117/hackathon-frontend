@@ -4,22 +4,7 @@ import { apiFetch } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 import './Checkout.css';
 
-// ─────────────────────────────────────────────────────────
-// Checkout: 購入手続きページ
-//
-// 商品詳細の「購入手続きへ進む」ボタンで来る。
-//
-// 表示内容:
-//   1. お届け先（プロフィールの配送先住所。インライン編集可能でPUT /api/users/me に保存）
-//   2. お支払い方法（ダミーの選択肢。実際の決済API連携は未実装）
-//   3. 発送商品（商品名・画像・最終価格）
-//   4. 注文明細（値引き適用後の合計）と「注文を確定する」ボタン
-//
-// 値引き価格の取得:
-//   自分の購入チャット一覧から対象商品のルームを探し、
-//   discount_approved > 0 なら最終価格として適用する。
-//   これにより「同じ商品でも交渉した人だけが安く買える」仕組みになる。
-// ─────────────────────────────────────────────────────────
+// Checkout: 購入手続きページ（配送先・値引き適用後合計・注文確定）
 
 function Checkout() {
   const { id } = useParams(); // URL: /checkout/:id（商品ID）
@@ -27,7 +12,6 @@ function Checkout() {
   const { profile, setProfile } = useAuth();
 
   const [product, setProduct] = useState(null);
-  // discountPrice: このユーザーに承認された値引き価格（0なら未承認）
   const [discountPrice, setDiscountPrice] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 

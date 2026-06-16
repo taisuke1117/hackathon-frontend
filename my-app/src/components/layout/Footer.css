@@ -66,51 +66,6 @@
   opacity: 1;
 }
 
-/*  出品ボタン（中央の＋ボタン） */
-.nav-item[href="/listing"] {
-  position: relative;
-  top: -6px; /* フッターから少し浮かせる */
-  background: var(--surface-hover);
-  border: 1px solid rgba(56, 189, 248, 0.4); /* 水色の細枠 */
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  flex: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.nav-item[href="/listing"] .nav-icon-img {
-  filter: invert(75%) sepia(40%) saturate(1000%) hue-rotate(170deg) !important;
-  opacity: 1;
-}
-
-.nav-item[href="/listing"] .nav-icon-text {
-  color: var(--primary) !important;
-  font-size: 9px;
-  font-weight: bold;
-}
-
-/* 出品ボタンのアクティブ状態 */
-.nav-item[href="/listing"].active {
-  background: var(--surface-hover);
-  border-color: var(--primary);
-  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.2);
-}
-.nav-item[href="/listing"].active .nav-icon-text {
-  color: var(--primary) !important;
-}
-
-/* 出品ボタンのホバー */
-.nav-item[href="/listing"]:hover {
-  background: #2b313d;
-  transform: translateY(-1px) scale(1.03);
-}
-
-/* LIVE タブ */
-.nav-live .nav-icon-text { color: #ef4444 !important; }
-.nav-live .nav-icon-img  { filter: invert(30%) sepia(90%) saturate(2000%) hue-rotate(340deg) !important; opacity: 0.9; }
-.nav-live.active .nav-icon-text { color: #ef4444 !important; }
-.nav-live.active .nav-icon-img  { filter: invert(30%) sepia(90%) saturate(2000%) hue-rotate(340deg) !important; opacity: 1; }
 
 /*  チャットアイコンの未読バッジ  */
 /* アイコン画像を基準点にして右上に配置する */

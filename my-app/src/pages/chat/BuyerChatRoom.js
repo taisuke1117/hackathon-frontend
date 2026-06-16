@@ -9,17 +9,6 @@ import { ReviewModal } from '../../components/modal/ReviewModal';
 import sendIcon from '../../assets/send.svg';
 import './ChatRoom.css';
 
-// ─────────────────────────────────────────────────────────
-// BuyerChatRoom: 購入希望者側のチャット画面
-//
-// 機能:
-//   - メッセージの送受信（useChatRoom フックに委譲）
-//   - 値引き交渉ボタン（希望価格を入力してバックエンドに送る）
-//   - 購入ボタン（値引き承認済みならその価格で購入できる）
-//   - 発送後に「受取評価」ボタンが現れる
-//   - Geminiで返信文を自動生成する（GeminiAssistantBox）
-// ─────────────────────────────────────────────────────────
-
 function BuyerChatRoom() {
   const { productId, roomId } = useParams(); // URL: /chat/:productId/:roomId
   const navigate = useNavigate();
@@ -40,9 +29,7 @@ function BuyerChatRoom() {
   }, [inputText]);
 
 
-  // myPurchase: 購入済みかどうか（発送後の受取評価ボタン表示に使う）
   const [myPurchase, setMyPurchase] = useState(null);
-  // showReview: 受取評価モーダルの表示フラグ
   const [showReview, setShowReview] = useState(false);
 
   // 発送済みステータスになったとき、購入履歴から自分のこの取引を探す

@@ -5,28 +5,16 @@ import { formatTime } from '../../utils/format';
 import { StatusBanner } from '../../components/deals/StatusBanner';
 import './ProductManage.css';
 
-// ─────────────────────────────────────────────────────────
-// ProductManage: 出品商品の個別取引管理画面
-//
-// 商品一覧（Deals）→ ManagedProductCard クリックで来る。
-// URLパラメータ :id が対象商品のID。
-//
-// 表示内容:
-//   - StatusBanner: ステータスに応じたアクション（発送ボタンなど）
-//   - 商品情報カード（サムネイル・いいね数・閲覧数・編集/削除ボタン）
-//   - この商品に届いたチャット一覧（取引中は購入者チャットを最上位に表示）
-// ─────────────────────────────────────────────────────────
+// ProductManage: 個別商品の取引管理画面（ステータス操作・チャット一覧）
 
 function ProductManage() {
   const { id } = useParams(); // URL: /deals/manage/:id
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
-  // itemChats: この商品への出品者側チャット一覧
   const [itemChats, setItemChats] = useState([]);
 
-  // load: 商品詳細 + チャット一覧を取得してstateに格納
-  // useCallback で安定した関数参照を作り、useEffect の依存に含められるようにする
+  // useCallback で安定した参照を作り useEffect の依存に含める
   const load = useCallback(async () => {
     try {
       const detail = await apiFetch(`/api/products/${id}`);

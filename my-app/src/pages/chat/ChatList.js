@@ -4,27 +4,14 @@ import { apiFetch } from '../../api/client';
 import { formatTime } from '../../utils/format';
 import './ChatList.css';
 
-// ─────────────────────────────────────────────────────────
-// ChatList: チャット一覧ページ（フッターの吹き出しアイコンから来る）
-//
-// タブ切り替えで2モードある:
-//   「購入」タブ: 自分が購入希望者として参加しているチャット一覧
-//   「販売」タブ: 自分が出品した商品への問い合わせチャット一覧
-//
-// タブによって遷移先のURLも変わる:
-//   購入タブ → /chat/:productId/:roomId       （BuyerChatRoom）
-//   販売タブ → /chat/seller/:productId/:roomId（SellerChatRoom）
-// ─────────────────────────────────────────────────────────
+// ChatList: 購入・販売タブ切り替えのチャット一覧
 
 function ChatList() {
   const navigate = useNavigate();
-
-  // activeTab: 'buying'（購入）or 'selling'（販売）
   const [activeTab, setActiveTab] = useState('buying');
   const [chats, setChats] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // タブが切り替わるたびに対応するチャット一覧を取得
   useEffect(() => {
     setIsLoading(true);
     apiFetch(`/api/chatrooms?role=${activeTab}`)
@@ -34,14 +21,13 @@ function ChatList() {
         setChats([]);
       })
       .finally(() => setIsLoading(false));
-  }, [activeTab]); // activeTabが変わるたびに再実行
+  }, [activeTab]);
 
-  // チャット行をクリックしたとき、タブに応じて適切なURLへ遷移
   const handleRowClick = (productId, roomId) => {
     if (activeTab === 'buying') {
-      navigate(`/chat/${productId}/${roomId}`);        // 購入者チャット
+      navigate(`/chat/${productId}/${roomId}`);
     } else {
-      navigate(`/chat/seller/${productId}/${roomId}`); // 出品者チャット
+      navigate(`/chat/seller/${productId}/${roomId}`);
     }
   };
 
@@ -97,9 +83,7 @@ function ChatList() {
                 </div>
               </div>
 
-              {/* 右側: 未読バッジと商品サムネイル */}
               <div className="chat-right-aside">
-                {/* 未読メッセージ数バッジ（0なら非表示） */}
                 {chat.unread_count > 0 && (
                   <span className="chat-unread-badge">{chat.unread_count}</span>
                 )}

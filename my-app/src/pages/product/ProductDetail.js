@@ -5,27 +5,17 @@ import { apiFetch } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 import './ProductDetail.css';
 
-// ─────────────────────────────────────────────────────────
-// ProductDetail: 商品詳細ページ
-//
-// 表示内容:
-//   - 複数画像のスワイプカルーセル
-//   - いいねボタン / チャットボタン / 出品者プロフィール（アクションバー）
-//   - 商品名・価格・状態・説明・カテゴリ
-//   - 下部固定フッター: 購入ボタン（自分の商品なら「出品管理へ」）
-// ─────────────────────────────────────────────────────────
+// ProductDetail: 商品詳細（画像カルーセル・いいね・チャット・購入ボタン）
 
 function ProductDetail() {
   const navigate = useNavigate();
-  const { id } = useParams(); // URLの /product/:id から商品IDを取得
+  const { id } = useParams();
   const { loginUser } = useAuth();
 
-  // currentImgIndex: カルーセルで今何枚目を表示しているか（ドット表示に使う）
-  const [currentImgIndex, setCurrentImgIndex] = useState(0);
+  const [currentImgIndex, setCurrentImgIndex] = useState(0); // カルーセルのドット表示に使う
   const [product, setProduct] = useState(null);
   const [error, setError] = useState('');
 
-  // マウント時に商品詳細を取得（idが変わったら再取得）
   useEffect(() => {
     apiFetch(`/api/products/${id}`)
       .then(setProduct)

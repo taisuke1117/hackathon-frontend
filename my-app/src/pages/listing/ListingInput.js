@@ -6,19 +6,7 @@ import { ImageUploadSection } from '../../components/listing/ImageUploadSection'
 import { CategoryChipSelector } from '../../components/listing/CategoryChipSelector';
 import './Listing.css';
 
-// ─────────────────────────────────────────────────────────
-// ListingInput: 商品出品フォームページ
-//
-// 出品フローは2ステップ構成:
-//   1. ListingInput（このファイル）: フォーム入力
-//   2. ListingConfirm: 内容確認 → 出品APIを叩く
-//
-// 特徴:
-//   - 画像をアップロードしてGeminiボタンを押すと、商品名・説明・
-//     カテゴリ・状態・価格が自動入力される（AI自動入力機能）
-//   - 確認画面へ遷移するとき、入力中の値を React Router の state で渡す
-//   - 「戻る」で戻ってきたとき、location.state から値を復元する
-// ─────────────────────────────────────────────────────────
+// ListingInput: 出品フォーム Step 1（Gemini AI自動入力・確認画面へ遷移）
 
 // 商品状態の選択肢（メルカリと同じ6段階）
 const CONDITIONS = [
@@ -39,40 +27,30 @@ function ListingInput() {
   // 初回表示のときは location.state が null なので || {} でデフォルトを与える
   const savedData = location.state || {};
 
-  // ── フォームの各フィールドのstate ─────────────────────────
   // 初期値は savedData（確認画面から戻ってきた場合）か空
-  const [images, setImages] = useState(savedData.images || []);               // アップロード済み画像URL配列
-  const [isUploading, setIsUploading] = useState(false);                       // 画像アップロード中フラグ
-  const [title, setTitle] = useState(savedData.title || '');                   // 商品名
-  const [description, setDescription] = useState(savedData.description || ''); // 商品説明
-  const [condition, setCondition] = useState(savedData.condition || '');       // 商品の状態
-  const [price, setPrice] = useState(savedData.price || '');                   // 販売価格
-  const [selectedCategories, setSelectedCategories] = useState(savedData.selectedCategories || []); // 選択したカテゴリ名の配列
-  const [tags, setTags] = useState(savedData.tags || []);                      // AIが生成したタグ
+  const [images, setImages] = useState(savedData.images || []);
+  const [isUploading, setIsUploading] = useState(false);
+  const [title, setTitle] = useState(savedData.title || '');
+  const [description, setDescription] = useState(savedData.description || '');
+  const [condition, setCondition] = useState(savedData.condition || '');
+  const [price, setPrice] = useState(savedData.price || '');
+  const [selectedCategories, setSelectedCategories] = useState(savedData.selectedCategories || []);
+  const [tags, setTags] = useState(savedData.tags || []);
+  const [isAiLoading, setIsAiLoading] = useState(false);
 
-  const [isAiLoading, setIsAiLoading] = useState(false); // Gemini解析中フラグ
-
-  // ── Gemini AI自動入力 ─────────────────────────────────────
-  // 1枚目の画像URLをバックエンドに送り、Geminiが出品情報を生成して返す
   const handleAiAutoFill = async () => {
-    if (images.length === 0) return; // 画像がない場合は何もしない
+    if (images.length === 0) return;
     setIsAiLoading(true);
     try {
-      // POST /api/gemini/listing に1枚目の画像URLを送る
-      // バックエンドが画像を取得してGeminiに解析させる
       const result = await apiFetch('/api/gemini/listing', {
         method: 'POST',
         body: { image_url: images[0] },
       });
-
-      // Geminiの返答でフォームを埋める
       setTitle(result.title || '');
       setDescription(result.description || '');
       if (result.condition) setCondition(result.condition);
       if (result.price_suggestion > 0) setPrice(String(result.price_suggestion));
-
-      // Geminiが返すカテゴリ名がマスターに存在するものだけを使う
-      // （Geminiが勝手に存在しないカテゴリを生成してしまうことがあるため）
+      // Geminiが存在しないカテゴリを生成しないようマスターでフィルタ
       const validNames = categories.map(c => c.name);
       setSelectedCategories((result.categories || []).filter(name => validNames.includes(name)));
       setTags(result.tags || []);
@@ -83,16 +61,12 @@ function ListingInput() {
     }
   };
 
-  // ── 確認画面へ遷移 ────────────────────────────────────────
-  // フォームの値を React Router の state として渡す
-  // ListingConfirm ではこの state を受け取って表示・出品APIを叩く
   const handleGoToConfirm = () => {
     navigate('/listing/confirm', {
       state: { images, title, description, condition, price, selectedCategories, tags },
     });
   };
 
-  // 画像が1枚以上あるかどうか（AIボタンと確認ボタンの有効化に使う）
   const hasImages = images.length > 0;
 
   return (
@@ -101,7 +75,6 @@ function ListingInput() {
       <div className="listing-form">
 
         {/* 画像アップロード */}
-        {/* ImageUploadSection: 画像を選択→GCSにアップロード→URLを images state に追加 */}
         <div className="form-group">
           <label className="form-label">商品画像（1枚目がメイン）</label>
           <ImageUploadSection
@@ -112,8 +85,7 @@ function ListingInput() {
           />
         </div>
 
-        {/* Gemini AI自動入力ボタン */}
-        {/* 画像がアップロードされたときだけアクティブになる */}
+        {/* Gemini AI自動入力ボタン（画像が1枚以上あるときだけアクティブ）*/}
         <div className="ai-assistant-box">
           <div className="ai-assistant-info">
             <span className="ai-sparkle-icon">✨</span>

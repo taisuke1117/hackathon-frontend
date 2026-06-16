@@ -2,35 +2,16 @@ import React, { useState } from 'react';
 import sendIcon from '../../assets/send.svg';
 import './SearchBar.css';
 
-// ─────────────────────────────────────────────────────────
-// SearchBar: ホーム上部の検索コンポーネント
-//
-// 2種類の検索モードを提供する:
-//   [通常検索] キーワード・カテゴリ・価格帯でフィルタ
-//              → onSearchSubmit(params) を呼ぶ
-//   [AI検索]   自然言語プロンプトをGeminiに投げて商品を絞り込む
-//              → onAiSearchSubmit(prompt) を呼ぶ
-//
-// 動作フロー:
-//   1. 検索バーにフォーカス → isFilterOpen=true でフィルターパネルが開く
-//   2. 「閉じる」or オーバーレイクリック → isFilterOpen=false で閉じる
-//   3. フォーム送信後も isFilterOpen=false で閉じる
-// ─────────────────────────────────────────────────────────
+// SearchBar: 通常検索（キーワード・カテゴリ・価格帯）とAI検索の2モードを提供
 
 export const SearchBar = ({ onSearchSubmit, onAiSearchSubmit }) => {
-  // isFilterOpen: フィルタパネル（通常検索 + AI検索）の表示フラグ
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-
-  // 通常検索の各フィールド
   const [searchWord, setSearchWord] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [category, setCategory] = useState('');
-
-  // AI検索のプロンプト入力
   const [aiPrompt, setAiPrompt] = useState('');
 
-  // 通常検索フォーム送信
   const handleSubmit = (e) => {
     e.preventDefault();
     if (onSearchSubmit) {
@@ -44,7 +25,6 @@ export const SearchBar = ({ onSearchSubmit, onAiSearchSubmit }) => {
     setIsFilterOpen(false); // 送信後はパネルを閉じる
   };
 
-  // AI検索フォーム送信: プロンプトを親に渡してクリア
   const handleAiSubmit = (e) => {
     e.preventDefault();
     if (!aiPrompt.trim()) return;
@@ -77,7 +57,6 @@ export const SearchBar = ({ onSearchSubmit, onAiSearchSubmit }) => {
       {/* フィルタパネル（isFilterOpen=true のとき表示）*/}
       <div className={`detailed-filter-menu ${isFilterOpen ? 'open' : ''}`}>
 
-        {/* ─── 通常検索フォーム ─── */}
         <form onSubmit={handleSubmit} className="filter-form">
           <div className="filter-group">
             <label>カテゴリ</label>
@@ -108,8 +87,7 @@ export const SearchBar = ({ onSearchSubmit, onAiSearchSubmit }) => {
           <span>または AIに相談して探す</span>
         </div>
 
-        {/* ─── AI検索フォーム ─── */}
-        {/* Geminiが自然言語を解釈して category / min_price / max_price / keyword に変換する */}
+        {/* Geminiが自然言語を検索条件に変換する */}
         <form onSubmit={handleAiSubmit} className="ai-search-form">
           <div className="ai-input-wrapper">
             <input

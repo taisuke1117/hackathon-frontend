@@ -3,23 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { LikeButton } from '../ui/LikeButton';
 import './ProductCard.css';
 
-// ─────────────────────────────────────────────────────────
-// ProductCard: 商品一覧に表示する汎用カードコンポーネント
-//
-// 使用箇所: ホーム一覧・マイページ（購入履歴・いいね一覧）・
-//           ユーザープロフィールページなど
-//
-// Props:
-//   id              : 商品ID（クリック時の遷移に使う）
-//   image           : サムネイル画像URL
-//   price           : 価格（数値）
-//   category        : カテゴリ名（テキスト表示）
-//   title           : 商品名（alt テキスト）
-//   isLikedInitial  : 初期いいね状態（default: false）
-//   likeCountInitial: 初期いいね数（default: 0）
-//   onLikeToggle    : 親コンポーネントへのコールバック（id, 次の状態 を渡す）
-//                     ホームのように API 連携が不要な場面は渡さなくてよい
-// ─────────────────────────────────────────────────────────
+// ProductCard: 商品一覧に表示する汎用カード（ホーム・購入履歴・いいね一覧など）
 
 export const ProductCard = ({
   id,
@@ -33,13 +17,10 @@ export const ProductCard = ({
 }) => {
   const navigate = useNavigate();
 
-  // 商品詳細ページへ遷移
   const handleCardClick = () => {
     navigate(`/product/${id}`);
   };
 
-  // LikeButton からトグル後の状態が上がってくる
-  // 親が onLikeToggle を渡した場合はそちらに転送（いいね一覧での楽観的UI削除など）
   const handleLikeToggleInsideCard = (nextLikedState) => {
     if (onLikeToggle) {
       onLikeToggle(id, nextLikedState);

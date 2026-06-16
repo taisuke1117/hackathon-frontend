@@ -11,7 +11,6 @@ import chatIcon    from '../../assets/chat.svg';
 import PersonIcon  from '../../assets/person.svg';
 
 function Footer() {
-  // badges: { unread_notifications: number, unread_chats: number }
   const { badges } = useAuth();
 
   return (
@@ -24,9 +23,12 @@ function Footer() {
           <span className="nav-icon-text">ホーム</span>
         </NavLink>
 
-        {/* 取引管理 */}
+        {/* 取引管理: 未発送商品がある場合は右上にドット */}
         <NavLink to="/deals" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
-          <img src={dealsIcon} alt="Deals" className="nav-icon-img" />
+          <span className="nav-icon-wrapper">
+            <img src={dealsIcon} alt="Deals" className="nav-icon-img" />
+            {badges.unshipped_products > 0 && <span className="unread-dot" />}
+          </span>
           <span className="nav-icon-text">取引</span>
         </NavLink>
 
@@ -37,7 +39,7 @@ function Footer() {
         </NavLink>
 
         {/* ライブ */}
-        <NavLink to="/live" className={({ isActive }) => isActive ? "nav-item nav-live active" : "nav-item nav-live"}>
+        <NavLink to="/live" className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}>
           <img src={liveIcon} alt="Live" className="nav-icon-img" />
           <span className="nav-icon-text">ライブ</span>
         </NavLink>

@@ -7,7 +7,6 @@ import { LoginForm } from './components/ui/LoginForm';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 
-// ── ページコンポーネント ─────────────────────────────────
 import Home from './pages/home/Home';
 import ListingInput from './pages/listing/ListingInput';
 import ListingConfirm from './pages/listing/ListingConfirm';
@@ -30,23 +29,7 @@ import LiveCreate from './pages/live/LiveCreate';
 import LiveRoom from './pages/live/LiveRoom';
 import LiveHost from './pages/live/LiveHost';
 
-// ─────────────────────────────────────────────────────────
-// App: アプリ全体のルーティング定義
-//
-// 未ログイン時（loginUser が null）:
-//   → LoginForm のみを表示する（ルーティングなし）
-//
-// ログイン済み時:
-//   → BrowserRouter でルーティングを有効化
-//   → Header（上部）/ Routes / Footer（下部）の3層構造
-//
-// チャットのルート分岐:
-//   /chat/:productId/:roomId        → BuyerChatRoom（購入者側）
-//   /chat/seller/:productId/:roomId → SellerChatRoom（出品者側）
-//   ※ React Router は上から順に評価するので 'seller' が静的パスとして先に一致する
-// ─────────────────────────────────────────────────────────
-
-// ライブ配信中はフッターを非表示にするためルートを監視するコンポーネント
+// /chat/seller/:productId/:roomId を /chat/:productId/:roomId より先に定義しないと静的パスが負ける
 function AppLayout() {
   const location = useLocation();
   const isLiveStream = /^\/live\/(host\/)?[^/]+/.test(location.pathname);

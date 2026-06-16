@@ -1,5 +1,6 @@
 import { fireAuth } from '../firebase';
 
+// client.js: APIリクエストの共通処理
 // バックエンドのベースURL(cloud　runのURL)
 
 export const API_URL = process.env.REACT_APP_API_URL || 'https://hackathon-backend-688788582449.us-central1.run.app';

@@ -10,7 +10,6 @@ export function StatusBanner({ status, onShip }) {
     return (
       <div className="status-alert-banner unshipped-banner">
         <div className="banner-message-row">
-          <span className="banner-icon">📦</span>
           <div className="banner-text-block">
             <span className="banner-title">商品が購入されました</span>
             <span className="banner-subtitle">梱包を済ませ、速やかに発送を行ってください。</span>
@@ -18,7 +17,7 @@ export function StatusBanner({ status, onShip }) {
         </div>
         {/* 発送ボタン: クリックで ProductManage の handleShipProduct が呼ばれる */}
         <button className="action-btn-ship" onClick={onShip}>
-          🚛 発送しました
+          発送しました
         </button>
       </div>
     );
@@ -29,7 +28,6 @@ export function StatusBanner({ status, onShip }) {
     return (
       <div className="status-alert-banner shipped-banner">
         <div className="banner-message-row">
-          <span className="banner-icon">✨</span>
           <div className="banner-text-block">
             <span className="banner-title">発送手続き完了済み</span>
             <span className="banner-subtitle">購入者からの受取評価を待っています。</span>

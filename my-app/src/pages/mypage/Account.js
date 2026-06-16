@@ -6,38 +6,19 @@ import { uploadProductImage } from '../../api/storage';
 import { AvatarCropModal } from '../../components/modal/AvatarCropModal';
 import './Account.css';
 
-// ─────────────────────────────────────────────────────────
-// Account: アカウント設定ページ（マイページの歯車アイコンから来る）
-//
-// 機能:
-//   - アバター画像の変更（選択 → 切り抜きモーダル → GCSアップロード）
-//   - ニックネーム・地域・自己紹介の編集
-//   - PUT /api/users/me でプロフィール保存
-//   - ログアウトボタン
-//
-// アバター変更フロー:
-//   1. input[type=file] で画像を選択
-//   2. FileReader で DataURL に変換
-//   3. AvatarCropModal でトリミング（canvas で切り抜き）
-//   4. Blob → File → GCSアップロード → URL を profileImage state に保存
-//   5. 保存ボタンで PUT /api/users/me にまとめて送る
-// ─────────────────────────────────────────────────────────
+// Account: アカウント設定（アバター切り抜き・プロフィール編集・ログアウト）
 
 function Account() {
   const { loginUser, profile, setProfile } = useAuth();
-  // ファイルinputを非表示にして「写真を変更」ラベルから開くためのref
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef(null); // 非表示 file input を「写真を変更」ラベルから開くため
 
-  // フォームの各フィールドを state で管理（初期値はプロフィールから）
   const [name, setName] = useState(profile?.name || loginUser?.displayName || '');
-  // email はFirebase側で管理するため変更不可（表示のみ）
-  const [email] = useState(profile?.mail || loginUser?.email || '');
+  const [email] = useState(profile?.mail || loginUser?.email || ''); // Firebase管理なので変更不可（表示のみ）
   const [bio, setBio] = useState(profile?.bio || '');
   const [region, setRegion] = useState(profile?.place || '');
   const [profileImage, setProfileImage] = useState(profile?.icon_url || loginUser?.photoURL || '');
   const [isSaving, setIsSaving] = useState(false);
-  // cropSrc: AvatarCropModal に渡す画像のDataURL（null なら非表示）
-  const [cropSrc, setCropSrc] = useState(null);
+  const [cropSrc, setCropSrc] = useState(null); // AvatarCropModal に渡す DataURL
 
   // 画像を選んだら切り抜きモーダルを開く
   // input の value をリセットすることで同じファイルを再選択できるようにする

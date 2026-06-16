@@ -15,12 +15,13 @@ export function ChatTimeline({ messages, myId, otherUserIcon, chatEndRef }) {
             {/* 相手メッセージのときだけアイコンを左に表示 */}
             {!isMe && (otherUserIcon
               ? <img src={otherUserIcon} alt="アバター" className="msg-avatar" />
-              : <div className="msg-avatar" style={{ background: '#444' }} />)}
+              : <div className="msg-avatar" style={{ background: '#444' }} />)}  {/* アイコンがないときはダミーの丸を表示 */}
 
             <div className="msg-bubble-wrapper">
               {/* 自分のメッセージ: 時刻を bubble の左側に表示 */}
               {isMe && <span className="msg-time">{formatClock(msg.created_at)}</span>}
 
+              {/* メッセージ内容　*/}
               <div className={`msg-bubble ${isMe ? 'bubble-me' : 'bubble-other'}`}>
                 {msg.content}
               </div>

@@ -5,29 +5,15 @@ import { apiFetch } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 import './MyPage.css';
 
-// ─────────────────────────────────────────────────────────
-// MyPage: マイページ（フッターのユーザーアイコンから来る）
-//
-// 表示内容:
-//   1. プロフィールヘッダー（アイコン・名前・評価スコア）→クリックで設定画面へ
-//   2. 最近購入した商品（最大3件のプレビュー）→「すべて見る」ボタン
-//   3. いいね！した商品（最大3件のプレビュー）→「すべて見る」ボタン
-//
-// データは2本のAPIを並列に取得し、それぞれ先頭3件だけ表示する。
-// AuthContext の profile にはアイコン・名前・評価スコアが入っている。
-// ─────────────────────────────────────────────────────────
+// MyPage: マイページ（プロフィール・最近の購入3件・いいね3件）
 
 function MyPage() {
   const navigate = useNavigate();
-  // AuthContext から自分のプロフィール情報を取得
   const { profile } = useAuth();
-
-  // 最近購入した商品（APIから取得後に先頭3件に絞る）
   const [recentPurchases, setRecentPurchases] = useState([]);
-  // いいねした商品（同様に3件）
   const [likedProducts, setLikedProducts] = useState([]);
 
-  // マウント時に購入履歴といいね一覧を並列取得
+  // 購入履歴といいね一覧を並列取得
   useEffect(() => {
     apiFetch('/api/me/purchases')
       .then(list => setRecentPurchases((list || []).slice(0, 3))) // 先頭3件だけ

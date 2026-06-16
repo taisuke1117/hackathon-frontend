@@ -5,24 +5,11 @@ import { formatTime } from '../../utils/format';
 import { useAuth } from '../../context/AuthContext';
 import './Notification.css';
 
-// ─────────────────────────────────────────────────────────
-// Notification: お知らせ一覧ページ（ヘッダーのベルアイコンから来る）
-//
-// タブ切り替えで2種類の通知を表示:
-//   「取引関連」: 値引き承認・発送通知・購入通知など（type='transaction'）
-//   「ニュース」: キャンペーンや一般的なお知らせ（type以外）
-//
-// 既読処理:
-//   通知行をクリックすると即座にローカルで is_read=true にして
-//   バッジを消す（楽観的UI）。バックエンドのPUTは失敗しても無視。
-//   refreshBadges でヘッダーの未読数バッジも更新する。
-// ─────────────────────────────────────────────────────────
+// Notification: お知らせ一覧（取引関連・ニュースタブ・既読で楽観的UI更新）
 
 function Notification() {
   const navigate = useNavigate();
-  // refreshBadges: ヘッダーのバッジ数を再取得するためのコールバック（AuthContextに定義）
   const { refreshBadges } = useAuth();
-  // activeTab: 'transaction'（取引関連）or 'news'（ニュース）
   const [activeTab, setActiveTab] = useState('transaction');
   const [notifications, setNotifications] = useState([]);
 

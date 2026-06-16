@@ -5,32 +5,16 @@ import { ReviewModal } from '../../components/modal/ReviewModal';
 import '../../components/product/PurchaseProductCard.css';
 import './Purchase.css';
 
-// ─────────────────────────────────────────────────────────
-// Purchases: 購入履歴一覧ページ（マイページ → 「購入履歴をすべて見る」）
-//
-// 表示内容:
-//   - 各購入商品のステータスバッジ（未発送 / 評価待ち / 受取済み）
-//   - 「受取済みを非表示」チェックボックスで完了した取引を隠せる
-//   - 「評価待ち」商品には「受取評価をする」ボタンが表示される
-//   - 評価モーダルを閉じると一覧を再取得して評価済みに更新
-//
-// statusConfig のロジック:
-//   unshipped → 「未発送」
-//   shipped & 未評価 → 「評価待ち」（次のアクションが必要）
-//   それ以外（shipped & 評価済み）→ 「受取済み」
-// ─────────────────────────────────────────────────────────
+// Purchases: 購入履歴一覧（ステータスバッジ・受取評価モーダル）
 
 function Purchases() {
   const navigate = useNavigate();
-
-  // 「受取済みを非表示」フィルタ
   const [hideReceived, setHideReceived] = useState(false);
   const [purchases, setPurchases] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  // reviewTarget: 評価モーダルに渡す対象商品（null なら非表示）
-  const [reviewTarget, setReviewTarget] = useState(null);
+  const [reviewTarget, setReviewTarget] = useState(null); // 評価モーダルに渡す対象商品
 
-  // useCallback で安定した参照を作る（評価後に再取得するために load を外で呼ぶ）
+  // useCallback で安定した参照（評価後に外から再取得するため）
   const load = useCallback(() => {
     apiFetch('/api/me/purchases')
       .then(list => setPurchases(list || []))

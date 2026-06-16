@@ -4,20 +4,13 @@ import { ProductCard } from '../../components/product/ProductCard';
 import { apiFetch } from '../../api/client';
 import './LikedProducts.css';
 
-// ─────────────────────────────────────────────────────────
-// LikedProducts: いいね一覧ページ（マイページ → 「いいね一覧をすべて見る」）
-//
-// いいねを外す（ハートを再クリック）と、一覧から即座に消える（楽観的UI）。
-// バックエンドのDELETEが失敗した場合はエラーログを出すだけで一覧は消えたまま。
-// （エラー時に元に戻すリバート処理は実装していない）
-// ─────────────────────────────────────────────────────────
+// LikedProducts: いいね一覧（いいね解除で楽観的UI削除）
 
 function LikedProducts() {
   const navigate = useNavigate();
   const [likedProducts, setLikedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // マウント時にいいね済み商品一覧を取得
   useEffect(() => {
     apiFetch('/api/me/likes')
       .then(list => setLikedProducts(list || []))
@@ -25,12 +18,10 @@ function LikedProducts() {
       .finally(() => setIsLoading(false));
   }, []);
 
-  // いいねトグル: 解除（isLiked=false）なら一覧から除去（楽観的UI）
   const handleLikeToggle = async (productId, isLiked) => {
     try {
       await apiFetch(`/api/products/${productId}/like`, { method: isLiked ? 'POST' : 'DELETE' });
       if (!isLiked) {
-        // いいねを外した → 一覧から即座に削除
         setLikedProducts(prev => prev.filter(p => p.product_id !== productId));
       }
     } catch (err) {

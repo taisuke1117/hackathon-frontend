@@ -5,25 +5,12 @@ import { apiFetch } from '../../api/client';
 import { formatTime } from '../../utils/format';
 import './UserProfile.css';
 
-// ─────────────────────────────────────────────────────────
-// UserProfile: 他ユーザーの公開プロフィールページ
-//
-// 商品詳細の「出品者プロフィール」や、ホームの「出品者名」クリックで来る。
-// URL: /user/profile/:userId
-//
-// 表示内容:
-//   1. ユーザー基本情報（アイコン・名前・評価スコア・自己紹介）
-//   2. この人が出品している商品（available か negotiating のものだけ公開）
-//   3. この人が受け取った取引評価（星とコメント）
-//
-// GET /api/users/:userId で { user, products, reviews } がまとめて返る。
-// ─────────────────────────────────────────────────────────
+// UserProfile: 他ユーザーの公開プロフィール（出品商品・評価一覧）
 
 function UserProfile() {
   const { userId } = useParams();
   const navigate = useNavigate();
 
-  // data: { user: {...}, products: [...], reviews: [...] }
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
 

@@ -4,24 +4,12 @@ import { apiFetch } from '../../api/client';
 import { useAuth } from '../../context/AuthContext';
 import './Listing.css';
 
-// ─────────────────────────────────────────────────────────
-// ListingConfirm: 出品確認ページ（出品フロー Step 2）
-//
-// ListingInput（Step 1）から navigate('/listing/confirm', { state: {...} }) で来る。
-// location.state に以下が含まれている:
-//   images, title, description, condition, price, selectedCategories, tags
-//
-// 「修正する」ボタン: 同じ state を乗せて ListingInput に戻る（入力値が保持される）
-// 「この内容で出品する」ボタン:
-//   1. カテゴリ名 → カテゴリIDに変換（AuthContextのカテゴリマスターを使う）
-//   2. POST /api/products で出品
-//   3. ホームに遷移
-// ─────────────────────────────────────────────────────────
+// ListingConfirm: 出品フロー Step 2（確認・カテゴリ名→ID変換・POST）
 
 function ListingConfirm() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { categories } = useAuth(); // カテゴリマスター（名前→IDの変換に使う）
+  const { categories } = useAuth(); // カテゴリ名→IDの変換に使う
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // location.state がない（直接URLアクセス等）場合のフォールバック

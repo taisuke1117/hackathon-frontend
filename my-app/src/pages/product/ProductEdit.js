@@ -5,27 +5,16 @@ import { useAuth } from '../../context/AuthContext';
 import { CategoryChipSelector } from '../../components/listing/CategoryChipSelector';
 import './ProductEdit.css';
 
-// ─────────────────────────────────────────────────────────
-// ProductEdit: 出品商品の編集ページ（取引管理画面の「商品情報を書き換える」から来る）
-//
-// ListingInput との違い:
-//   - 既存商品データを取得してフォームを初期化する
-//   - 画像は変更できない（image_urls は既存のものをそのまま送る）
-//   - PUT /api/products/:id で更新する（新規作成ではない）
-//   - 削除も可能（DELETEを叩いて /deals に戻る）
-//
-// カテゴリは名前文字列の配列で管理し、送信時に category_ids に変換する
-// （ListingInput・ListingConfirm と同じパターン）
-// ─────────────────────────────────────────────────────────
+// ProductEdit: 出品商品の編集・削除ページ（画像変更不可・PUT /api/products/:id）
 
 function ProductEdit() {
   const { id } = useParams(); // URL: /deals/edit/:id
   const navigate = useNavigate();
-  const { categories } = useAuth(); // カテゴリマスター（名前→IDの変換に使う）
+  const { categories } = useAuth(); // カテゴリ名→IDの変換に使う
 
-  const [product, setProduct] = useState(null); // 既存商品データ（画像URLの参照に使う）
+  const [product, setProduct] = useState(null);
   const [formData, setFormData] = useState({ title: '', price: '', description: '' });
-  const [selectedCategories, setSelectedCategories] = useState([]); // カテゴリ名の配列
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
 
   // マウント時に既存商品データを取得してフォームに反映

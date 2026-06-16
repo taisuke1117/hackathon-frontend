@@ -8,15 +8,7 @@ import { GeminiAssistantBox } from '../../components/chat/GeminiAssistantBox';
 import sendIcon from '../../assets/send.svg';
 import './ChatRoom.css';
 
-// ─────────────────────────────────────────────────────────
-// SellerChatRoom: 出品者側のチャット画面
-//
-// BuyerChatRoom との違い:
-//   - 値引き「提案される側」→ 承認ボタンがある
-//   - ユーザーブロック機能がある
-//   - 購入ボタンはない（出品者は購入しない）
-//   - 商品バーをクリックすると取引管理画面（/deals/manage/...）に飛ぶ
-// ─────────────────────────────────────────────────────────
+// SellerChatRoom: 出品者側チャット（値引き承認・ユーザーブロック機能付き）
 
 function SellerChatRoom() {
   const { productId, roomId } = useParams();
